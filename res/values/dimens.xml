@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="listChildPaddingLeft">33dip</dimen>
+    <dimen name="listParentHeight">42dip</dimen>
+    <dimen name="listChildMarginBottom">4dip</dimen>
+    <dimen name="listChildHeight">20dip</dimen>
+
+</resources>
