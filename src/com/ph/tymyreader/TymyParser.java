@@ -120,6 +120,7 @@ public class TymyParser {
 		}
 	}
 	
+	// TODO dodelat automaticke vytazeni jmen diskusi
 	public ArrayList<String> getDisArray(String mainPage) {
 		int oauth = 0;
 		int end = 0;

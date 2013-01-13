@@ -8,5 +8,12 @@
     <string name="title_activity_discussion_list">DiscussionList</string>
     <string name="discussion_list">Discussions List</string>
     <string name="title_activity_tymy_list">TymyList</string>
+    <string name="greetings">Greetings</string>
+    <string name="title_global_settings_activity">TymyReader Global Settings</string>
+    <string name="title_tym_settings_activity">TymyReader Server Settings</string>
+    <string name="greetings_message">Write your own greetings</string>
+    <string name="foo">foo</string>
+    <string name="server">Server</string>
+    <string name="server_message"></string>
 
 </resources>

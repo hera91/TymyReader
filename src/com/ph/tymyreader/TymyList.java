@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.ListActivity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,17 +13,18 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 // TODO doplnit nacteni cookies jakmile vyberu tuhle stranku a pak docilit toho aby cookies DisView uz cookies dostalo
 
 public class TymyList extends ListActivity {
 	private static final String TAG = "TymyReader";
+	public static boolean refreshDisplay;
 	final String ONE = "one";
 	final String TWO = "two";
 	private String[] from = new String[] {ONE, TWO};
@@ -57,32 +57,54 @@ public class TymyList extends ListActivity {
 		lv.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View lv, int position, long id) {
-				Toast t = Toast.makeText(getApplicationContext(), "LongClick position " + position, Toast.LENGTH_LONG);
-				t.show();
+				showTymSettings(position);
 				return true;
 			}
 		});
 	}
 
+	protected void showTymSettings(int position) {
+		// TODO Auto-generated method stub
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("tymPref", tymPrefList.get(position));
+	    Intent intent = new Intent(this, TymSettingsActivity.class);
+		intent.putExtras(bundle);
+	    startActivity(intent);				
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_discusion_list, menu);
+		getMenuInflater().inflate(R.menu.activity_tymy_list, menu);
 		return true;
 	}
 
 	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.menu_settings:
+			showSettings();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	private void showSettings() {
+	    Intent intent = new Intent(this, GlobalSettingsActivity.class);
+	    startActivity(intent);		
+	}
+	
+	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		Bundle bundle = new Bundle();
-
 		bundle.putSerializable("tymPref", tymPrefList.get(position));
-		Intent intent = new Intent();
-		intent.setComponent(new ComponentName("com.ph.tymyreader", "com.ph.tymyreader.DiscussionList"));
+		Intent intent = new Intent(this, DiscussionList.class);
 		intent.putExtras(bundle);
-		startActivity(intent);
+		startActivity(intent);				
 	}
-
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);

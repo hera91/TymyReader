@@ -33,6 +33,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.ph.tymyreader.GlobalSettingsActivity"
+            android:label="@string/title_global_settings_activity" >
+        </activity>
+        <activity
+            android:name="com.ph.tymyreader.TymSettingsActivity"
+            android:label="@string/title_tym_settings_activity" >
+        </activity>
     </application>
 
 </manifest>

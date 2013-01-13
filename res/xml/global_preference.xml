@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <EditTextPreference
+        android:dialogMessage="@string/greetings_message"
+        android:dialogTitle="@string/greetings"
+        android:key="@string/greetings"
+        android:title="@string/greetings" />
+    <Preference android:key="@string/foo" android:defaultValue="@string/foo" android:title="@string/foo"/>
+
+</PreferenceScreen>
