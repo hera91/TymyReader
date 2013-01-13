@@ -1,5 +1,6 @@
 package com.ph.tymyreader;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,6 @@ public class DiscussionList extends ListActivity {
 	private String[] from = new String[] {NAME, NEW};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	List<HashMap<String, String>> discsList = new ArrayList<HashMap<String,String>>();
-	//	private DiscussionPref disPref = new DiscussionPref("pd.tymy.cz", "HERA", "bistromat", "1", "kecarna");
 	private ArrayList<DiscussionPref> disPrefList = new ArrayList<DiscussionPref>();
 	private TymPref tymPref;
 
@@ -39,7 +39,7 @@ public class DiscussionList extends ListActivity {
 
 		for ( HashMap<String, String> dP : tymPref.getDsList()) {
 			DiscussionPref disPref = new DiscussionPref(tymPref.getUrl(), tymPref.getUser(), 
-					tymPref.getPass(), dP.get("one"));
+					tymPref.getPass(), tymPref.getCookies(), dP.get("one"));
 			disPrefList.add(disPref);
 			addDiscsList(false, dP.get("one"), "");			
 		}
@@ -86,4 +86,80 @@ public class DiscussionList extends ListActivity {
 		discsList.add(map);
 	}
 
+}
+
+class DiscussionPref implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String url;
+	private String user;			
+	private String pass;
+	private String name;
+	private StringBuilder cookies = new StringBuilder();
+	private String id;
+	private List<HashMap<String, String>> dsItems;
+
+	public DiscussionPref(String tym, String user, String pass, StringBuilder cookies, String id) {
+		this.url = tym;
+		this.pass = pass;
+		this.user = user;
+		this.cookies = cookies;
+		this.id = id;
+		this.name = id;
+	}
+	
+	public DiscussionPref(String tym, String user, String pass, StringBuilder cookies, String id, String name) {
+		this.url = tym;
+		this.user = user;
+		this.pass = pass;
+		this.cookies = cookies;
+		this.id = id;
+		this.name = name;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String tym) {
+		this.url = tym;
+	}
+	public String getPass() {
+		return pass;
+	}
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+	public String getUser() {
+		return user;
+	}
+	public void setUser(String user) {
+		this.user = user;
+	}	
+	public String getName() {
+		return name;
+	}		
+	public void setName(String name) {
+		this.name = name;
+	}
+	public StringBuilder getCookies() {
+		return cookies;
+	}
+	public void setCookies(StringBuilder myCookie) {
+		this.cookies = myCookie;
+	}
+	public List<HashMap<String, String>> getDsItems() {
+		return dsItems;
+	}
+	public void setDsItems(List<HashMap<String, String>> dsItems) {
+		this.dsItems = dsItems;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	
 }

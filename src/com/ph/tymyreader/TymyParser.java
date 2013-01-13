@@ -1,5 +1,7 @@
 package com.ph.tymyreader;
 
+import java.util.ArrayList;
+
 import android.text.Html;
 
 /**
@@ -117,6 +119,24 @@ public class TymyParser {
 			return null;
 		}
 	}
+	
+	public ArrayList<String> getDisArray(String mainPage) {
+		int oauth = 0;
+		int end = 0;
+		ArrayList<String> dis = new ArrayList<String>();
+
+		final String PAT = "id=\"ds_new_";
+		while ((oauth = mainPage.indexOf(PAT, end)) != -1) {				
+			if (oauth != -1) {
+				int start = oauth + PAT.length(); 
+				end = mainPage.indexOf('"', start);
+				String dsId = end == -1 ? mainPage.substring(start) : mainPage.substring(start, end);
+				dis.add(dsId);
+			}
+		}
+		return dis;
+	}
+
 }
 
 /**

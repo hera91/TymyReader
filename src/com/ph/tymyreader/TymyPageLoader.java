@@ -17,16 +17,26 @@ public class TymyPageLoader {
 
 	private static final String TAG = "TymyReader";
 
-	public String loadPage(String url, String user, String pass, StringBuilder cookies, String id) {
+	// TODO zobecnit metody pro download stranek
 
-		StringBuilder output = new StringBuilder(); 
+	public String loadMainPage(String url, String user, String pass,
+			StringBuilder cookies) {
+		return loadPage(String.format("%s/index.php", url), user, pass, cookies);
+	}
+
+	public String loadDisPage(String url, String user, String pass, StringBuilder cookies, String id) {
+		return loadPage(String.format("%s/index.php?page=discussion&id=%s&level=101", url, id, url), user, pass, cookies);
+	}
+
+	public String login(final String url, final String user, final String pass, StringBuilder cookies) {
+
+		StringBuilder output = new StringBuilder();
+		Log.v(TAG, "login cookies = " + cookies);				
 		try {
 			String data = null;
 			DataOutputStream wr;
 			if (cookies.toString() == "") {
-				Log.v(TAG, "cookies = \"\"");				
 				data = setFormData(user, pass);
-
 				//			Log.v(TAG,"Debug: " + user + pass + tym);
 				HttpURLConnection connection = createConnection(data, url + "/index.php", cookies, "POST");
 
@@ -36,10 +46,25 @@ public class TymyPageLoader {
 				wr.close();
 
 				cookies.append(extractCookies(connection));               
+				connection.disconnect();						
 			}
+		}
+		catch (Exception e) {
+			Log.v(TAG, e.toString());
+			e.printStackTrace(System.out);
+		}
+		return output.toString();
+	}
 
-			HttpURLConnection connection = createConnection(data, 
-					url + "/index.php?page=discussion&id=" + id + "&level=101", cookies, "GET");
+	private String loadPage(String url, String user, String pass, StringBuilder cookies) {
+
+		StringBuilder output = new StringBuilder(); 
+		Log.v(TAG, "loadPage cookies = " + cookies);				
+		try {
+			login(url, user, pass, cookies);
+			String data = null;
+
+			HttpURLConnection connection = createConnection(data, url, cookies, "GET");
 
 			BufferedReader rd = null;
 			try {
@@ -55,35 +80,6 @@ public class TymyPageLoader {
 
 			rd.close();
 			connection.disconnect();						
-		}
-		catch (Exception e) {
-			Log.v(TAG, e.toString());
-			e.printStackTrace(System.out);
-		}
-		return output.toString();
-	}
-
-	public String login(final String url, final String user, final String pass, StringBuilder cookies) {
-
-		StringBuilder output = new StringBuilder(); 
-		try {
-			String data = null;
-			DataOutputStream wr;
-			if (cookies.toString() == "") {
-				Log.v(TAG, "cookies = \"\"");				
-				data = setFormData(user, pass);
-
-				//			Log.v(TAG,"Debug: " + user + pass + tym);
-				HttpURLConnection connection = createConnection(data, url + "/index.php", cookies, "POST");
-
-				wr = new DataOutputStream(connection.getOutputStream ());
-				wr.writeBytes(data);
-				wr.flush();
-				wr.close();
-
-				cookies.append(extractCookies(connection));               
-				connection.disconnect();						
-			}
 		}
 		catch (Exception e) {
 			Log.v(TAG, e.toString());
@@ -144,51 +140,6 @@ public class TymyPageLoader {
 		}
 	}
 
-	public String loadMainPage(String url, String user, String pass,
-			StringBuilder cookies) {
-		// TODO Auto-generated method stub
-		StringBuilder output = new StringBuilder(); 
-		try {
-			String data = null;
-			DataOutputStream wr;
-			if (cookies.toString() == "") {
-				Log.v(TAG, "cookies = \"\"");				
-				data = setFormData(user, pass);
-
-				//			Log.v(TAG,"Debug: " + user + pass + tym);
-				HttpURLConnection connection = createConnection(data, url + "/index.php", cookies, "POST");
-
-				wr = new DataOutputStream(connection.getOutputStream ());
-				wr.writeBytes(data);
-				wr.flush();
-				wr.close();
-
-				cookies.append(extractCookies(connection));               
-			}
-
-			HttpURLConnection connection = createConnection(data, url + "/index.php", cookies, "GET");
-
-			BufferedReader rd = null;
-			try {
-				rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-				String line;
-				while ((line = rd.readLine()) != null) {
-					output.append(line);
-				}
-			} catch (Exception e) {
-				Log.v(TAG, e.toString());
-				e.printStackTrace(System.out);
-			}			
-
-			rd.close();
-			connection.disconnect();						
-		}
-		catch (Exception e) {
-			Log.v(TAG, e.toString());
-			e.printStackTrace(System.out);
-		}
-		return output.toString();		
-	}
 
 }
 
