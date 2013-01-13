@@ -27,14 +27,14 @@ import android.widget.Toast;
 public class TymyList extends ListActivity {
 	TextView title;
 	private static final String TAG = "TymyReader";
-	final String TYM = "name";
-	final String NEW = "new";
-	private String[] from = new String[] {TYM, NEW};
+	final String ONE = "one";
+	final String TWO = "two";
+	private String[] from = new String[] {ONE, TWO};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
 	private TymPref tymPref = new TymPref("pd.tymy.cz", "HERA", "bistromat", "1", "kecarna");
 	private ArrayList<TymPref> tymPrefList = new ArrayList<TymPref>();
-//	List<HashMap<String, String>> itemsList = new ArrayList<HashMap<String,String>>();
+	//	List<HashMap<String, String>> itemsList = new ArrayList<HashMap<String,String>>();
 
 
 	@Override
@@ -47,7 +47,7 @@ public class TymyList extends ListActivity {
 		}
 		for (TymPref tP : tymPrefList) {
 			new LoginToTym().execute(tP);
-			addTymyList(false, tP.getUrl(), "");			
+			addMapToList(false, tP.getUrl(), "", tymyList);			
 		}
 
 		SimpleAdapter adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
@@ -79,7 +79,7 @@ public class TymyList extends ListActivity {
 		super.onListItemClick(l, v, position, id);
 		Bundle bundle = new Bundle();
 
-		bundle.putSerializable("disPref", tymPrefList.get(position));
+		bundle.putSerializable("tymPref", tymPrefList.get(position));
 		Intent intent = new Intent();
 		intent.setComponent(new ComponentName("com.ph.tymyreader", "com.ph.tymyreader.DiscussionList"));
 		intent.putExtras(bundle);
@@ -95,40 +95,57 @@ public class TymyList extends ListActivity {
 	}
 
 	//	ListView lv = (ListView) findViewById(android.R.id.list);
-//	registerForContextMenu(lv);
-//	lv.setOnItemLongClickListener(new OnItemLongClickListener() {
-//		@Override
-//		public boolean onItemLongClick(AdapterView<?> parent, View lv,
-//				int position, long id) {
-//			Toast t = Toast.makeText(getApplicationContext(), "LongClick position " + position, Toast.LENGTH_LONG);
-//			t.show();
-//			return true;
-//		}
-//	});
+	//	registerForContextMenu(lv);
+	//	lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+	//		@Override
+	//		public boolean onItemLongClick(AdapterView<?> parent, View lv,
+	//				int position, long id) {
+	//			Toast t = Toast.makeText(getApplicationContext(), "LongClick position " + position, Toast.LENGTH_LONG);
+	//			t.show();
+	//			return true;
+	//		}
+	//	});
 
-	private void addTymyList(boolean clear, String caption, String text) {
+	private void addMapToList(boolean clear, String one, String two, List<HashMap<String, String>> list) {
 		HashMap<String, String> map = new HashMap<String, String>();
-		map.put(TYM, caption);
-		map.put(NEW, text);
-		if (clear) { tymyList.clear(); }
-		tymyList.add(map);
+		map.put(ONE, one);
+		map.put(TWO, two);
+		if (clear) { list.clear(); }
+		list.add(map);
 	}
 
 	private class LoginToTym extends AsyncTask<TymPref, Integer, String> {
 
 		@Override
 		protected String doInBackground(TymPref... tymPref) {
-			String t;
+			String t = null;
 			TymyPageLoader page = new TymyPageLoader();
-			t = page.login(tymPref[0].getUrl(), tymPref[0].getUser(), tymPref[0].getPass(), tymPref[0].getCookies());
-			getDis(t);
+			page.login(tymPref[0].getUrl(), tymPref[0].getUser(), tymPref[0].getPass(), tymPref[0].getCookies());
+			t = page.loadMainPage(tymPref[0].getUrl(), tymPref[0].getUser(), tymPref[0].getPass(), tymPref[0].getCookies());
+			for ( String id : getDis(t)){
+				Log.v(TAG, "id :" + id);
+				addMapToList(false, id, "", tymPref[0].getDsList());
+			}
 			return t;
 		}
 
-		private void getDis(String t) {
+		private ArrayList<String> getDis(String t) {
 			// TODO Auto-generated method stub
-			Log.v(TAG, "gatDis");
-			
+			int oauth = 0;
+			int end = 0;
+			ArrayList<String> dis = new ArrayList<String>();
+
+			final String PAT = "id=\"ds_new_";
+			while ((oauth = t.indexOf(PAT, end)) != -1) {				
+				if (oauth != -1) {
+					int start = oauth + PAT.length(); 
+					end = t.indexOf('"', start);
+					String dsId = end == -1 ? t.substring(start) : t
+							.substring(start, end);
+					dis.add(dsId);
+				}
+			}
+			return dis;
 		}
 
 		protected void onProgressUpdate(Integer... progress) {
@@ -148,7 +165,7 @@ public class TymyList extends ListActivity {
 			}
 			tymyList.clear();
 			for (int i = 0; i < 4; i++) {
-				addTymyList(false, tymPref.getUrl(), "");
+				addMapToList(false, tymPref.getUrl(), "", tymyList);
 			}
 
 			if (tymyList != null){
@@ -171,7 +188,7 @@ class TymPref implements Serializable {
 	private String name;
 	private StringBuilder cookies = new StringBuilder();
 	private String id;
-	private List<HashMap<String, Integer>> dsList;
+	private List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
 
 	public TymPref(String tym, String user, String pass, String id) {
 		this.url = tym;
@@ -225,10 +242,10 @@ class TymPref implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public List<HashMap<String, Integer>> getDsList() {
+	public List<HashMap<String, String>> getDsList() {
 		return dsList;
 	}
-	public void setDsList(List<HashMap<String, Integer>> dsList) {
+	public void setDsList(List<HashMap<String, String>> dsList) {
 		this.dsList = dsList;
 	}
 

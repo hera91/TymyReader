@@ -142,6 +142,53 @@ public class TymyPageLoader {
 		for (int i=1; (headerName = conn.getHeaderFieldKey(i))!=null; i++) {
 			System.out.println(headerName + ": " + conn.getHeaderField(i));
 		}
-	}	
+	}
+
+	public String loadMainPage(String url, String user, String pass,
+			StringBuilder cookies) {
+		// TODO Auto-generated method stub
+		StringBuilder output = new StringBuilder(); 
+		try {
+			String data = null;
+			DataOutputStream wr;
+			if (cookies.toString() == "") {
+				Log.v(TAG, "cookies = \"\"");				
+				data = setFormData(user, pass);
+
+				//			Log.v(TAG,"Debug: " + user + pass + tym);
+				HttpURLConnection connection = createConnection(data, url + "/index.php", cookies, "POST");
+
+				wr = new DataOutputStream(connection.getOutputStream ());
+				wr.writeBytes(data);
+				wr.flush();
+				wr.close();
+
+				cookies.append(extractCookies(connection));               
+			}
+
+			HttpURLConnection connection = createConnection(data, url + "/index.php", cookies, "GET");
+
+			BufferedReader rd = null;
+			try {
+				rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String line;
+				while ((line = rd.readLine()) != null) {
+					output.append(line);
+				}
+			} catch (Exception e) {
+				Log.v(TAG, e.toString());
+				e.printStackTrace(System.out);
+			}			
+
+			rd.close();
+			connection.disconnect();						
+		}
+		catch (Exception e) {
+			Log.v(TAG, e.toString());
+			e.printStackTrace(System.out);
+		}
+		return output.toString();		
+	}
+
 }
 

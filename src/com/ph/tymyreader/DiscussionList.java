@@ -28,27 +28,27 @@ public class DiscussionList extends ListActivity {
 	List<HashMap<String, String>> discsList = new ArrayList<HashMap<String,String>>();
 	//	private DiscussionPref disPref = new DiscussionPref("pd.tymy.cz", "HERA", "bistromat", "1", "kecarna");
 	private ArrayList<DiscussionPref> disPrefList = new ArrayList<DiscussionPref>();
-
+	private TymPref tymPref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.discussions_list);
+		
+		tymPref = (TymPref) getIntent().getSerializableExtra("tymPref");
 
-		for (Integer i = 0; i < 4; i++ ){
-			DiscussionPref disPref = new DiscussionPref("pd.tymy.cz", "HERA", "bistromat", Integer.toString(i));
+		for ( HashMap<String, String> dP : tymPref.getDsList()) {
+			DiscussionPref disPref = new DiscussionPref(tymPref.getUrl(), tymPref.getUser(), 
+					tymPref.getPass(), dP.get("one"));
 			disPrefList.add(disPref);
-		}
-		for (DiscussionPref dP : disPrefList) {
-			addDiscsList(false, dP.getName(), "");			
+			addDiscsList(false, dP.get("one"), "");			
 		}
 
 		SimpleAdapter adapter = new SimpleAdapter(this, discsList, R.layout.two_line_list_discs, from, to);
 		setListAdapter(adapter);
 		setTitle("pd.tymy.cz");
 		
-		//		title = (TextView) findViewById(R.id.title);
-		//		title.setText("pd.tymy.cz");
+		setTitle(tymPref.getUrl());
 	}
 
 	@Override
