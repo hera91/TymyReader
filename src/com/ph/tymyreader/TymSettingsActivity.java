@@ -38,7 +38,7 @@ public class TymSettingsActivity extends PreferenceActivity
 
         // Loads the XML preferences file.
         addPreferencesFromResource(R.xml.tym_preference);
-        setTitle(tymPref.getUrl() + "settings");
+        setTitle(tymPref.getUrl() + " settings");
         serverPref = (EditTextPreference) getPreferenceScreen().findPreference(getString(R.string.server));
     }
 
