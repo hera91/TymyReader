@@ -8,7 +8,6 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -23,23 +22,24 @@ import android.widget.Toast;
 // TODO doplnit nacteni cookies jakmile vyberu tuhle stranku a pak docilit toho aby cookies DisView uz cookies dostalo
 
 public class TymyList extends ListActivity {
-	private static final String TAG = "TymyReader";
+	//private static final String TAG = "TymyReader";
 	final String ONE = "one";
 	final String TWO = "two";
 	private String[] from = new String[] {ONE, TWO};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	private List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
-	private TymPref tymPref1 = new TymPref("pd.tymy.cz", "HERA", "bistromat");
-	private TymPref tymPref2 = new TymPref("dg.tymy.cz", "admin", "bistromat");
+//	private TymPref tymPref1 = new TymPref("pd.tymy.cz", "HERA", "bistromat");
+//	private TymPref tymPref2 = new TymPref("dg.tymy.cz", "admin", "bistromat");
 	private ArrayList<TymPref> tymPrefList = new ArrayList<TymPref>();
+	private TymConfigManager cfg = new TymConfigManager(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tymy_list);
 
-		tymPrefList.add(tymPref1);
-		tymPrefList.add(tymPref2);
+		tymPrefList.add(cfg.loadCfg("pd.tymy.cz"));
+//		tymPrefList.add(cfg.loadCfg("dg.tymy.cz"));
 
 		// Fill list of tymy
 		for (TymPref tP : tymPrefList) {
@@ -52,11 +52,14 @@ public class TymyList extends ListActivity {
 		
 		registerForContextMenu(getListView());
 		
-		ConfigManager cfg = new ConfigManager(this, "global");
-		cfg.stringPref = "Test";
-		cfg.boolPref = true;
-		cfg.saveCfg();
-		Toast.makeText(this, cfg.stringPref + cfg.boolPref, Toast.LENGTH_LONG).show();
+	}
+	
+	@Override
+	public void onPause () {
+		super.onPause();
+		for (TymPref tP : tymPrefList) {
+			cfg.saveCfg(tP);
+		}
 	}
 
 	// **************  Activity menu  ************** //
@@ -152,21 +155,23 @@ public class TymyList extends ListActivity {
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
 		protected void onPostExecute(String input) {
+			Toast.makeText(getApplicationContext(), "discussions list updated", Toast.LENGTH_LONG).show();
 		}
 
 		// TODO dodelat zobrazeni novych prispevku
 		private String updateTymDis(TymPref... tymPref) {
 			String mainPage = null;
+			
 			StringBuilder cookies = tymPref[0].getCookies(); 
 			TymyPageLoader page = new TymyPageLoader();
 			mainPage = page.loadMainPage(tymPref[0].getUrl(), tymPref[0].getUser(), tymPref[0].getPass(), tymPref[0].getCookies());
 			tymPref[0].setCookies(cookies);
-			Log.v(TAG, "updateTymDis login cookies " + tymPref[0].getCookies().toString());
 			TymyParser parser = new TymyParser(mainPage);
-			for ( String id : parser.getDisArray(mainPage)) {
-				//Log.v(TAG, "id :" + id);
-				addMapToList(false, id, "unknown", tymPref[0].getDsList());
+			for ( String dsDesc : parser.getDisArray(mainPage)) {
+				addMapToList(false, dsDesc, getString(R.string.unknown), tymPref[0].getDsList());
 			}
+			TymConfigManager cfg = new TymConfigManager(TymyList.this);
+			cfg.saveCfg(tymPref[0]);
 			return mainPage;
 		}
 	}
@@ -178,9 +183,9 @@ class TymPref implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String url;
-	private String user;			
-	private String pass;
+	private String url = null;
+	private String user = null;			
+	private String pass = null;
 	private StringBuilder cookies = new StringBuilder();
 	private List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
 
@@ -190,6 +195,13 @@ class TymPref implements Serializable {
 		this.user = user;
 	}
 
+	public TymPref(String tym, String user, String pass, List<HashMap<String, String>> dsList) {
+		this.url = tym;
+		this.pass = pass;
+		this.user = user;
+		this.dsList = dsList;
+	}
+	
 	public String getUrl() {
 		return url;
 	}
