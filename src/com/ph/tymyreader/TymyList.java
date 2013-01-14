@@ -15,10 +15,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 // TODO doplnit nacteni cookies jakmile vyberu tuhle stranku a pak docilit toho aby cookies DisView uz cookies dostalo
 
@@ -37,7 +37,7 @@ public class TymyList extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.discussions_list);
+		setContentView(R.layout.tymy_list);
 
 		tymPrefList.add(tymPref1);
 		tymPrefList.add(tymPref2);
@@ -50,28 +50,11 @@ public class TymyList extends ListActivity {
 		// Set-up adapter for tymyList
 		SimpleAdapter adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
 		setListAdapter(adapter);
-
-		// Set-up long-click listener
-		ListView lv = (ListView) findViewById(android.R.id.list);
-		registerForContextMenu(lv);
-		lv.setOnItemLongClickListener(new OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View lv, int position, long id) {
-				showTymSettings(position);
-				return true;
-			}
-		});
+		
+		registerForContextMenu(getListView());
 	}
 
-	protected void showTymSettings(int position) {
-		// TODO Auto-generated method stub
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("tymPref", tymPrefList.get(position));
-	    Intent intent = new Intent(this, TymSettingsActivity.class);
-		intent.putExtras(bundle);
-	    startActivity(intent);				
-	}
-
+	// **************  Activity menu  ************** //
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -90,11 +73,7 @@ public class TymyList extends ListActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	private void showSettings() {
-	    Intent intent = new Intent(this, GlobalSettingsActivity.class);
-	    startActivity(intent);		
-	}
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
@@ -104,14 +83,45 @@ public class TymyList extends ListActivity {
 		intent.putExtras(bundle);
 		startActivity(intent);				
 	}
-	
+
+	// **************  Context menu  ************** //
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.discussions_list_context_menu, menu);
+		inflater.inflate(R.menu.tymy_list_context_menu, menu);
 	}
-
+	
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		switch(item.getItemId()) {
+		case R.id.menu_context_edit:
+			Toast.makeText(this, "You have chosen the " + getResources().getString(R.string.edit) +
+					" context menu option for " + tymPrefList.get((int)info.id).getUrl(),
+					Toast.LENGTH_SHORT).show();
+			showTymSettings((int)info.id);
+			return true;
+		default:
+			return super.onContextItemSelected(item);
+		}
+	}
+	
+	// *****************  Setting  ******************** //
+	private void showSettings() {
+		Intent intent = new Intent(this, GlobalSettingsActivity.class);
+		startActivity(intent);		
+	}
+	
+	protected void showTymSettings(int position) {
+		// TODO Auto-generated method stub
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("tymPref", tymPrefList.get(position));
+		Intent intent = new Intent(this, TymSettingsActivity.class);
+		intent.putExtras(bundle);
+		startActivity(intent);				
+	}
+	
+	// ******************  Private methods  ********************* //
 	private void addMapToList(boolean clear, String one, String two, List<HashMap<String, String>> list) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put(ONE, one);
@@ -120,6 +130,8 @@ public class TymyList extends ListActivity {
 		list.add(map);
 	}
 
+	//*************************************************************//
+	//*******************  AsysncTask  ****************************//
 	private class LoginToTym extends AsyncTask<TymPref, Integer, String> {
 
 		@Override
@@ -153,6 +165,7 @@ public class TymyList extends ListActivity {
 		}
 	}
 }
+
 
 class TymPref implements Serializable {
 	/**

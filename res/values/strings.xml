@@ -3,7 +3,8 @@
 
     <string name="app_name">TymyCz</string>
     <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
+    <string name="settings">Settings</string>
+    <string name="edit">Edit</string>
     <string name="loading">Loading..</string>
     <string name="title_activity_discussion_list">DiscussionList</string>
     <string name="discussion_list">Discussions List</string>
@@ -15,5 +16,9 @@
     <string name="foo">foo</string>
     <string name="server">Server</string>
     <string name="server_message"></string>
+
+    <string-array name="tymy_context_menu">
+        <item>Edit</item>
+    </string-array>
 
 </resources>

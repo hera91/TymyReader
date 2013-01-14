@@ -9,16 +9,11 @@ import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
-// TODO doplnit nacteni cookies jakmile vyberu tuhle stranku a pak docilit toho aby cookies DisView uz cookies dostalo
 
 public class DiscussionList extends ListActivity {
 	TextView title;
@@ -70,14 +65,6 @@ public class DiscussionList extends ListActivity {
 		startActivity(intent);
 	}
 	
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-	                                ContextMenuInfo menuInfo) {
-	    super.onCreateContextMenu(menu, v, menuInfo);
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.discussions_list_context_menu, menu);
-	}
-
 	private void addDiscsList(boolean clear, String caption, String text) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put(NAME, caption);
