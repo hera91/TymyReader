@@ -68,6 +68,6 @@ public class TymSettingsActivity extends PreferenceActivity
         // Sets refreshDisplay to true so that when the user returns to the main
         // activity, the display refreshes to reflect the new settings.
         TymyList.refreshDisplay = true;
-        serverPref.setSummary("Current value is " + sharedPreferences.getString(key, ""));
+        serverPref.setSummary(sharedPreferences.getString(key, ""));
     }
 }
