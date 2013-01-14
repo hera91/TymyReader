@@ -61,13 +61,9 @@ public class TymSettingsActivity extends PreferenceActivity
                 .getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    // TODO doplnit zobrazeni aktualni hodnoty
     // Fires when the user changes a preference.
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        // Sets refreshDisplay to true so that when the user returns to the main
-        // activity, the display refreshes to reflect the new settings.
-        TymyList.refreshDisplay = true;
         serverPref.setSummary(sharedPreferences.getString(key, ""));
     }
 }

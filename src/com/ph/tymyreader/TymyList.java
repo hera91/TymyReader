@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 public class TymyList extends ListActivity {
 	private static final String TAG = "TymyReader";
-	public static boolean refreshDisplay;
 	final String ONE = "one";
 	final String TWO = "two";
 	private String[] from = new String[] {ONE, TWO};
