@@ -51,6 +51,12 @@ public class TymyList extends ListActivity {
 		setListAdapter(adapter);
 		
 		registerForContextMenu(getListView());
+		
+		ConfigManager cfg = new ConfigManager(this, "global");
+		cfg.stringPref = "Test";
+		cfg.boolPref = true;
+		cfg.saveCfg();
+		Toast.makeText(this, cfg.stringPref + cfg.boolPref, Toast.LENGTH_LONG).show();
 	}
 
 	// **************  Activity menu  ************** //
