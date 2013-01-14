@@ -11,9 +11,9 @@ import android.text.Html;
  */
 public class TymyParser {
 
-	//	private final String TAG = "TymyReader";
+	//private final String TAG = "TymyReader";
 	private String s = null;
-	private Integer counter = 0; 
+	private Integer position = 0; 
 
 	public TymyParser(final String inputString) {
 		this.s = inputString;
@@ -66,39 +66,55 @@ public class TymyParser {
 	}
 
 	/**
-	 * extract text between the start and stop tag: &lt;tag&gt;..&lt;/tag&gt;
+	 * extract text and the start and stop tag: &lt;tag&gt;..&lt;/tag&gt;
 	 * 
 	 * @param tagName	Name of tag
-	 * @return a string representation of content of tag 
+	 * @return a string representation of whole tag 
 	 */
-	public String getWholeTag (final String tagName, final String cls) {
+	public String getWholeTag (final String tagName, final String attr) {
 		String out = "";
 		int start, end;
 
-		s = s.substring(counter);
-		start = startTag(tagName, cls);
-		end = stopTag(tagName, cls);
+		s = s.substring(position);
+		start = startTag(tagName, attr);
+		end = stopTag(tagName, attr);
 		if (start != -1) {
 			if (end != -1) {
 				out = s.substring(start, end + 1);
-				counter = end + 1;
+				position = end + 1;
 			}		
 			else {
 				out = s.substring(start);
-				counter = s.length();
+				position = s.length();
 			}		
 		}
 		return out;		
 	}
 
+	/**
+	 * extract text between the start and stop tag: &lt;tag&gt;..&lt;/tag&gt;
+	 * 
+	 * @param tagName	Name of tag
+	 * @param attr		attribute of tag
+	 * @return a string representation of content of tag 
+	 */
+	public String getBodyOfTag (final String tagName, final String attr) {
+		String out = "";
+
+		out = getWholeTag(tagName, attr);
+		int x = out.indexOf('>') + 1;
+		int y = out.lastIndexOf('<');
+		return out.substring(x, y);
+	}
+
 	public String getRawText () {
-		s = s.substring(counter);
+		s = s.substring(position);
 		return s;
 	}
 
 	@SuppressWarnings("unused")
-	private int getCounter () {
-		return counter;
+	private int getPosition () {
+		return position;
 	}
 
 
@@ -119,12 +135,20 @@ public class TymyParser {
 			return null;
 		}
 	}
-	
+
 	// TODO dodelat automaticke vytazeni jmen diskusi
+	/**
+	 * detDisArray parse page and try to find pairs discussion ID and NAME. Returns
+	 * String Array with String of "ID:NAME"
+	 * 
+	 * @param mainPage tymy main page
+	 * @return String Array of pairs "ID:NAME"
+	 */
 	public ArrayList<String> getDisArray(String mainPage) {
 		int oauth = 0;
 		int end = 0;
 		ArrayList<String> dis = new ArrayList<String>();
+		TymyParser mainParser = new TymyParser(mainPage);
 
 		final String PAT = "id=\"ds_new_";
 		while ((oauth = mainPage.indexOf(PAT, end)) != -1) {				
@@ -132,7 +156,8 @@ public class TymyParser {
 				int start = oauth + PAT.length(); 
 				end = mainPage.indexOf('"', start);
 				String dsId = end == -1 ? mainPage.substring(start) : mainPage.substring(start, end);
-				dis.add(dsId);
+				String dsName = mainParser.getBodyOfTag("a", String.format("page=discussion&amp;id=%s&amp;level=101", dsId));
+				dis.add(dsId + ":" + dsName);
 			}
 		}
 		return dis;

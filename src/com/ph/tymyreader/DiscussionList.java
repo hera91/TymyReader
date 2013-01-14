@@ -34,9 +34,9 @@ public class DiscussionList extends ListActivity {
 
 		for ( HashMap<String, String> dP : tymPref.getDsList()) {
 			DiscussionPref disPref = new DiscussionPref(tymPref.getUrl(), tymPref.getUser(), 
-					tymPref.getPass(), tymPref.getCookies(), dP.get("one"));
+					tymPref.getPass(), tymPref.getCookies(), getDsId(dP.get("one")), getDsName(dP.get("one")));
 			disPrefList.add(disPref);
-			addDiscsList(false, dP.get("one"), "");			
+			addDiscsList(false, getDsName(dP.get("one")), dP.get("two"));			
 		}
 
 		SimpleAdapter adapter = new SimpleAdapter(this, discsList, R.layout.two_line_list_discs, from, to);
@@ -72,6 +72,16 @@ public class DiscussionList extends ListActivity {
 		if (clear) { discsList.clear(); }
 		discsList.add(map);
 	}
+	
+	private String getDsId(String dsDesc) {
+		// TODO Auto-generated method stub
+		return dsDesc.split(":")[0];
+	}
+	
+	private String getDsName(String dsDesc) {
+		// TODO Auto-generated method stub
+		return dsDesc.split(":")[1];
+	}
 
 }
 
@@ -83,9 +93,9 @@ class DiscussionPref implements Serializable {
 	private String url;
 	private String user;			
 	private String pass;
-	private String name;
 	private StringBuilder cookies = new StringBuilder();
 	private String id;
+	private String name;
 	private List<HashMap<String, String>> dsItems;
 
 	public DiscussionPref(String tym, String user, String pass, StringBuilder cookies, String id) {

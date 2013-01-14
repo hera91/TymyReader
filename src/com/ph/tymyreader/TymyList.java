@@ -154,6 +154,7 @@ public class TymyList extends ListActivity {
 		protected void onPostExecute(String input) {
 		}
 
+		// TODO dodelat zobrazeni novych prispevku
 		private String updateTymDis(TymPref... tymPref) {
 			String mainPage = null;
 			StringBuilder cookies = tymPref[0].getCookies(); 
@@ -164,7 +165,7 @@ public class TymyList extends ListActivity {
 			TymyParser parser = new TymyParser(mainPage);
 			for ( String id : parser.getDisArray(mainPage)) {
 				//Log.v(TAG, "id :" + id);
-				addMapToList(false, id, "", tymPref[0].getDsList());
+				addMapToList(false, id, "unknown", tymPref[0].getDsList());
 			}
 			return mainPage;
 		}
