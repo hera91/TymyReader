@@ -6,96 +6,98 @@
     tools:context=".AddTymyActivity" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/add_tymy_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="@dimen/smalltGap"
-        android:text="Large Text"
+        android:text="@string/add_tymy_heading"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/add_tymy_url_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView1"
-        android:text="Medium Text"
+        android:layout_below="@+id/add_tymy_heading"
+        android:text="@string/new_url_text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/add_tymy_url_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/add_tymy_url_text"
         android:layout_marginBottom="@dimen/smalltGap"
         android:ems="10"
-        android:inputType="text" >
+        android:inputType="textUri" >
 
         <requestFocus />
     </EditText>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/add_tymy_user_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editText1"
-        android:text="Medium Text"
+        android:layout_below="@+id/add_tymy_url_edit"
+        android:text="@string/new_user_text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/add_tymy_user_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/add_tymy_user_text"
         android:layout_marginBottom="@dimen/smalltGap"
         android:ems="10"
         android:inputType="text" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/add_tymy_pass_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editText2"
-        android:text="Medium Text"
+        android:layout_below="@+id/add_tymy_user_edit"
+        android:text="@string/new_pass_text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/add_tymy_pass_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView4"
+        android:layout_below="@+id/add_tymy_pass_text"
         android:ems="10"
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button_save"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button1"
-        android:layout_alignBottom="@+id/button1"
+        android:layout_alignBaseline="@+id/button_cancel"
+        android:layout_alignBottom="@+id/button_cancel"
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/smalltGap"
-        android:text="Button" />
+        android:onClick="onClick"
+        android:text="@string/button_save" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/button_cancel"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editText3"
+        android:layout_below="@+id/add_tymy_pass_edit"
         android:layout_margin="@dimen/smalltGap"
-        android:text="Button" />
+        android:onClick="onClick"
+        android:text="@string/button_cancel" />
 
 </RelativeLayout>

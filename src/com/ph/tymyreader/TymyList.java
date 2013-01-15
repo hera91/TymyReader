@@ -39,7 +39,7 @@ public class TymyList extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tymy_list);
 
-//		tymPrefList.add(cfg.loadCfg("pd.tymy.cz"));
+		// TODO vyresit zakladani novych tymu a plneni pole diskusi
 		tymPrefList.add(tymPref2);
 
 //		tymPrefList.add(cfg.loadCfg("dg.tymy.cz"));
@@ -111,7 +111,7 @@ public class TymyList extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.menu_context_edit:
-			Toast.makeText(this, "You have chosen the " + getResources().getString(R.string.edit) +
+			Toast.makeText(this, "You have chosen the " + getResources().getString(R.string.menu_context_edit) +
 					" context menu option for " + tymPrefList.get((int)info.id).getUrl(),
 					Toast.LENGTH_SHORT).show();
 			showTymSettings((int)info.id);

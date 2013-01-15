@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class AddTymyActivity extends Activity {
 
+	private TymConfigManager cfg = new TymConfigManager(this);
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -23,19 +28,27 @@ public class AddTymyActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-//		switch (item.getItemId()) {
-//		case android.R.id.home:
-//			// This ID represents the Home or Up button. In the case of this
-//			// activity, the Up button is shown. Use NavUtils to allow users
-//			// to navigate up one level in the application structure. For
-//			// more details, see the Navigation pattern on Android Design:
-//			//
-//			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-//			//
-//			NavUtils.navigateUpFromSameTask(this);
-//			return true;
-//		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void onClick (View v) {
+		switch (v.getId()) {
+		case R.id.button_save:
+			saveTymy();
+		case R.id.button_cancel:
+			finish();
+		}
+	}
+
+	private void saveTymy() {
+		// TODO Auto-generated method stub
+		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
+		EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
+		EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
+		Toast.makeText(this, url.getText() + ", " + user.getText() + ", " + pass.getText(), Toast.LENGTH_SHORT).show();
+		TymPref tymPref = new TymPref(url.getText().toString(), user.getText().toString(), pass.getText().toString());
+		cfg.saveCfg(tymPref);
+		finish();
+	}
+	
 }
