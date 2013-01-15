@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-public class AddTymyActivity extends Activity {
+public class EditTymyActivity extends Activity {
 
 	private TymConfigManager cfg = new TymConfigManager(this);
 

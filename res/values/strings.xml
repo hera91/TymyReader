@@ -17,6 +17,9 @@
     <string name="server_message"></string>
     <string name="unknown">unknown</string>
     <string name="coming_soon">Coming soon..</string>
+    <string name="no_tymy">No tymy defined</string>
+    <string name="no_tymy_hint">press menu button to add new tymy</string>
+    <string name="no_discussion">No discussion found..</string>
     
     <string name="menu_add_tymy">Add tymy</string>
     <string name="menu_settings">Settings</string>

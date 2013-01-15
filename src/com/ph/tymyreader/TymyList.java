@@ -34,7 +34,8 @@ public class TymyList extends ListActivity {
 	private TymPref tymPref2 = new TymPref("dg.tymy.cz", "admin", "bistromat");
 	private ArrayList<TymPref> tymPrefList = new ArrayList<TymPref>();
 	private TymConfigManager cfg = new TymConfigManager(this);
-
+	private SimpleAdapter adapter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,16 +48,19 @@ public class TymyList extends ListActivity {
 
 		// Fill list of tymy
 		for (TymPref tP : tymPrefList) {
-			Log.v(TAG,"Login to tymy " + tP.getUrl());
+//			Log.v(TAG,"Login to tymy " + tP.getUrl());
 			new LoginToTym().execute(tP);
 			addMapToList(false, tP.getUrl(), "onCreate", tymyList);			
 		}
+		if (tymPrefList.isEmpty()) {
+			addMapToList(false, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
+		}
+
 		// Set-up adapter for tymyList
-		SimpleAdapter adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
+		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
 		setListAdapter(adapter);
-		
-		registerForContextMenu(getListView());
-		
+
+		registerForContextMenu(getListView());		
 	}
 	
 	@Override
@@ -93,6 +97,10 @@ public class TymyList extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
+		if ((tymPrefList.size() == 0) || tymPrefList.get(position).getDsList().isEmpty()) {
+			Toast.makeText(this, getString(R.string.no_discussion), Toast.LENGTH_LONG).show();
+			return;
+		}
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("tymPref", tymPrefList.get(position));
 		Intent intent = new Intent(this, DiscussionList.class);
@@ -112,9 +120,6 @@ public class TymyList extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.menu_context_edit:
-			Toast.makeText(this, "You have chosen the " + getResources().getString(R.string.menu_context_edit) +
-					" context menu option for " + tymPrefList.get((int)info.id).getUrl(),
-					Toast.LENGTH_SHORT).show();
 			showTymSettings((int)info.id);
 			return true;
 		default:
@@ -131,13 +136,13 @@ public class TymyList extends ListActivity {
 	protected void showTymSettings(int position) {
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("tymPref", tymPrefList.get(position));
-		Intent intent = new Intent(this, TymSettingsActivity.class);
+		Intent intent = new Intent(this, AppSettingsActivity.class);
 		intent.putExtras(bundle);
 		startActivity(intent);				
 	}
 	
 	private void showAddTymy() {
-		Intent intent = new Intent(this, AddTymyActivity.class);
+		Intent intent = new Intent(this, EditTymyActivity.class);
 		startActivity(intent);		
 	}
 
@@ -153,10 +158,10 @@ public class TymyList extends ListActivity {
 
 	//*************************************************************//
 	//*******************  AsysncTask  ****************************//
-	private class LoginToTym extends AsyncTask<TymPref, Integer, String> {
+	private class LoginToTym extends AsyncTask<TymPref, Integer, TymPref> {
 
 		@Override
-		protected String doInBackground(TymPref... tymPref) {			
+		protected TymPref doInBackground(TymPref... tymPref) {			
 			return updateTymDis(tymPref);
 		}
 
@@ -167,12 +172,23 @@ public class TymyList extends ListActivity {
 
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
-		protected void onPostExecute(String input) {
+		protected void onPostExecute(TymPref tymPref) {
 			Toast.makeText(getApplicationContext(), "discussions list updated", Toast.LENGTH_LONG).show();
+//			int index = tymPrefList.indexOf(tymPref);
+//			StringBuilder s = new StringBuilder();
+			for (HashMap<String, String> dsDesc : tymPref.getDsList()) {
+				Log.v(TAG, "onPostExecute 3 : " + tymPref.getUrl() + " " + dsDesc.get(ONE));
+			}
+//			HashMap<String, String> map = new HashMap<String, String>();
+//			map.put(ONE, tymPref.getUrl());
+//			map.put(TWO, s.toString());
+//			tymyList.set(index, map);
+
+			adapter.notifyDataSetChanged();
 		}
 
 		// TODO dodelat zobrazeni novych prispevku
-		private String updateTymDis(TymPref... tymPref) {
+		private TymPref updateTymDis(TymPref... tymPref) {
 			String mainPage = null;
 			
 			StringBuilder cookies = tymPref[0].getCookies(); 
@@ -180,12 +196,12 @@ public class TymyList extends ListActivity {
 			mainPage = page.loadMainPage(tymPref[0].getUrl(), tymPref[0].getUser(), tymPref[0].getPass(), tymPref[0].getCookies());
 			tymPref[0].setCookies(cookies);
 			TymyParser parser = new TymyParser(mainPage);
+			boolean isFirst = true; // clear map in first cycle
 			for ( String dsDesc : parser.getDisArray(mainPage)) {
-				addMapToList(false, dsDesc, getString(R.string.unknown), tymPref[0].getDsList());
+				addMapToList(isFirst, dsDesc, getString(R.string.unknown), tymPref[0].getDsList());
+				isFirst = false;
 			}
-			TymConfigManager cfg = new TymConfigManager(TymyList.this);
-			cfg.saveCfg(tymPref[0]);
-			return mainPage;
+			return tymPref[0];
 		}
 	}
 }

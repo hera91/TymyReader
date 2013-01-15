@@ -38,11 +38,11 @@
             android:label="@string/title_global_settings_activity" >
         </activity>
         <activity
-            android:name="com.ph.tymyreader.TymSettingsActivity"
+            android:name="com.ph.tymyreader.AppSettingsActivity"
             android:label="@string/title_tym_settings_activity" >
         </activity>
         <activity
-            android:name="com.ph.tymyreader.AddTymyActivity"
+            android:name="com.ph.tymyreader.EditTymyActivity"
             android:label="@string/title_activity_add_tymy" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
