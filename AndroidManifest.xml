@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ph.tymyreader"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="0.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -40,6 +40,13 @@
         <activity
             android:name="com.ph.tymyreader.TymSettingsActivity"
             android:label="@string/title_tym_settings_activity" >
+        </activity>
+        <activity
+            android:name="com.ph.tymyreader.AddTymyActivity"
+            android:label="@string/title_activity_add_tymy" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ph.tymyreader.TymyList" />
         </activity>
     </application>
 

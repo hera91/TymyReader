@@ -52,7 +52,7 @@ public class DiscussionList extends ListActivity {
 		getMenuInflater().inflate(R.menu.activity_discusion_list, menu);
 		return true;
 	}
-
+		
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);

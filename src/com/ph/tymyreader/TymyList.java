@@ -8,6 +8,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -22,14 +23,14 @@ import android.widget.Toast;
 // TODO doplnit nacteni cookies jakmile vyberu tuhle stranku a pak docilit toho aby cookies DisView uz cookies dostalo
 
 public class TymyList extends ListActivity {
-	//private static final String TAG = "TymyReader";
+	private static final String TAG = "TymyReader";
 	final String ONE = "one";
 	final String TWO = "two";
 	private String[] from = new String[] {ONE, TWO};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	private List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
 //	private TymPref tymPref1 = new TymPref("pd.tymy.cz", "HERA", "bistromat");
-//	private TymPref tymPref2 = new TymPref("dg.tymy.cz", "admin", "bistromat");
+	private TymPref tymPref2 = new TymPref("dg.tymy.cz", "admin", "bistromat");
 	private ArrayList<TymPref> tymPrefList = new ArrayList<TymPref>();
 	private TymConfigManager cfg = new TymConfigManager(this);
 
@@ -38,11 +39,14 @@ public class TymyList extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tymy_list);
 
-		tymPrefList.add(cfg.loadCfg("pd.tymy.cz"));
+//		tymPrefList.add(cfg.loadCfg("pd.tymy.cz"));
+		tymPrefList.add(tymPref2);
+
 //		tymPrefList.add(cfg.loadCfg("dg.tymy.cz"));
 
 		// Fill list of tymy
 		for (TymPref tP : tymPrefList) {
+			Log.v(TAG,"Login to tymy " + tP.getUrl());
 			new LoginToTym().execute(tP);
 			addMapToList(false, tP.getUrl(), "onCreate", tymyList);			
 		}
@@ -62,7 +66,7 @@ public class TymyList extends ListActivity {
 		}
 	}
 
-	// **************  Activity menu  ************** //
+	// **************  Activity Option menu  ************** //
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -76,6 +80,9 @@ public class TymyList extends ListActivity {
 		switch (item.getItemId()) {
 		case R.id.menu_settings:
 			showSettings();
+			return true;
+		case R.id.menu_add_tymy:
+			showAddTymy();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -121,13 +128,18 @@ public class TymyList extends ListActivity {
 	}
 	
 	protected void showTymSettings(int position) {
-		// TODO Auto-generated method stub
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("tymPref", tymPrefList.get(position));
 		Intent intent = new Intent(this, TymSettingsActivity.class);
 		intent.putExtras(bundle);
 		startActivity(intent);				
 	}
+	
+	private void showAddTymy() {
+		Intent intent = new Intent(this, AddTymyActivity.class);
+		startActivity(intent);		
+	}
+
 	
 	// ******************  Private methods  ********************* //
 	private void addMapToList(boolean clear, String one, String two, List<HashMap<String, String>> list) {

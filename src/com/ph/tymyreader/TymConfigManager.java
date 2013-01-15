@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 public class TymConfigManager {
-	private final static String TAG="TymyReader";
+	private final static String TAG = "TymyReader";
 	private static final String ONE = "one";
 	private static final String TWO = "two";
 	private List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();

@@ -9,7 +9,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 // TODO Zobecnit nacitaki stranek, aby umely pracovat s vice strankami a nebylo jen na tahani diskuse
 
@@ -75,8 +77,20 @@ public class DiscussionView extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+		getMenuInflater().inflate(R.menu.activity_discussion_view, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.menu_post:
+			Toast.makeText(this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
