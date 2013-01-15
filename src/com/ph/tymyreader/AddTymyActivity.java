@@ -2,18 +2,17 @@ package com.ph.tymyreader;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
-import android.text.InputType;
 
 public class AddTymyActivity extends Activity {
 
 	private TymConfigManager cfg = new TymConfigManager(this);
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,5 +64,5 @@ public class AddTymyActivity extends Activity {
 		cfg.saveCfg(tymPref);
 		finish();
 	}
-	
+
 }
