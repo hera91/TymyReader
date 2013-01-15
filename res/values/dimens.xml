@@ -6,5 +6,6 @@
     <dimen name="listChildMarginBottom">4dip</dimen>
     <dimen name="listChildHeight">20dip</dimen>
     <dimen name="smalltGap">10dip</dimen>
+    <dimen name="small_text">14sp</dimen>
 
 </resources>

@@ -30,5 +30,6 @@
     <string name="new_url_text">server (e.g. pd.tymy.cz)</string>
     <string name="new_user_text">User</string>
     <string name="new_pass_text">Password</string>
-
+    <string name="show_pass">show password</string>
+    
 </resources>

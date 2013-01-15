@@ -18,7 +18,7 @@ public class AddTymyActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_tymy);
-		// Show the Up button in the action bar.
+		showPass(); // if checkbox is checked
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class AddTymyActivity extends Activity {
 	}
 
 	private void showPass() {
-		// TODO Auto-generated method stub
+		// TODO nevim pro ale zmena portrait/ladnscape tuhle metodu zblbne ..??
 		CheckBox showPass = (CheckBox) findViewById(R.id.show_pass);
 		EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
 		if (showPass.isChecked()){
@@ -61,7 +61,6 @@ public class AddTymyActivity extends Activity {
 		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
 		EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
 		EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
-		Toast.makeText(this, url.getText() + ", " + user.getText() + ", " + pass.getText(), Toast.LENGTH_SHORT).show();
 		TymPref tymPref = new TymPref(url.getText().toString(), user.getText().toString(), pass.getText().toString());
 		cfg.saveCfg(tymPref);
 		finish();

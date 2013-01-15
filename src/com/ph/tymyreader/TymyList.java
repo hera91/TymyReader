@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+// TODO predelat TymyPref na TymyManager, ktery bude poskytovat vsechny funkce kolem Tymu
 // TODO doplnit nacteni cookies jakmile vyberu tuhle stranku a pak docilit toho aby cookies DisView uz cookies dostalo
 
 public class TymyList extends ListActivity {
