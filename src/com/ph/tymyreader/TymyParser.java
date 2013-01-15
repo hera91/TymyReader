@@ -144,7 +144,7 @@ public class TymyParser {
 	 * @param mainPage tymy main page
 	 * @return String Array of pairs "ID:NAME"
 	 */
-	public ArrayList<String> getDisArray(String mainPage) {
+	public ArrayList<String> getDsArray(String mainPage) {
 		int oauth = 0;
 		int end = 0;
 		ArrayList<String> dis = new ArrayList<String>();

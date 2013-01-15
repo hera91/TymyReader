@@ -21,7 +21,6 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 // TODO predelat TymyPref na TymyManager, ktery bude poskytovat vsechny funkce kolem Tymu
-// TODO doplnit nacteni cookies jakmile vyberu tuhle stranku a pak docilit toho aby cookies DisView uz cookies dostalo
 
 public class TymyList extends ListActivity {
 	private static final String TAG = "TymyReader";
@@ -97,7 +96,7 @@ public class TymyList extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		if ((tymPrefList.size() == 0) || tymPrefList.get(position).getDsList().isEmpty()) {
+		if ((tymPrefList.size() == 0) || tymPrefList.get(position).noDs()) {
 			Toast.makeText(this, getString(R.string.no_discussion), Toast.LENGTH_LONG).show();
 			return;
 		}
@@ -162,7 +161,7 @@ public class TymyList extends ListActivity {
 
 		@Override
 		protected TymPref doInBackground(TymPref... tymPref) {			
-			return updateTymDis(tymPref);
+			return updateTymDs(tymPref);
 		}
 
 		@Override
@@ -188,7 +187,7 @@ public class TymyList extends ListActivity {
 		}
 
 		// TODO dodelat zobrazeni novych prispevku
-		private TymPref updateTymDis(TymPref... tymPref) {
+		private TymPref updateTymDs(TymPref... tymPref) {
 			String mainPage = null;
 			
 			StringBuilder cookies = tymPref[0].getCookies(); 
@@ -197,7 +196,7 @@ public class TymyList extends ListActivity {
 			tymPref[0].setCookies(cookies);
 			TymyParser parser = new TymyParser(mainPage);
 			boolean isFirst = true; // clear map in first cycle
-			for ( String dsDesc : parser.getDisArray(mainPage)) {
+			for ( String dsDesc : parser.getDsArray(mainPage)) {
 				addMapToList(isFirst, dsDesc, getString(R.string.unknown), tymPref[0].getDsList());
 				isFirst = false;
 			}
@@ -260,6 +259,10 @@ class TymPref implements Serializable {
 	}
 	public void setDsList(List<HashMap<String, String>> dsList) {
 		this.dsList = dsList;
+	}
+	
+	public boolean noDs() {
+		return this.dsList.isEmpty();
 	}
 }
 

@@ -21,8 +21,8 @@ public class DiscussionList extends ListActivity {
 	final String NEW = "new";
 	private String[] from = new String[] {NAME, NEW};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
-	List<HashMap<String, String>> discsList = new ArrayList<HashMap<String,String>>();
-	private ArrayList<DiscussionPref> disPrefList = new ArrayList<DiscussionPref>();
+	List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
+	private ArrayList<DiscussionPref> dsPrefList = new ArrayList<DiscussionPref>();
 	private TymPref tymPref;
 
 	@Override
@@ -33,13 +33,13 @@ public class DiscussionList extends ListActivity {
 		tymPref = (TymPref) getIntent().getSerializableExtra("tymPref");
 
 		for ( HashMap<String, String> dP : tymPref.getDsList()) {
-			DiscussionPref disPref = new DiscussionPref(tymPref.getUrl(), tymPref.getUser(), 
+			DiscussionPref dsPref = new DiscussionPref(tymPref.getUrl(), tymPref.getUser(), 
 					tymPref.getPass(), tymPref.getCookies(), getDsId(dP.get("one")), getDsName(dP.get("one")));
-			disPrefList.add(disPref);
-			addDiscsList(false, getDsName(dP.get("one")), dP.get("two"));			
+			dsPrefList.add(dsPref);
+			addDsList(false, getDsName(dP.get("one")), dP.get("two"));			
 		}
 
-		SimpleAdapter adapter = new SimpleAdapter(this, discsList, R.layout.two_line_list_discs, from, to);
+		SimpleAdapter adapter = new SimpleAdapter(this, dsList, R.layout.two_line_list_discs, from, to);
 		setListAdapter(adapter);
 		setTitle("pd.tymy.cz");
 		
@@ -58,19 +58,19 @@ public class DiscussionList extends ListActivity {
 		super.onListItemClick(l, v, position, id);
 		Bundle bundle = new Bundle();
 
-		bundle.putSerializable("disPref", disPrefList.get(position));
+		bundle.putSerializable("dsPref", dsPrefList.get(position));
 		Intent intent = new Intent();
 		intent.setComponent(new ComponentName("com.ph.tymyreader", "com.ph.tymyreader.DiscussionView"));
 		intent.putExtras(bundle);
 		startActivity(intent);
 	}
 	
-	private void addDiscsList(boolean clear, String caption, String text) {
+	private void addDsList(boolean clear, String caption, String text) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put(NAME, caption);
 		map.put(NEW, text);
-		if (clear) { discsList.clear(); }
-		discsList.add(map);
+		if (clear) { dsList.clear(); }
+		dsList.add(map);
 	}
 	
 	private String getDsId(String dsDesc) {

@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 public class DiscussionView extends ListActivity {
 
-//	private DiscussionPref disPref = new DiscussionPref("pd.tymy.cz", "HERA", "bistromat", "1", "kecarna");
-	private DiscussionPref disPref;
+//	private DiscussionPref dsPref = new DiscussionPref("pd.tymy.cz", "HERA", "bistromat", "1", "kecarna");
+	private DiscussionPref dsPref;
 	//private final String TAG = "TymyReader";
 	final String CAP = "caption";
 	final String TEXT = "text";
@@ -34,25 +34,25 @@ public class DiscussionView extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.custom_list_activity_view);
 		
-		disPref = (DiscussionPref) getIntent().getSerializableExtra("disPref");
+		dsPref = (DiscussionPref) getIntent().getSerializableExtra("dsPref");
 
 		final DiscussionPref data = (DiscussionPref) getLastNonConfigurationInstance();
 		if (data == null) {
 			// activity was started
-			setTitle( disPref.getUrl() + " / " + disPref.getName());
+			setTitle( dsPref.getUrl() + " / " + dsPref.getName());
 
-			addItemsList(true, getString(R.string.loading), disPref.getName() + " (" + disPref.getUrl() + ")");
+			addItemsList(true, getString(R.string.loading), dsPref.getName() + " (" + dsPref.getUrl() + ")");
 
-			disPref.setDsItems(itemsList);
+			dsPref.setDsItems(itemsList);
 			SimpleAdapter adapter = new SimpleAdapter(this, itemsList, R.layout.two_line_list_item, from, to);
 			setListAdapter(adapter);
 
-			new DownloadWebpageText(getApplicationContext()).execute(disPref);
+			new DownloadWebpageText(getApplicationContext()).execute(dsPref);
 		} else {
 			// after configuration change
-			disPref = data;
-			setTitle(disPref.getUrl() + " - " + disPref.getName());
-			SimpleAdapter adapter = new SimpleAdapter(this, disPref.getDsItems(),
+			dsPref = data;
+			setTitle(dsPref.getUrl() + " - " + dsPref.getName());
+			SimpleAdapter adapter = new SimpleAdapter(this, dsPref.getDsItems(),
 					R.layout.two_line_list_item, from, to);
 			setListAdapter(adapter);
 		}
@@ -95,7 +95,7 @@ public class DiscussionView extends ListActivity {
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		final DiscussionPref data = disPref;
+		final DiscussionPref data = dsPref;
 		return data;
 	}
 
@@ -108,9 +108,9 @@ public class DiscussionView extends ListActivity {
 		}
 
 		@Override
-		protected String doInBackground(DiscussionPref... disPref) {
+		protected String doInBackground(DiscussionPref... dsPref) {
 			TymyPageLoader page = new TymyPageLoader();
-			return page.loadDisPage(disPref[0].getUrl(), disPref[0].getUser(), disPref[0].getPass(), disPref[0].getCookies(), disPref[0].getId());
+			return page.loadDsPage(dsPref[0].getUrl(), dsPref[0].getUser(), dsPref[0].getPass(), dsPref[0].getCookies(), dsPref[0].getId());
 		}
 
 		protected void onProgressUpdate(Integer... progress) {
@@ -137,8 +137,8 @@ public class DiscussionView extends ListActivity {
 			}
 
 			if (itemsList != null){
-				disPref.setDsItems(itemsList);
-				SimpleAdapter adapter = new SimpleAdapter( context,	disPref.getDsItems(),
+				dsPref.setDsItems(itemsList);
+				SimpleAdapter adapter = new SimpleAdapter( context,	dsPref.getDsItems(),
 						R.layout.two_line_list_item, from, to);
 				setListAdapter(adapter);
 			}

@@ -24,7 +24,7 @@ public class TymyPageLoader {
 		return loadPage(String.format("%s/index.php", url), user, pass, cookies);
 	}
 
-	public String loadDisPage(String url, String user, String pass, StringBuilder cookies, String id) {
+	public String loadDsPage(String url, String user, String pass, StringBuilder cookies, String id) {
 		return loadPage(String.format("%s/index.php?page=discussion&id=%s&level=101", url, id, url), user, pass, cookies);
 	}
 
