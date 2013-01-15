@@ -77,6 +77,28 @@
         android:ems="10"
         android:inputType="textPassword" />
 
+    <CheckBox
+        android:id="@+id/show_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/add_tymy_pass_edit"
+        android:checked="false"
+        android:contentDescription="@string/show_pass"
+        android:onClick="onClick"
+        android:text="@string/show_pass"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/show_pass"
+        android:layout_margin="@dimen/smalltGap"
+        android:onClick="onClick"
+        android:text="@string/button_cancel" />
+    
     <Button
         android:id="@+id/button_save"
         style="?android:attr/buttonStyleSmall"
@@ -88,16 +110,5 @@
         android:layout_margin="@dimen/smalltGap"
         android:onClick="onClick"
         android:text="@string/button_save" />
-
-    <Button
-        android:id="@+id/button_cancel"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/add_tymy_pass_edit"
-        android:layout_margin="@dimen/smalltGap"
-        android:onClick="onClick"
-        android:text="@string/button_cancel" />
 
 </RelativeLayout>

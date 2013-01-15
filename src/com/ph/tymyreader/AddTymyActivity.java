@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.text.InputType;
 
 public class AddTymyActivity extends Activity {
 
@@ -37,7 +39,21 @@ public class AddTymyActivity extends Activity {
 			saveTymy();
 		case R.id.button_cancel:
 			finish();
+		case R.id.show_pass:
+			showPass();
 		}
+	}
+
+	private void showPass() {
+		// TODO Auto-generated method stub
+		CheckBox showPass = (CheckBox) findViewById(R.id.show_pass);
+		EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
+		if (showPass.isChecked()){
+			pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+		} else {
+			pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		}
+		pass.refreshDrawableState();
 	}
 
 	private void saveTymy() {
