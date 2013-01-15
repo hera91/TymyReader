@@ -8,7 +8,6 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -23,7 +22,7 @@ import android.widget.Toast;
 // TODO predelat TymyPref na TymyManager, ktery bude poskytovat vsechny funkce kolem Tymu
 
 public class TymyList extends ListActivity {
-	private static final String TAG = "TymyReader";
+	//private static final String TAG = "TymyReader";
 	final String ONE = "one";
 	final String TWO = "two";
 	private String[] from = new String[] {ONE, TWO};
@@ -49,7 +48,7 @@ public class TymyList extends ListActivity {
 		for (TymPref tP : tymPrefList) {
 //			Log.v(TAG,"Login to tymy " + tP.getUrl());
 			new LoginToTym().execute(tP);
-			addMapToList(false, tP.getUrl(), "onCreate", tymyList);			
+			addMapToList(false, tP.getUrl(), "", tymyList);			
 		}
 		if (tymPrefList.isEmpty()) {
 			addMapToList(false, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
@@ -173,16 +172,6 @@ public class TymyList extends ListActivity {
 		@Override
 		protected void onPostExecute(TymPref tymPref) {
 			Toast.makeText(getApplicationContext(), "discussions list updated", Toast.LENGTH_LONG).show();
-//			int index = tymPrefList.indexOf(tymPref);
-//			StringBuilder s = new StringBuilder();
-			for (HashMap<String, String> dsDesc : tymPref.getDsList()) {
-				Log.v(TAG, "onPostExecute 3 : " + tymPref.getUrl() + " " + dsDesc.get(ONE));
-			}
-//			HashMap<String, String> map = new HashMap<String, String>();
-//			map.put(ONE, tymPref.getUrl());
-//			map.put(TWO, s.toString());
-//			tymyList.set(index, map);
-
 			adapter.notifyDataSetChanged();
 		}
 
