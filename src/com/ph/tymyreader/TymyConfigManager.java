@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-public class TymConfigManager {
+public class TymyConfigManager {
 	private final static String TAG = "TymyReader";
 	private static final String ONE = "one";
 	private static final String TWO = "two";
@@ -16,30 +16,30 @@ public class TymConfigManager {
 	private SharedPreferences prefs;
 	private Context context;
 
-	public TymConfigManager(Context context) {
+	public TymyConfigManager(Context context) {
 		this.context = context;
 	}
 
-	public void saveCfg(TymPref tymPref) {
+	public void saveCfg(TymyPref tymyPref) {
 		prefs = context.getSharedPreferences(
-				tymPref.getUrl(),
+				tymyPref.getUrl(),
 				Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putString("url", tymPref.getUrl());
-		editor.putString("user", tymPref.getUser());
-		editor.putString("pass", tymPref.getPass());
-		editor.putString("dsSequence", dsListToSequence(tymPref.getDsList()));
+		editor.putString("url", tymyPref.getUrl());
+		editor.putString("user", tymyPref.getUser());
+		editor.putString("pass", tymyPref.getPass());
+		editor.putString("dsSequence", dsListToSequence(tymyPref.getDsList()));
 		editor.commit();
 	}
 
-	public TymPref loadCfg(String tymName) {
+	public TymyPref loadCfg(String tymyName) {
 		prefs = context.getSharedPreferences(
-				tymName,
+				tymyName,
 				Context.MODE_PRIVATE);
 
 		String dsSequence = prefs.getString("dsSequence", null);
 		dsList = dsSequenceToList(dsSequence);
-		TymPref tymPref = new TymPref(
+		TymyPref tymPref = new TymyPref(
 				prefs.getString("url", null),
 				prefs.getString("user", null), 
 				prefs.getString("pass", null),

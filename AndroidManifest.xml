@@ -15,8 +15,14 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
+        android:theme="@style/AppTheme" android:name="com.ph.tymyreader.TymyReader">
+        <activity android:name="com.ph.tymyreader.TymyList" android:label="@string/title_activity_tymy_list">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity><activity
             android:name="com.ph.tymyreader.DiscussionView"
             android:label="@string/app_name" >
         </activity>
@@ -24,15 +30,7 @@
             android:name="com.ph.tymyreader.DiscussionList"
             android:label="@string/title_activity_discussion_list" >
         </activity>
-        <activity
-            android:name="com.ph.tymyreader.TymyList"
-            android:label="@string/title_activity_tymy_list" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        
         <activity
             android:name="com.ph.tymyreader.GlobalSettingsActivity"
             android:label="@string/title_global_settings_activity" >

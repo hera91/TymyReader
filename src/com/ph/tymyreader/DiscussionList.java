@@ -16,6 +16,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class DiscussionList extends ListActivity {
+	//private static final String TAG = "TymyReader";
 	TextView title;
 	final String NAME = "name";
 	final String NEW = "new";
@@ -23,18 +24,18 @@ public class DiscussionList extends ListActivity {
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
 	private ArrayList<DiscussionPref> dsPrefList = new ArrayList<DiscussionPref>();
-	private TymPref tymPref;
+	private TymyPref tymyPref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.discussions_list);
-		
-		tymPref = (TymPref) getIntent().getSerializableExtra("tymPref");
 
-		for ( HashMap<String, String> dP : tymPref.getDsList()) {
-			DiscussionPref dsPref = new DiscussionPref(tymPref.getUrl(), tymPref.getUser(), 
-					tymPref.getPass(), tymPref.getCookies(), getDsId(dP.get("one")), getDsName(dP.get("one")));
+		tymyPref = (TymyPref) getIntent().getSerializableExtra("tymPref");
+
+		for ( HashMap<String, String> dP : tymyPref.getDsList()) {
+			DiscussionPref dsPref = new DiscussionPref(tymyPref.getUrl(), tymyPref.getUser(), 
+					tymyPref.getPass(), tymyPref.getCookies(), getDsId(dP.get("one")), getDsName(dP.get("one")));
 			dsPrefList.add(dsPref);
 			addDsList(false, getDsName(dP.get("one")), dP.get("two"));			
 		}
@@ -42,8 +43,8 @@ public class DiscussionList extends ListActivity {
 		SimpleAdapter adapter = new SimpleAdapter(this, dsList, R.layout.two_line_list_discs, from, to);
 		setListAdapter(adapter);
 		setTitle("pd.tymy.cz");
-		
-		setTitle(tymPref.getUrl());
+
+		setTitle(tymyPref.getUrl());
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class DiscussionList extends ListActivity {
 		getMenuInflater().inflate(R.menu.activity_discusion_list, menu);
 		return true;
 	}
-		
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
@@ -64,7 +65,7 @@ public class DiscussionList extends ListActivity {
 		intent.putExtras(bundle);
 		startActivity(intent);
 	}
-	
+
 	private void addDsList(boolean clear, String caption, String text) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put(NAME, caption);
@@ -72,12 +73,12 @@ public class DiscussionList extends ListActivity {
 		if (clear) { dsList.clear(); }
 		dsList.add(map);
 	}
-	
+
 	private String getDsId(String dsDesc) {
 		// TODO Auto-generated method stub
 		return dsDesc.split(":")[0];
 	}
-	
+
 	private String getDsName(String dsDesc) {
 		// TODO Auto-generated method stub
 		return dsDesc.split(":")[1];
@@ -106,7 +107,7 @@ class DiscussionPref implements Serializable {
 		this.id = id;
 		this.name = id;
 	}
-	
+
 	public DiscussionPref(String tym, String user, String pass, StringBuilder cookies, String id, String name) {
 		this.url = tym;
 		this.user = user;
@@ -158,5 +159,5 @@ class DiscussionPref implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 }

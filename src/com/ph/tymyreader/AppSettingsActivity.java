@@ -34,7 +34,7 @@ public class AppSettingsActivity extends PreferenceActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-		TymPref tymPref = (TymPref) getIntent().getSerializableExtra("tymPref");
+		TymyPref tymPref = (TymyPref) getIntent().getSerializableExtra("tymPref");
 
         // Loads the XML preferences file.
         addPreferencesFromResource(R.xml.tym_preference);

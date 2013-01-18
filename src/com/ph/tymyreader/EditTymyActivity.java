@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 public class EditTymyActivity extends Activity {
 
-	private TymConfigManager cfg = new TymConfigManager(this);
+	private TymyConfigManager cfg = new TymyConfigManager(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class EditTymyActivity extends Activity {
 		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
 		EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
 		EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
-		TymPref tymPref = new TymPref(url.getText().toString(), user.getText().toString(), pass.getText().toString());
+		TymyPref tymPref = new TymyPref(url.getText().toString(), user.getText().toString(), pass.getText().toString());
 		cfg.saveCfg(tymPref);
 		finish();
 	}

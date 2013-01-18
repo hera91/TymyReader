@@ -29,28 +29,32 @@ public class TymyList extends ListActivity {
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	private List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
 //	private TymPref tymPref1 = new TymPref("pd.tymy.cz", "HERA", "bistromat");
-	private TymPref tymPref2 = new TymPref("dg.tymy.cz", "admin", "bistromat");
-	private ArrayList<TymPref> tymPrefList = new ArrayList<TymPref>();
-	private TymConfigManager cfg = new TymConfigManager(this);
+	private TymyPref tymPref2 = new TymyPref("dg.tymy.cz", "admin", "bistromat");
+	private ArrayList<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
 	private SimpleAdapter adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tymy_list);
-
+		
 		// TODO vyresit zakladani novych tymu a plneni pole diskusi
-		tymPrefList.add(tymPref2);
-
+		tymyPrefList.add(tymPref2);
+		
+//		TymyReader app = (TymyReader) getApplication();
+//		tymyPrefList = app.getTymyPrefList();
+//		tymyPrefList.add(app.getTymPref("dg.tymy.cz"));
+		
+		
 //		tymPrefList.add(cfg.loadCfg("dg.tymy.cz"));
 
 		// Fill list of tymy
-		for (TymPref tP : tymPrefList) {
+		for (TymyPref tP : tymyPrefList) {
 //			Log.v(TAG,"Login to tymy " + tP.getUrl());
 			new LoginToTym().execute(tP);
 			addMapToList(false, tP.getUrl(), "", tymyList);			
 		}
-		if (tymPrefList.isEmpty()) {
+		if (tymyPrefList.isEmpty()) {
 			addMapToList(false, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
 		}
 
@@ -64,7 +68,8 @@ public class TymyList extends ListActivity {
 	@Override
 	public void onPause () {
 		super.onPause();
-		for (TymPref tP : tymPrefList) {
+		TymyConfigManager cfg = new TymyConfigManager(this);
+		for (TymyPref tP : tymyPrefList) {
 			cfg.saveCfg(tP);
 		}
 	}
@@ -95,12 +100,12 @@ public class TymyList extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		if ((tymPrefList.size() == 0) || tymPrefList.get(position).noDs()) {
+		if ((tymyPrefList.size() == 0) || tymyPrefList.get(position).noDs()) {
 			Toast.makeText(this, getString(R.string.no_discussion), Toast.LENGTH_LONG).show();
 			return;
 		}
 		Bundle bundle = new Bundle();
-		bundle.putSerializable("tymPref", tymPrefList.get(position));
+		bundle.putSerializable("tymPref", tymyPrefList.get(position));
 		Intent intent = new Intent(this, DiscussionList.class);
 		intent.putExtras(bundle);
 		startActivity(intent);				
@@ -133,7 +138,7 @@ public class TymyList extends ListActivity {
 	
 	protected void showTymSettings(int position) {
 		Bundle bundle = new Bundle();
-		bundle.putSerializable("tymPref", tymPrefList.get(position));
+		bundle.putSerializable("tymPref", tymyPrefList.get(position));
 		Intent intent = new Intent(this, AppSettingsActivity.class);
 		intent.putExtras(bundle);
 		startActivity(intent);				
@@ -156,10 +161,10 @@ public class TymyList extends ListActivity {
 
 	//*************************************************************//
 	//*******************  AsysncTask  ****************************//
-	private class LoginToTym extends AsyncTask<TymPref, Integer, TymPref> {
+	private class LoginToTym extends AsyncTask<TymyPref, Integer, TymyPref> {
 
 		@Override
-		protected TymPref doInBackground(TymPref... tymPref) {			
+		protected TymyPref doInBackground(TymyPref... tymPref) {			
 			return updateTymDs(tymPref);
 		}
 
@@ -170,13 +175,13 @@ public class TymyList extends ListActivity {
 
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
-		protected void onPostExecute(TymPref tymPref) {
+		protected void onPostExecute(TymyPref tymPref) {
 			Toast.makeText(getApplicationContext(), "discussions list updated", Toast.LENGTH_LONG).show();
 			adapter.notifyDataSetChanged();
 		}
 
 		// TODO dodelat zobrazeni novych prispevku
-		private TymPref updateTymDs(TymPref... tymPref) {
+		private TymyPref updateTymDs(TymyPref... tymPref) {
 			String mainPage = null;
 			
 			StringBuilder cookies = tymPref[0].getCookies(); 
@@ -195,7 +200,7 @@ public class TymyList extends ListActivity {
 }
 
 
-class TymPref implements Serializable {
+class TymyPref implements Serializable {
 	/**
 	 * 
 	 */
@@ -206,13 +211,13 @@ class TymPref implements Serializable {
 	private StringBuilder cookies = new StringBuilder();
 	private List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
 
-	public TymPref(String tym, String user, String pass) {
+	public TymyPref(String tym, String user, String pass) {
 		this.url = tym;
 		this.pass = pass;
 		this.user = user;
 	}
 
-	public TymPref(String tym, String user, String pass, List<HashMap<String, String>> dsList) {
+	public TymyPref(String tym, String user, String pass, List<HashMap<String, String>> dsList) {
 		this.url = tym;
 		this.pass = pass;
 		this.user = user;
