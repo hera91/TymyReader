@@ -1,5 +1,7 @@
 package com.ph.tymyreader;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -11,8 +13,9 @@ import android.widget.EditText;
 
 public class EditTymyActivity extends Activity {
 
-	private TymyConfigManager cfg = new TymyConfigManager(this);
-
+	private TymyReader app;
+	private TymyListUtil tlu = new TymyListUtil();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,8 +63,11 @@ public class EditTymyActivity extends Activity {
 		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
 		EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
 		EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
-		TymyPref tymPref = new TymyPref(url.getText().toString(), user.getText().toString(), pass.getText().toString());
-		cfg.saveCfg(tymPref);
+		TymyPref tymyPref = new TymyPref(url.getText().toString(), user.getText().toString(), pass.getText().toString());
+		app = (TymyReader) getApplication();
+		ArrayList<TymyPref> tymyPrefList = app.getTymyPrefList();
+		tlu.updateTymyPrefList(tymyPrefList, tymyPref);
+		app.setTymyPrefList(tymyPrefList);
 		finish();
 	}
 

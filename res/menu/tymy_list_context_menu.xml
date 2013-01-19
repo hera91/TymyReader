@@ -4,5 +4,9 @@
         android:id="@+id/menu_context_edit"
         android:orderInCategory="100"
         android:title="@string/menu_context_edit"/>
+    <item
+        android:id="@+id/menu_context_delete"
+        android:orderInCategory="100"
+        android:title="@string/menu_context_delete"/>
 
 </menu>

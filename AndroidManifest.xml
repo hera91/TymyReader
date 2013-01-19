@@ -12,25 +12,28 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name="com.ph.tymyreader.TymyReader"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" android:name="com.ph.tymyreader.TymyReader">
-        <activity android:name="com.ph.tymyreader.TymyList" android:label="@string/title_activity_tymy_list">
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.ph.tymyreader.TymyListActivity"
+            android:label="@string/title_activity_tymy_list" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity><activity
-            android:name="com.ph.tymyreader.DiscussionView"
+        </activity>
+        <activity
+            android:name="com.ph.tymyreader.DiscussionViewActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.ph.tymyreader.DiscussionList"
+            android:name="com.ph.tymyreader.DiscussionListActivity"
             android:label="@string/title_activity_discussion_list" >
         </activity>
-        
         <activity
             android:name="com.ph.tymyreader.GlobalSettingsActivity"
             android:label="@string/title_global_settings_activity" >

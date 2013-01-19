@@ -25,6 +25,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_post">New post</string>
     <string name="menu_context_edit">Edit</string>
+    <string name="menu_context_delete">Delete</string>
     
     <string name="button_cancel">Cancel</string>
     <string name="button_save">Save</string>

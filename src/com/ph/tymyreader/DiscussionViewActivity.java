@@ -18,7 +18,7 @@ import android.widget.Toast;
 // TODO Osetrit vypnuty internet
 
 
-public class DiscussionView extends ListActivity {
+public class DiscussionViewActivity extends ListActivity {
 
 //	private DiscussionPref dsPref = new DiscussionPref("pd.tymy.cz", "HERA", "bistromat", "1", "kecarna");
 	private DiscussionPref dsPref;

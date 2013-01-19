@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.ListActivity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,7 +14,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class DiscussionList extends ListActivity {
+public class DiscussionListActivity extends ListActivity {
 	//private static final String TAG = "TymyReader";
 	TextView title;
 	final String NAME = "name";
@@ -58,12 +57,10 @@ public class DiscussionList extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		Bundle bundle = new Bundle();
-
 		bundle.putSerializable("dsPref", dsPrefList.get(position));
-		Intent intent = new Intent();
-		intent.setComponent(new ComponentName("com.ph.tymyreader", "com.ph.tymyreader.DiscussionView"));
+		Intent intent = new Intent(this, DiscussionViewActivity.class);
 		intent.putExtras(bundle);
-		startActivity(intent);
+		startActivity(intent);		
 	}
 
 	private void addDsList(boolean clear, String caption, String text) {
@@ -75,12 +72,10 @@ public class DiscussionList extends ListActivity {
 	}
 
 	private String getDsId(String dsDesc) {
-		// TODO Auto-generated method stub
 		return dsDesc.split(":")[0];
 	}
 
 	private String getDsName(String dsDesc) {
-		// TODO Auto-generated method stub
 		return dsDesc.split(":")[1];
 	}
 

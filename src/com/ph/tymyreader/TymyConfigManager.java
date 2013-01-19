@@ -4,47 +4,53 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 public class TymyConfigManager {
-	private final static String TAG = "TymyReader";
-	private static final String ONE = "one";
-	private static final String TWO = "two";
+	private static final String TAG = TymyReader.TAG;
+	private static final String ONE = TymyListUtil.ONE;
+	private static final String TWO = TymyListUtil.TWO;
+	private static final String URL = "url";
+	private static final String USER = "use";
+	private static final String PASS = "pass";
+	private static final String DS_SEQUENCE = "dsSequence";
 	private List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
 	private SharedPreferences prefs;
-	private Context context;
 
-	public TymyConfigManager(Context context) {
-		this.context = context;
+	public TymyConfigManager(SharedPreferences prefs) {
+		this.prefs = prefs;
 	}
 
 	public void saveCfg(TymyPref tymyPref) {
-		prefs = context.getSharedPreferences(
-				tymyPref.getUrl(),
-				Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putString("url", tymyPref.getUrl());
-		editor.putString("user", tymyPref.getUser());
-		editor.putString("pass", tymyPref.getPass());
-		editor.putString("dsSequence", dsListToSequence(tymyPref.getDsList()));
+		editor.putString(URL, tymyPref.getUrl());
+		editor.putString(USER, tymyPref.getUser());
+		editor.putString(PASS, tymyPref.getPass());
+		editor.putString(DS_SEQUENCE, dsListToSequence(tymyPref.getDsList()));
 		editor.commit();
 	}
 
 	public TymyPref loadCfg(String tymyName) {
-		prefs = context.getSharedPreferences(
-				tymyName,
-				Context.MODE_PRIVATE);
-
-		String dsSequence = prefs.getString("dsSequence", null);
-		dsList = dsSequenceToList(dsSequence);
-		TymyPref tymPref = new TymyPref(
-				prefs.getString("url", null),
-				prefs.getString("user", null), 
-				prefs.getString("pass", null),
-				dsList);				
+		String dsSequence = prefs.getString(DS_SEQUENCE, null);
+		String url = prefs.getString(URL, null);
+		String user = prefs.getString(USER, null);
+		String pass = prefs.getString(PASS, null);
+		TymyPref tymPref = null;
+		if ((url != null) || (user != null) || (pass != null) || (dsSequence != null) ) {
+			dsList = dsSequenceToList(dsSequence);
+			tymPref = new TymyPref(url, user, pass, dsList);
+		}				
 		return tymPref;
+	}
+
+	public void addTymyToDefaultPrefs(String url) {
+		if ((prefs.getString(url, "")).equals("")) {
+			Editor editor = prefs.edit();
+			editor.putString(url, url);
+			editor.commit();
+		}
 	}
 
 	private String dsListToSequence(List<HashMap<String, String>> dsList) {
@@ -67,7 +73,7 @@ public class TymyConfigManager {
 			Log.v(TAG, "dsSeqToList" + dsDesc);
 			addMapToList(false, dsDesc, "", dsList);
 		}
-//		Log.v(TAG, dsListToSequence(dsList));
+		//		Log.v(TAG, dsListToSequence(dsList));
 		return dsList;
 	}
 
@@ -79,4 +85,19 @@ public class TymyConfigManager {
 		if (clear) { list.clear(); }
 		list.add(map);
 	}
+
+	public void deleteCfg(TymyPref tymyPref) {
+		Editor editor = prefs.edit();
+		editor.clear();
+		editor.commit();		
+	}
+
+	public void deleteTymyInDefaultPrefs(String url) {
+		if ((prefs.getString(url, "")).equals(url)) {
+			Editor editor = prefs.edit();
+			editor.remove(url);
+			editor.commit();
+		}		
+	}
+
 }
