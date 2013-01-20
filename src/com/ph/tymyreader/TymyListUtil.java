@@ -27,13 +27,13 @@ public class TymyListUtil implements Serializable {
 		if (isNew) tymyPrefList.add(newTP);
 	}
 	
-	public List<HashMap<String, String>> getTymyList (ArrayList<TymyPref> tymyPrefList) {
-		List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
+	public void updateTymyList (ArrayList<TymyPref> tymyPrefList, List<HashMap<String, String>> tymyList) {
+		boolean isFirst = true;
 		for (TymyPref tP : tymyPrefList) {
 //			Log.v(TAG,"Login to tymy " + tP.getUrl());
-			addMapToList(false, tP.getUrl(), "", tymyList);			
+			addMapToList(isFirst, tP.getUrl(), tP.dsListToString(), tymyList);
+			isFirst = false;
 		}
-		return tymyList;		
 	}
 	
 	public void addMapToList(boolean clear, String one, String two, List<HashMap<String, String>> list) {
@@ -47,8 +47,8 @@ public class TymyListUtil implements Serializable {
 	public String printTymyList(List<HashMap<String, String>> tymyList) {
 		StringBuilder out = new StringBuilder("\n" + tymyList.toString() + "\n");
 		for (HashMap<String, String> tl : tymyList) {
-			out.append("one = " + tl.get(ONE) + "\n");
-			out.append("two = " + tl.get(TWO) + "\n");
+			out.append(ONE + " = " + tl.get(ONE) + "\n");
+			out.append(TWO + " = " + tl.get(TWO) + "\n");
 		}
 		return out.toString();
 	}
@@ -67,7 +67,13 @@ public class TymyListUtil implements Serializable {
 	public void removeTymyPref(ArrayList<TymyPref> tymyPrefList, int position) {
 		tymyPrefList.remove(position);
 	}
-	
+
+	public int getIndexFromUrl(ArrayList<TymyPref> tymyPrefList, String url) {
+		for (TymyPref tP : tymyPrefList) {
+			if (tP.getUrl().equals(url)) return tymyPrefList.indexOf(tP);
+		}
+		return -1;
+	}
 }
 
 class TymyPref implements Serializable {
@@ -124,13 +130,24 @@ class TymyPref implements Serializable {
 	public void setDsList(List<HashMap<String, String>> dsList) {
 		this.dsList = dsList;
 	}
-
 	public boolean noDs() {
 		return this.dsList.isEmpty();
 	}
-}
-
-class TymyPrefList extends ArrayList<TymyPref> {
-
-	private static final long serialVersionUID = 1L;
+	
+	public String dsListToString() {
+		// TODO Auto-generated method stub
+		StringBuilder out = new StringBuilder();
+		boolean isFirst = true;
+		for (HashMap<String, String> ds : dsList) {
+			if (ds.get(TymyListUtil.TWO).equals("0") || ds.get(TymyListUtil.TWO).equals("")) continue;
+			if (isFirst) {
+				out.append(ds.get(TymyListUtil.ONE).split(":")[1]);
+				isFirst = false;
+			} else {
+			out.append(", " + ds.get(TymyListUtil.ONE).split(":")[1]);
+			}
+			out.append("[" + ds.get(TymyListUtil.TWO) + "]");
+		}
+		return out.toString();
+	}
 }

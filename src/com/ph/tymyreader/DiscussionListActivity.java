@@ -24,28 +24,33 @@ public class DiscussionListActivity extends ListActivity {
 	List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
 	private ArrayList<DiscussionPref> dsPrefList = new ArrayList<DiscussionPref>();
 	private TymyPref tymyPref;
+	SimpleAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.discussions_list);
 
-		tymyPref = (TymyPref) getIntent().getSerializableExtra("tymPref");
+		int position = (int) getIntent().getIntExtra("position", -1);
+		if (position == -1) finish();
+		TymyReader app = (TymyReader) getApplication();
+		tymyPref = app.getTymyPrefList().get(position);
+		if (tymyPref == null) finish();
 
 		for ( HashMap<String, String> dP : tymyPref.getDsList()) {
 			DiscussionPref dsPref = new DiscussionPref(tymyPref.getUrl(), tymyPref.getUser(), 
 					tymyPref.getPass(), tymyPref.getCookies(), getDsId(dP.get("one")), getDsName(dP.get("one")));
 			dsPrefList.add(dsPref);
-			addDsList(false, getDsName(dP.get("one")), dP.get("two"));			
+			String items_new = (dP.get("two").equals("0")) ? "" : getString(R.string.items_new) + dP.get("two");
+			addDsList(false, getDsName(dP.get("one")), items_new);			
 		}
 
-		SimpleAdapter adapter = new SimpleAdapter(this, dsList, R.layout.two_line_list_discs, from, to);
+		adapter = new SimpleAdapter(this, dsList, R.layout.two_line_list_discs, from, to);
 		setListAdapter(adapter);
-		setTitle("pd.tymy.cz");
 
 		setTitle(tymyPref.getUrl());
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -56,11 +61,22 @@ public class DiscussionListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
+		clearNewItems(position);
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("dsPref", dsPrefList.get(position));
 		Intent intent = new Intent(this, DiscussionViewActivity.class);
 		intent.putExtras(bundle);
 		startActivity(intent);		
+	}
+
+	private void clearNewItems(int position) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		String dsDesc = dsList.get(position).get(NAME);
+		map.put(NAME, dsDesc);
+		map.put(NEW, "");
+		dsList.remove(position);
+		dsList.add(position, map);
+		adapter.notifyDataSetChanged();
 	}
 
 	private void addDsList(boolean clear, String caption, String text) {
@@ -79,6 +95,7 @@ public class DiscussionListActivity extends ListActivity {
 		if (dsDesc.split(":").length > 1) return dsDesc.split(":")[1];
 		return "";
 	}
+
 }
 
 class DiscussionPref implements Serializable {

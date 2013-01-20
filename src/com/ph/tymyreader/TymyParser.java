@@ -1,11 +1,11 @@
 package com.ph.tymyreader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.text.Html;
-import android.util.Log;
 
 /** 
  * @author petr Haering
@@ -13,13 +13,18 @@ import android.util.Log;
  */
 public class TymyParser {
 
-	private final String TAG = TymyReader.TAG;
+	//private final String TAG = TymyReader.TAG;
 	private String s = null;
 	private Integer position = 0; 
 
 	public TymyParser(final String inputString) {
 		this.s = inputString;
 	}
+	
+	public TymyParser() {
+		this(null);
+	}
+
 
 	/**
 	 * public Integer findStartTag (final String tagName)
@@ -156,7 +161,16 @@ public class TymyParser {
 		}
 		return ds;
 	}
+	public HashMap<String, Integer> getNewItems (String ajaxPage) {
+		HashMap<String, Integer> ds_news = new HashMap<String, Integer>();		
+		Pattern MY_PATTERN = Pattern.compile("ds_new_(.*?)\".*?:(.*?)</b>");
 
+		Matcher m = MY_PATTERN.matcher(ajaxPage);
+		while (m.find()) {
+			ds_news.put(m.group(1), Integer.parseInt(m.group(2).trim()));		
+		}
+		return ds_news;
+	}
 }
 
 /**

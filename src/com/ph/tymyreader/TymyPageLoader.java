@@ -15,7 +15,7 @@ import java.net.URLEncoder;
 
 public class TymyPageLoader {
 
-//	private static final String TAG = "TymyReader";
+	//	private static final String TAG = "TymyReader";
 
 	// TODO zobecnit metody pro download stranek
 
@@ -62,6 +62,40 @@ public class TymyPageLoader {
 			String data = null;
 
 			HttpURLConnection connection = createConnection(data, url, cookies, "GET");
+
+			BufferedReader rd = null;
+			try {
+				rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String line;
+				while ((line = rd.readLine()) != null) {
+					output.append(line);
+				}
+			} catch (Exception e) {
+				e.printStackTrace(System.out);
+			}			
+
+			rd.close();
+			connection.disconnect();						
+		}
+		catch (Exception e) {
+			e.printStackTrace(System.out);
+		}
+		return output.toString();
+	}
+
+	public String loadAjaxPage(String url, StringBuilder cookies) {
+		StringBuilder output = new StringBuilder();
+		try {
+			String data = URLEncoder.encode("xajax", "UTF-8") + "=" + URLEncoder.encode("getNewInformation", "UTF-8") +
+					"&" + URLEncoder.encode("xajaxr", "UTF-8") + "=" + URLEncoder.encode("1358695211471", "UTF-8");
+			DataOutputStream wr;
+			//			Log.v(TAG,"Debug: " + user + pass + tym);
+			HttpURLConnection connection = createConnection(data, url + "/ajax.php?page=main", cookies, "POST");
+
+			wr = new DataOutputStream(connection.getOutputStream ());
+			wr.writeBytes(data);
+			wr.flush();
+			wr.close();
 
 			BufferedReader rd = null;
 			try {

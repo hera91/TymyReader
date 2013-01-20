@@ -57,6 +57,7 @@ public class EditTymyActivity extends Activity {
 		case R.id.button_save:
 			saveTymy();
 		case R.id.button_cancel:
+			setResult(RESULT_CANCELED);
 			finish();
 		case R.id.show_pass:
 			showPass();
@@ -85,6 +86,7 @@ public class EditTymyActivity extends Activity {
 		ArrayList<TymyPref> tymyPrefList = app.getTymyPrefList();
 		tlu.updateTymyPrefList(tymyPrefList, tymyPref);
 		app.setTymyPrefList(tymyPrefList);
+		setResult(RESULT_OK);
 		finish();
 	}
 }

@@ -21,41 +21,39 @@ import android.widget.Toast;
 // TODO predelat TymyPref na TymyManager, ktery bude poskytovat vsechny funkce kolem Tymu
 
 public class TymyListActivity extends ListActivity {
-//	private static final String TAG = TymyReader.TAG;
+	//	private static final String TAG = TymyReader.TAG;
+	private static final int EDIT_TYMY_ACTIVITY = 1;
 	private String[] from = new String[] {TymyListUtil.ONE, TymyListUtil.TWO};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	private List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
 	private ArrayList<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
 	private SimpleAdapter adapter;
 	private TymyListUtil tlu = new TymyListUtil();
+	ListView lv;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		Log.v(TAG, "onCreate TymyList");
 		setContentView(R.layout.tymy_list);
 
+		lv = (ListView) findViewById(android.R.id.list);
 		TymyReader app = (TymyReader) getApplication();
 		app.loadTymyCfg();
 		tymyPrefList = app.getTymyPrefList();
 
-		if (tymyPrefList.isEmpty()) {
-			tlu.addMapToList(true, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
-		} else {
-			refreshTymyPrefList(app);
-		}
+		refreshTymyPrefList(app);
 		// Set-up adapter for tymyList
 		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
-		setListAdapter(adapter);
+		lv.setAdapter(adapter);
 
-		registerForContextMenu(getListView());		
+		registerForContextMenu(getListView());
 	}
 
 	@Override
 	protected void onResume () {
 		super.onResume();
-		TymyReader app = (TymyReader) getApplication();
-		refreshTymyPrefList(app);
+		TymyReader app = (TymyReader) getApplication();		
+		refreshTymyNewItems(app);
 		refreshListView();
 	}
 
@@ -63,7 +61,7 @@ public class TymyListActivity extends ListActivity {
 	protected void onDestroy () {
 		super.onDestroy();
 		TymyReader app = (TymyReader) getApplication();
-//		Log.v(TAG, "onDestroy: " + tlu.printTymyPrefList(tymyPrefList));
+		//		Log.v(TAG, "onDestroy: " + tlu.printTymyPrefList(tymyPrefList));
 		app.saveTymyCfg(tymyPrefList);
 	}
 
@@ -93,12 +91,13 @@ public class TymyListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		if ((tymyPrefList.size() == 0) || tymyPrefList.get(position).noDs()) {
+		int index = tlu.getIndexFromUrl(tymyPrefList, tymyList.get(position).get(TymyListUtil.ONE));
+		if ((index == -1) || (tymyPrefList.size() == 0) || tymyPrefList.get(index).noDs()) {
 			Toast.makeText(this, getString(R.string.no_discussion), Toast.LENGTH_LONG).show();
 			return;
 		}
 		Bundle bundle = new Bundle();
-		bundle.putSerializable("tymPref", tymyPrefList.get(position));
+		bundle.putInt("position", index);
 		Intent intent = new Intent(this, DiscussionListActivity.class);
 		intent.putExtras(bundle);
 		startActivity(intent);				
@@ -110,18 +109,22 @@ public class TymyListActivity extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		MenuInflater inflater = getMenuInflater();
-		menu.setHeaderTitle(tymyPrefList.get(info.position).getUrl());
-		inflater.inflate(R.menu.tymy_list_context_menu, menu);
+		int index = tlu.getIndexFromUrl(tymyPrefList, tymyList.get(info.position).get(TymyListUtil.ONE));
+		if (index != -1) {
+			menu.setHeaderTitle(tymyPrefList.get(index).getUrl());
+			inflater.inflate(R.menu.tymy_list_context_menu, menu);
+		}
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		int index = tlu.getIndexFromUrl(tymyPrefList, tymyList.get((int) info.id).get(TymyListUtil.ONE));
 		switch(item.getItemId()) {
 		case R.id.menu_context_edit:
-			showAddTymy((int)info.id);
+			showAddTymy(index);
 			return true;
 		case R.id.menu_context_delete:
-			deleteTymy((int)info.id);
+			deleteTymy(index);
 			return true;
 		default:
 			return super.onContextItemSelected(item);
@@ -147,9 +150,19 @@ public class TymyListActivity extends ListActivity {
 		bundle.putInt("position", position);
 		Intent intent = new Intent(this, EditTymyActivity.class);
 		intent.putExtras(bundle);
-		startActivity(intent);		
+		startActivityForResult(intent, EDIT_TYMY_ACTIVITY);
 	}
-	
+
+	 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		 switch (requestCode) {
+		 case EDIT_TYMY_ACTIVITY:
+			 if (resultCode == RESULT_OK) {
+				 TymyReader app = (TymyReader) getApplication();
+				 refreshTymyPrefList(app);
+			 }
+		 }
+	 }
+	 
 	private void showAddTymy() {
 		showAddTymy(-1);
 	}
@@ -161,9 +174,8 @@ public class TymyListActivity extends ListActivity {
 		app.setTymyPrefList(tymyPrefList);
 		refreshListView();
 	}
-	
+
 	private void refreshTymyPrefList(TymyReader app) {
-		tymyList = tlu.getTymyList(tymyPrefList);
 		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
 		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
 		for (TymyPref tP : tymyPrefList) {
@@ -171,30 +183,44 @@ public class TymyListActivity extends ListActivity {
 		}
 		int i = 0;
 		for(TymyPref tP : copy_tymyPrefList) {
-			new LoginToTymy().execute(tP);
+			new LoginAndUpdateTymy().execute(tP);
 			tymyPrefList.remove(i);
 			tymyPrefList.add(i, tP);
 			app.setTymyPrefList(tymyPrefList);
-			tymyList = tlu.getTymyList(tymyPrefList);
 			i = i + 1;
 		}
 	}
 
+	private void refreshTymyNewItems(TymyReader app) {
+		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
+		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
+		for (TymyPref tP : tymyPrefList) {
+			copy_tymyPrefList.add(tP);
+		}
+		int i = 0;
+		for(TymyPref tP : copy_tymyPrefList) {
+			new UpdateNewItemsTymy().execute(tP);
+			tymyPrefList.remove(i);
+			tymyPrefList.add(i, tP);
+			app.setTymyPrefList(tymyPrefList);
+			i = i + 1;
+		}
+	}
+	
 	private void refreshListView() {
 		TymyReader app = (TymyReader) getApplication();
 		tymyPrefList = app.getTymyPrefList();
 		if (tymyPrefList.isEmpty()) {
 			tlu.addMapToList(true, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
 		} else {
-			tymyList = tlu.getTymyList(tymyPrefList);
-			adapter = new SimpleAdapter(TymyListActivity.this, tymyList, R.layout.two_line_list_discs, from, to);
-			setListAdapter(adapter);
+			tlu.updateTymyList(tymyPrefList, tymyList);
+			adapter.notifyDataSetChanged();
 		}
 	}
 
-	//*************************************************************//
-	//*******************  AsyncTask  *****************************//
-	private class LoginToTymy extends AsyncTask<TymyPref, Integer, TymyPref> {
+	//**************************************************************//
+	//*******************  AsyncTasks  *****************************//
+	private class LoginAndUpdateTymy extends AsyncTask<TymyPref, Integer, TymyPref> {
 
 		@Override
 		protected TymyPref doInBackground(TymyPref... tymPref) {			
@@ -209,25 +235,77 @@ public class TymyListActivity extends ListActivity {
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
 		protected void onPostExecute(TymyPref tymPref) {
-			Toast.makeText(getApplicationContext(), "discussions list updated", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "discussions list " + tymPref.getUrl() + " updated" , Toast.LENGTH_SHORT).show();
 			refreshListView();
 		}
 
-		// TODO dodelat zobrazeni novych prispevku
 		private TymyPref updateTymDs(TymyPref... tymPref) {
-			String mainPage = null;
 
-			StringBuilder cookies = tymPref[0].getCookies(); 
 			TymyPageLoader page = new TymyPageLoader();
-			mainPage = page.loadMainPage(tymPref[0].getUrl(), tymPref[0].getUser(), tymPref[0].getPass(), tymPref[0].getCookies());
-			tymPref[0].setCookies(cookies);
-			TymyParser parser = new TymyParser(mainPage);
+			TymyParser parser = new TymyParser();
+			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
+
+			String mainPage = page.loadMainPage(tymPref[0].getUrl(), tymPref[0].getUser(), tymPref[0].getPass(), tymPref[0].getCookies());
+			String ajax = page.loadAjaxPage(tymPref[0].getUrl(), tymPref[0].getCookies());
+
+			dsNews = parser.getNewItems(ajax);
 			boolean isFirst = true; // clear map in first cycle
 			for ( String dsDesc : parser.getDsArray(mainPage)) {
-				tlu.addMapToList(isFirst, dsDesc, getString(R.string.unknown), tymPref[0].getDsList());
+				tlu.addMapToList(isFirst, dsDesc, "" + dsNews.get(getDsId(dsDesc)), tymPref[0].getDsList());
 				isFirst = false;
 			}
+
 			return tymPref[0];
+		}
+
+		private String getDsId(String dsDesc) {
+			return dsDesc.split(":")[0];
+		}
+	}
+	
+	private class UpdateNewItemsTymy extends AsyncTask<TymyPref, Integer, TymyPref> {
+
+		@Override
+		protected TymyPref doInBackground(TymyPref... tymPref) {			
+			return updateNewItems(tymPref);
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... progress) {
+			setProgress(progress[0]);
+		}
+
+		// onPostExecute displays the results of the AsyncTask.
+		@Override
+		protected void onPostExecute(TymyPref tymPref) {
+			refreshListView();
+		}
+
+		private TymyPref updateNewItems(TymyPref... tymyPref) {
+
+			if (tymyPref[0].getCookies().length() == 0) return tymyPref[0];
+			
+			TymyPageLoader page = new TymyPageLoader();
+			TymyParser parser = new TymyParser();
+			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
+			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getCookies());
+
+			dsNews = parser.getNewItems(ajax);
+			boolean isFirst = true; // clear map in first cycle
+			
+			ArrayList<HashMap<String, String>> copy_DsList = new ArrayList<HashMap<String,String>>();
+			for (HashMap<String, String> dsDesc : tymyPref[0].getDsList()) {
+				copy_DsList.add(dsDesc);
+			}
+			for ( HashMap<String, String> dsDesc : copy_DsList) {
+				tlu.addMapToList(isFirst, dsDesc.get(TymyListUtil.ONE), "" + dsNews.get(getDsId(dsDesc.get(TymyListUtil.ONE))), tymyPref[0].getDsList());
+				isFirst = false;
+			}
+			return tymyPref[0];
+		}
+
+		private String getDsId(String dsDesc) {
+			return dsDesc.split(":")[0];
 		}
 	}
 }
