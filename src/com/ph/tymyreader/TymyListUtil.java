@@ -5,18 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.util.Log;
 
 public class TymyListUtil implements Serializable {
 
-	private static final String TAG = TymyReader.TAG;
+//	private static final String TAG = TymyReader.TAG;
 	final static String ONE = "one";
 	final static String TWO = "two";
 	private static final long serialVersionUID = 1L;
-
-	public static ArrayList<TymyPref> getTymyPrefList() {
-		return 	new ArrayList<TymyPref>();
-	}
 
 	public void updateTymyPrefList(ArrayList<TymyPref> tymyPrefList, final TymyPref newTP) {
 		boolean isNew = true;
@@ -35,7 +30,7 @@ public class TymyListUtil implements Serializable {
 	public List<HashMap<String, String>> getTymyList (ArrayList<TymyPref> tymyPrefList) {
 		List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
 		for (TymyPref tP : tymyPrefList) {
-			Log.v(TAG,"Login to tymy " + tP.getUrl());
+//			Log.v(TAG,"Login to tymy " + tP.getUrl());
 			addMapToList(false, tP.getUrl(), "", tymyList);			
 		}
 		return tymyList;		

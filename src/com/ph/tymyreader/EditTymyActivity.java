@@ -16,11 +16,28 @@ public class EditTymyActivity extends Activity {
 	private TymyReader app;
 	private TymyListUtil tlu = new TymyListUtil();
 	
+	//TODO osetrit prazdne polozky
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		int position = (int) getIntent().getIntExtra("position", -1);
+		
 		setContentView(R.layout.activity_add_tymy);
+		if (position != -1) fillFields(position);
 		showPass(); // if checkbox is checked
+	}
+
+	private void fillFields(int position) {
+		// TODO Auto-generated method stub
+		app = (TymyReader) getApplication();
+		ArrayList<TymyPref> tymyPrefList = app.getTymyPrefList();
+		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
+		url.setText(tymyPrefList.get(position).getUrl());
+		EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
+		user.setText(tymyPrefList.get(position).getUser());
+		EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
+		pass.setText(tymyPrefList.get(position).getPass());
 	}
 
 	@Override
@@ -70,5 +87,4 @@ public class EditTymyActivity extends Activity {
 		app.setTymyPrefList(tymyPrefList);
 		finish();
 	}
-
 }

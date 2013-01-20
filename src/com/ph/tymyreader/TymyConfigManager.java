@@ -6,10 +6,10 @@ import java.util.List;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
+//import android.util.Log;
 
 public class TymyConfigManager {
-	private static final String TAG = TymyReader.TAG;
+//	private static final String TAG = TymyReader.TAG;
 	private static final String ONE = TymyListUtil.ONE;
 	private static final String TWO = TymyListUtil.TWO;
 	private static final String URL = "url";
@@ -33,12 +33,12 @@ public class TymyConfigManager {
 	}
 
 	public TymyPref loadCfg(String tymyName) {
-		String dsSequence = prefs.getString(DS_SEQUENCE, null);
+		String dsSequence = prefs.getString(DS_SEQUENCE, "");
 		String url = prefs.getString(URL, null);
 		String user = prefs.getString(USER, null);
 		String pass = prefs.getString(PASS, null);
 		TymyPref tymPref = null;
-		if ((url != null) || (user != null) || (pass != null) || (dsSequence != null) ) {
+		if ((url != null) && (user != null) && (pass != null)) {
 			dsList = dsSequenceToList(dsSequence);
 			tymPref = new TymyPref(url, user, pass, dsList);
 		}				
@@ -63,14 +63,13 @@ public class TymyConfigManager {
 			}
 			seq.append("|" + dsDesc.get(ONE));
 		}
-		Log.v(TAG, "dsListToSequence" + seq.toString());
 		return seq.toString();
 	}
 
 	private List<HashMap<String, String>> dsSequenceToList(String dsSequence) {
 		dsList.clear();
+		if (("").equals(dsSequence)) return dsList;
 		for ( String dsDesc : dsSequence.split("\\|")) {
-			Log.v(TAG, "dsSeqToList" + dsDesc);
 			addMapToList(false, dsDesc, "", dsList);
 		}
 		//		Log.v(TAG, dsListToSequence(dsList));

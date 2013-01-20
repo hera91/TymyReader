@@ -1,17 +1,19 @@
 package com.ph.tymyreader;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.text.Html;
+import android.util.Log;
 
-/**
- * Parser of actual forecast page from chmi.cz 
+/** 
  * @author petr Haering
  *
  */
 public class TymyParser {
 
-	//private final String TAG = "TymyReader";
+	private final String TAG = TymyReader.TAG;
 	private String s = null;
 	private Integer position = 0; 
 
@@ -145,22 +147,14 @@ public class TymyParser {
 	 * @return String Array of pairs "ID:NAME"
 	 */
 	public ArrayList<String> getDsArray(String mainPage) {
-		int oauth = 0;
-		int end = 0;
-		ArrayList<String> dis = new ArrayList<String>();
-		TymyParser mainParser = new TymyParser(mainPage);
-
-		final String PAT = "id=\"ds_new_";
-		while ((oauth = mainPage.indexOf(PAT, end)) != -1) {				
-			if (oauth != -1) {
-				int start = oauth + PAT.length(); 
-				end = mainPage.indexOf('"', start);
-				String dsId = end == -1 ? mainPage.substring(start) : mainPage.substring(start, end);
-				String dsName = mainParser.getBodyOfTag("a", String.format("page=discussion&amp;id=%s&amp;level=101", dsId));
-				dis.add(dsId + ":" + dsName);
-			}
+		ArrayList<String> ds = new ArrayList<String>();
+		
+		Pattern MY_PATTERN = Pattern.compile("<a .*?page=discussion&amp;id=(.*?)&amp;level=101\">(.*?)</a>");		
+		Matcher m = MY_PATTERN.matcher(mainPage);
+		while (m.find()) {
+		    ds.add(m.group(1) + ":" + m.group(2));
 		}
-		return dis;
+		return ds;
 	}
 
 }

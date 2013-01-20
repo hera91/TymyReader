@@ -76,9 +76,9 @@ public class DiscussionListActivity extends ListActivity {
 	}
 
 	private String getDsName(String dsDesc) {
-		return dsDesc.split(":")[1];
+		if (dsDesc.split(":").length > 1) return dsDesc.split(":")[1];
+		return "";
 	}
-
 }
 
 class DiscussionPref implements Serializable {

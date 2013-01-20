@@ -33,6 +33,11 @@ public class TymyReader extends Application {
 		loadTymyPrefList();
 	}
 	
+	public void deleteTymyCfg(String tymyUrl) {
+		SharedPreferences prefs = getSharedPreferences(tymyUrl, MODE_PRIVATE);
+		prefs.edit().clear().commit();		
+	}
+	
 	public void saveTymyCfg(ArrayList<TymyPref> tymyPrefList) {
 		SharedPreferences defaultPrefs = getSharedPreferences("tymyUrlList", MODE_PRIVATE);
 		defaultPrefs.edit().clear().commit();

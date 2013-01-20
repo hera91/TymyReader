@@ -7,7 +7,6 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -22,7 +21,7 @@ import android.widget.Toast;
 // TODO predelat TymyPref na TymyManager, ktery bude poskytovat vsechny funkce kolem Tymu
 
 public class TymyListActivity extends ListActivity {
-	private static final String TAG = TymyReader.TAG;
+//	private static final String TAG = TymyReader.TAG;
 	private String[] from = new String[] {TymyListUtil.ONE, TymyListUtil.TWO};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	private List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
@@ -33,7 +32,7 @@ public class TymyListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.v(TAG, "onCreate TymyList");
+//		Log.v(TAG, "onCreate TymyList");
 		setContentView(R.layout.tymy_list);
 
 		TymyReader app = (TymyReader) getApplication();
@@ -43,13 +42,7 @@ public class TymyListActivity extends ListActivity {
 		if (tymyPrefList.isEmpty()) {
 			tlu.addMapToList(true, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
 		} else {
-			tymyList = tlu.getTymyList(tymyPrefList);
-			for (TymyPref tP : tymyPrefList) {
-				new LoginToTym().execute(tP);
-				tlu.updateTymyPrefList(tymyPrefList, tP);
-				app.setTymyPrefList(tymyPrefList);
-				tlu.getTymyList(tymyPrefList);
-			}
+			refreshTymyPrefList(app);
 		}
 		// Set-up adapter for tymyList
 		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
@@ -61,6 +54,8 @@ public class TymyListActivity extends ListActivity {
 	@Override
 	protected void onResume () {
 		super.onResume();
+		TymyReader app = (TymyReader) getApplication();
+		refreshTymyPrefList(app);
 		refreshListView();
 	}
 
@@ -68,7 +63,7 @@ public class TymyListActivity extends ListActivity {
 	protected void onDestroy () {
 		super.onDestroy();
 		TymyReader app = (TymyReader) getApplication();
-		Log.v(TAG, "onDestroy: " + tlu.printTymyPrefList(tymyPrefList));
+//		Log.v(TAG, "onDestroy: " + tlu.printTymyPrefList(tymyPrefList));
 		app.saveTymyCfg(tymyPrefList);
 	}
 
@@ -113,7 +108,9 @@ public class TymyListActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		MenuInflater inflater = getMenuInflater();
+		menu.setHeaderTitle(tymyPrefList.get(info.position).getUrl());
 		inflater.inflate(R.menu.tymy_list_context_menu, menu);
 	}
 
@@ -121,7 +118,7 @@ public class TymyListActivity extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.menu_context_edit:
-			showTymySettings((int)info.id);
+			showAddTymy((int)info.id);
 			return true;
 		case R.id.menu_context_delete:
 			deleteTymy((int)info.id);
@@ -145,18 +142,44 @@ public class TymyListActivity extends ListActivity {
 		startActivity(intent);				
 	}
 
-	private void showAddTymy() {
+	private void showAddTymy(int position) {
+		Bundle bundle = new Bundle();
+		bundle.putInt("position", position);
 		Intent intent = new Intent(this, EditTymyActivity.class);
+		intent.putExtras(bundle);
 		startActivity(intent);		
+	}
+	
+	private void showAddTymy() {
+		showAddTymy(-1);
 	}
 
 	private void deleteTymy(int position) {
-		tlu.removeTymyPref(tymyPrefList, position);
 		TymyReader app = (TymyReader) getApplication();
+		app.deleteTymyCfg(tymyPrefList.get(position).getUrl());
+		tlu.removeTymyPref(tymyPrefList, position);
 		app.setTymyPrefList(tymyPrefList);
 		refreshListView();
 	}
 	
+	private void refreshTymyPrefList(TymyReader app) {
+		tymyList = tlu.getTymyList(tymyPrefList);
+		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
+		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
+		for (TymyPref tP : tymyPrefList) {
+			copy_tymyPrefList.add(tP);
+		}
+		int i = 0;
+		for(TymyPref tP : copy_tymyPrefList) {
+			new LoginToTymy().execute(tP);
+			tymyPrefList.remove(i);
+			tymyPrefList.add(i, tP);
+			app.setTymyPrefList(tymyPrefList);
+			tymyList = tlu.getTymyList(tymyPrefList);
+			i = i + 1;
+		}
+	}
+
 	private void refreshListView() {
 		TymyReader app = (TymyReader) getApplication();
 		tymyPrefList = app.getTymyPrefList();
@@ -164,8 +187,6 @@ public class TymyListActivity extends ListActivity {
 			tlu.addMapToList(true, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
 		} else {
 			tymyList = tlu.getTymyList(tymyPrefList);
-			Log.v(TAG, "onResume TymyList: tymyList: " + tlu.printTymyPrefList(tymyPrefList));
-			Log.v(TAG, "onResume TymyList: tymyList: " + tlu.printTymyList(tymyList));
 			adapter = new SimpleAdapter(TymyListActivity.this, tymyList, R.layout.two_line_list_discs, from, to);
 			setListAdapter(adapter);
 		}
@@ -173,7 +194,7 @@ public class TymyListActivity extends ListActivity {
 
 	//*************************************************************//
 	//*******************  AsyncTask  *****************************//
-	private class LoginToTym extends AsyncTask<TymyPref, Integer, TymyPref> {
+	private class LoginToTymy extends AsyncTask<TymyPref, Integer, TymyPref> {
 
 		@Override
 		protected TymyPref doInBackground(TymyPref... tymPref) {			
@@ -188,7 +209,7 @@ public class TymyListActivity extends ListActivity {
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
 		protected void onPostExecute(TymyPref tymPref) {
-			Toast.makeText(getApplicationContext(), "discussions list updated", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "discussions list updated", Toast.LENGTH_SHORT).show();
 			refreshListView();
 		}
 

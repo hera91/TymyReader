@@ -11,11 +11,11 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import android.util.Log;
+//import android.util.Log;
 
 public class TymyPageLoader {
 
-	private static final String TAG = "TymyReader";
+//	private static final String TAG = "TymyReader";
 
 	// TODO zobecnit metody pro download stranek
 
@@ -31,7 +31,6 @@ public class TymyPageLoader {
 	public String login(final String url, final String user, final String pass, StringBuilder cookies) {
 
 		StringBuilder output = new StringBuilder();
-		Log.v(TAG, "login cookies = " + cookies);				
 		try {
 			String data = null;
 			DataOutputStream wr;
@@ -50,7 +49,6 @@ public class TymyPageLoader {
 			}
 		}
 		catch (Exception e) {
-			Log.v(TAG, e.toString());
 			e.printStackTrace(System.out);
 		}
 		return output.toString();
@@ -59,7 +57,6 @@ public class TymyPageLoader {
 	private String loadPage(String url, String user, String pass, StringBuilder cookies) {
 
 		StringBuilder output = new StringBuilder(); 
-		Log.v(TAG, "loadPage cookies = " + cookies);				
 		try {
 			login(url, user, pass, cookies);
 			String data = null;
@@ -74,7 +71,6 @@ public class TymyPageLoader {
 					output.append(line);
 				}
 			} catch (Exception e) {
-				Log.v(TAG, e.toString());
 				e.printStackTrace(System.out);
 			}			
 
@@ -82,7 +78,6 @@ public class TymyPageLoader {
 			connection.disconnect();						
 		}
 		catch (Exception e) {
-			Log.v(TAG, e.toString());
 			e.printStackTrace(System.out);
 		}
 		return output.toString();
