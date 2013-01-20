@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.ListActivity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,12 +27,13 @@ public class DiscussionViewActivity extends ListActivity {
 	private String[] from = new String[] {CAP, TEXT};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	List<HashMap<String, String>> itemsList = new ArrayList<HashMap<String,String>>();
-
+	private SimpleAdapter adapter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.custom_list_activity_view);
-		
+
 		dsPref = (DiscussionPref) getIntent().getSerializableExtra("dsPref");
 
 		final DiscussionPref data = (DiscussionPref) getLastNonConfigurationInstance();
@@ -42,14 +42,14 @@ public class DiscussionViewActivity extends ListActivity {
 			addItemsList(true, getString(R.string.loading), dsPref.getName() + " (" + dsPref.getUrl() + ")");
 
 			dsPref.setDsItems(itemsList);
-			SimpleAdapter adapter = new SimpleAdapter(this, itemsList, R.layout.two_line_list_item, from, to);
+			adapter = new SimpleAdapter(this, itemsList, R.layout.two_line_list_item, from, to);
 			setListAdapter(adapter);
 
-			new DownloadWebpageText(getApplicationContext()).execute(dsPref);
+			new DownloadWebpageText().execute(dsPref);
 		} else {
 			// after configuration change
 			dsPref = data;
-			SimpleAdapter adapter = new SimpleAdapter(this, dsPref.getDsItems(),
+			adapter = new SimpleAdapter(this, dsPref.getDsItems(),
 					R.layout.two_line_list_item, from, to);
 			setListAdapter(adapter);
 		}
@@ -100,11 +100,6 @@ public class DiscussionViewActivity extends ListActivity {
 
 	protected class DownloadWebpageText extends
 	AsyncTask<DiscussionPref, Integer, String> {
-		private Context context;
-
-		public DownloadWebpageText(Context context) {
-			this.context = context;
-		}
 
 		@Override
 		protected String doInBackground(DiscussionPref... dsPref) {
@@ -134,12 +129,10 @@ public class DiscussionViewActivity extends ListActivity {
 				//Log.v(TAG, name + " " + post);
 				addItemsList(false, dsItem.getDsCaption(), dsItem.getDsItemText());
 			}
+			adapter.notifyDataSetChanged();
 
 			if (itemsList != null){
 				dsPref.setDsItems(itemsList);
-				SimpleAdapter adapter = new SimpleAdapter( context,	dsPref.getDsItems(),
-						R.layout.two_line_list_item, from, to);
-				setListAdapter(adapter);
 			}
 		}
 	}
