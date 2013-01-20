@@ -39,8 +39,6 @@ public class DiscussionViewActivity extends ListActivity {
 		final DiscussionPref data = (DiscussionPref) getLastNonConfigurationInstance();
 		if (data == null) {
 			// activity was started
-			setTitle( dsPref.getUrl() + " / " + dsPref.getName());
-
 			addItemsList(true, getString(R.string.loading), dsPref.getName() + " (" + dsPref.getUrl() + ")");
 
 			dsPref.setDsItems(itemsList);
@@ -51,11 +49,12 @@ public class DiscussionViewActivity extends ListActivity {
 		} else {
 			// after configuration change
 			dsPref = data;
-			setTitle(dsPref.getUrl() + " - " + dsPref.getName());
 			SimpleAdapter adapter = new SimpleAdapter(this, dsPref.getDsItems(),
 					R.layout.two_line_list_item, from, to);
 			setListAdapter(adapter);
 		}
+		setTitle( dsPref.getUrl() + " / " + dsPref.getName());
+
 	}
 
 	/**

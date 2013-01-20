@@ -41,7 +41,7 @@ public class DiscussionListActivity extends ListActivity {
 			DiscussionPref dsPref = new DiscussionPref(tymyPref.getUrl(), tymyPref.getUser(), 
 					tymyPref.getPass(), tymyPref.getCookies(), getDsId(dP.get("one")), getDsName(dP.get("one")));
 			dsPrefList.add(dsPref);
-			String items_new = (dP.get("two").equals("0")) ? "" : getString(R.string.items_new) + dP.get("two");
+			String items_new = (dP.get("two").equals("0") || dP.get("two").equals("")) ? "" : getString(R.string.items_new) + dP.get("two");
 			addDsList(false, getDsName(dP.get("one")), items_new);			
 		}
 
