@@ -49,8 +49,8 @@ public class DiscussionViewActivity extends ListActivity {
 		} else {
 			// after configuration change
 			dsPref = data;
-			adapter = new SimpleAdapter(this, dsPref.getDsItems(),
-					R.layout.two_line_list_item, from, to);
+			itemsList = dsPref.getDsItems();
+			adapter = new SimpleAdapter(this, itemsList, R.layout.two_line_list_item, from, to);
 			setListAdapter(adapter);
 		}
 		setTitle( dsPref.getUrl() + " / " + dsPref.getName());
