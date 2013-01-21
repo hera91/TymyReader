@@ -171,6 +171,10 @@ public class TymyParser {
 		}
 		return ds_news;
 	}
+	
+	// TODO for parsing dsItems could be used regular expresion
+	//Pattern MY_PATTERN = Pattern.compile("<td valign=\"top\" class=\"dsitem\"><div class=\"dscaption\"><b>(.*?)</b>&nbsp;-&nbsp;(.*?)&nbsp; &nbsp;</div>(.*?)</td>");
+
 }
 
 /**
