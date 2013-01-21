@@ -18,12 +18,14 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.ph.tymyreader.model.TymyPref;
+
 // TODO predelat TymyPref na TymyManager, ktery bude poskytovat vsechny funkce kolem Tymu
 
 public class TymyListActivity extends ListActivity {
 	//	private static final String TAG = TymyReader.TAG;
 	private static final int EDIT_TYMY_ACTIVITY = 1;
-	private String[] from = new String[] {TymyListUtil.ONE, TymyListUtil.TWO};
+	private String[] from = new String[] {TymyPref.ONE, TymyPref.TWO};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	private List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
 	private ArrayList<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
@@ -91,7 +93,7 @@ public class TymyListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		int index = tlu.getIndexFromUrl(tymyPrefList, tymyList.get(position).get(TymyListUtil.ONE));
+		int index = tlu.getIndexFromUrl(tymyPrefList, tymyList.get(position).get(TymyPref.ONE));
 		if ((index == -1) || (tymyPrefList.size() == 0) || tymyPrefList.get(index).noDs()) {
 			Toast.makeText(this, getString(R.string.no_discussion), Toast.LENGTH_LONG).show();
 			return;
@@ -109,7 +111,7 @@ public class TymyListActivity extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		MenuInflater inflater = getMenuInflater();
-		int index = tlu.getIndexFromUrl(tymyPrefList, tymyList.get(info.position).get(TymyListUtil.ONE));
+		int index = tlu.getIndexFromUrl(tymyPrefList, tymyList.get(info.position).get(TymyPref.ONE));
 		if (index != -1) {
 			menu.setHeaderTitle(tymyPrefList.get(index).getUrl());
 			inflater.inflate(R.menu.tymy_list_context_menu, menu);
@@ -118,7 +120,7 @@ public class TymyListActivity extends ListActivity {
 
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		int index = tlu.getIndexFromUrl(tymyPrefList, tymyList.get((int) info.id).get(TymyListUtil.ONE));
+		int index = tlu.getIndexFromUrl(tymyPrefList, tymyList.get((int) info.id).get(TymyPref.ONE));
 		switch(item.getItemId()) {
 		case R.id.menu_context_edit:
 			showAddTymy(index);
@@ -234,28 +236,29 @@ public class TymyListActivity extends ListActivity {
 
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
-		protected void onPostExecute(TymyPref tymPref) {
-			Toast.makeText(getApplicationContext(), "discussions list " + tymPref.getUrl() + " updated" , Toast.LENGTH_SHORT).show();
+		protected void onPostExecute(TymyPref tymyPref) {
+			Toast.makeText(getApplicationContext(), "discussions list " + tymyPref.getUrl() + " updated" , Toast.LENGTH_SHORT).show();
 			refreshListView();
 		}
 
-		private TymyPref updateTymDs(TymyPref... tymPref) {
+		// TODO premistit tuhle funkci do jine tridy
+		private TymyPref updateTymDs(TymyPref... tymyPref) {
 
 			TymyPageLoader page = new TymyPageLoader();
 			TymyParser parser = new TymyParser();
 			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
 
-			String mainPage = page.loadMainPage(tymPref[0].getUrl(), tymPref[0].getUser(), tymPref[0].getPass(), tymPref[0].getCookies());
-			String ajax = page.loadAjaxPage(tymPref[0].getUrl(), tymPref[0].getCookies());
+			String mainPage = page.loadMainPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
+			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
 
 			dsNews = parser.getNewItems(ajax);
 			boolean isFirst = true; // clear map in first cycle
 			for ( String dsDesc : parser.getDsArray(mainPage)) {
-				tlu.addMapToList(isFirst, dsDesc, "" + dsNews.get(getDsId(dsDesc)), tymPref[0].getDsList());
+				tlu.addMapToList(isFirst, dsDesc, "" + dsNews.get(getDsId(dsDesc)), tymyPref[0].getDsList());
 				isFirst = false;
 			}
 
-			return tymPref[0];
+			return tymyPref[0];
 		}
 
 		private String getDsId(String dsDesc) {
@@ -281,6 +284,7 @@ public class TymyListActivity extends ListActivity {
 			refreshListView();
 		}
 
+		// TODO premistit tuhle funkci do jine tridy
 		private TymyPref updateNewItems(TymyPref... tymyPref) {
 
 			if (tymyPref[0].getCookies().length() == 0) return tymyPref[0];
@@ -288,7 +292,7 @@ public class TymyListActivity extends ListActivity {
 			TymyPageLoader page = new TymyPageLoader();
 			TymyParser parser = new TymyParser();
 			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
-			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getCookies());
+			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
 
 			dsNews = parser.getNewItems(ajax);
 			boolean isFirst = true; // clear map in first cycle
@@ -298,7 +302,7 @@ public class TymyListActivity extends ListActivity {
 				copy_DsList.add(dsDesc);
 			}
 			for ( HashMap<String, String> dsDesc : copy_DsList) {
-				tlu.addMapToList(isFirst, dsDesc.get(TymyListUtil.ONE), "" + dsNews.get(getDsId(dsDesc.get(TymyListUtil.ONE))), tymyPref[0].getDsList());
+				tlu.addMapToList(isFirst, dsDesc.get(TymyPref.ONE), "" + dsNews.get(getDsId(dsDesc.get(TymyPref.ONE))), tymyPref[0].getDsList());
 				isFirst = false;
 			}
 			return tymyPref[0];

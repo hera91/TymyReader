@@ -161,6 +161,14 @@ public class TymyParser {
 		}
 		return ds;
 	}
+	
+	/**
+	 * Parse ajaxPage contains information about new items in discussions. Returns 
+	 * HashMap<String, Integer> where key id dsId and value is number of new items
+	 * e.g. [dsId, newItems]
+	 * @param ajaxPage String
+	 * @return Returns HashMap<String, Integer> where K=dsId and V=newItems.
+	 */
 	public HashMap<String, Integer> getNewItems (String ajaxPage) {
 		HashMap<String, Integer> ds_news = new HashMap<String, Integer>();		
 		Pattern MY_PATTERN = Pattern.compile("ds_new_(.*?)\".*?:(.*?)</b>");

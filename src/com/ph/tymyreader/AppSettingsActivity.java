@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 
+import com.ph.tymyreader.model.TymyPref;
+
 /**
  * This preference activity has in its manifest declaration an intent filter for
  * the ACTION_MANAGE_NETWORK_USAGE action. This activity provides a settings UI

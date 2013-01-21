@@ -34,7 +34,7 @@ public class TymyPageLoader {
 		try {
 			String data = null;
 			DataOutputStream wr;
-			if (cookies.toString() == "") {
+			if (cookies.toString().equals("")) {
 				data = setFormData(user, pass);
 				//			Log.v(TAG,"Debug: " + user + pass + tym);
 				HttpURLConnection connection = createConnection(data, url + "/index.php", cookies, "POST");
@@ -83,9 +83,10 @@ public class TymyPageLoader {
 		return output.toString();
 	}
 
-	public String loadAjaxPage(String url, StringBuilder cookies) {
+	public String loadAjaxPage(String url, String user, String pass, StringBuilder cookies) {
 		StringBuilder output = new StringBuilder();
 		try {
+			login(url, user, pass, cookies);
 			String data = URLEncoder.encode("xajax", "UTF-8") + "=" + URLEncoder.encode("getNewInformation", "UTF-8") +
 					"&" + URLEncoder.encode("xajaxr", "UTF-8") + "=" + URLEncoder.encode("1358695211471", "UTF-8");
 			DataOutputStream wr;

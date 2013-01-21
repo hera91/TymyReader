@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.ph.tymyreader.model.TymyPref;
+
 public class EditTymyActivity extends Activity {
 
 	private TymyReader app;

@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.ph.tymyreader.model.DiscussionPref;
+
 // TODO Zobecnit nacitaki stranek, aby umely pracovat s vice strankami a nebylo jen na tahani diskuse
 
 // TODO Osetrit vypnuty internet
@@ -19,9 +21,7 @@ import android.widget.Toast;
 
 public class DiscussionViewActivity extends ListActivity {
 
-//	private DiscussionPref dsPref = new DiscussionPref("pd.tymy.cz", "HERA", "bistromat", "1", "kecarna");
 	private DiscussionPref dsPref;
-	//private final String TAG = "TymyReader";
 	final String CAP = "caption";
 	final String TEXT = "text";
 	private String[] from = new String[] {CAP, TEXT};

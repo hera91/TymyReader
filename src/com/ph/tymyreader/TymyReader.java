@@ -7,12 +7,12 @@ import java.util.Map;
 import android.app.Application;
 import android.content.SharedPreferences;
 
+import com.ph.tymyreader.model.TymyPref;
+
 
 public class TymyReader extends Application {
 	//Application-wide class
 	public static final String TAG = "TymyReader";
-	final String ONE = TymyListUtil.ONE;
-	final String TWO = TymyListUtil.TWO;
 	private ArrayList<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
 
 	@Override
