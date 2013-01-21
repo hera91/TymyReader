@@ -14,6 +14,17 @@ public class TymyPref implements Serializable {
 	private String user = null;			
 	private String pass = null;
 	private StringBuilder cookies = new StringBuilder();
+	/**
+	 * dsList List of HashMap<String, String> where map consist of two items
+	 * [ONE, TWO] (ONE and TWO are KEYs); <br/>
+	 * item ONE contains discussion description (dsDecs); <br/>
+	 * item TWO contains number of new items in discussion; <br/>
+	 * <br/>
+	 *  dsDes format id [dsId]:[dsName];  <br/>
+	 *  where dsId is discussion id from tymy web site <br/>
+	 *  dsName is human readable name of discussion 
+	 */
+	// TODO will be better to use ArrayList<dsPref> instead of HashMap
 	private List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
 
 	public static final String ONE = "ONE";
@@ -34,19 +45,6 @@ public class TymyPref implements Serializable {
 
 	public TymyPref(String url, String user, String pass, String dsSequence) {
 		this(url, user, pass, dsSequenceToList(dsSequence));
-	}
-
-	public static List<HashMap<String, String>> dsSequenceToList(String dsSequence) {
-		List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
-		dsList.clear();
-		if (("").equals(dsSequence)) return dsList;
-		for ( String dsDesc : dsSequence.split("\\|")) {
-			HashMap<String, String> map = new HashMap<String, String>();
-			map.put(TymyPref.ONE, dsDesc);
-			map.put(TymyPref.TWO, "");
-			dsList.add(map);
-		}
-		return dsList;
 	}
 
 	public String getUrl() {
@@ -82,6 +80,40 @@ public class TymyPref implements Serializable {
 	public boolean noDs() {
 		return this.dsList.isEmpty();
 	}
+	/**
+	 * dsSequence is form of dsList used for saving in shared preferences file. Sequence
+	 * has format [dsId1]:[dsName1]|[dsId2]:[dsName2]|[dsId3]:[dsName3]...
+	 * 
+	 * @param dsSequence
+	 * @return dsList List of HashMap<String, String>
+	 */
+	public static List<HashMap<String, String>> dsSequenceToList(String dsSequence) {
+		List<HashMap<String, String>> dsList = new ArrayList<HashMap<String,String>>();
+		dsList.clear();
+		if (("").equals(dsSequence)) return dsList;
+		for ( String dsDesc : dsSequence.split("\\|")) {
+			HashMap<String, String> map = new HashMap<String, String>();
+			map.put(TymyPref.ONE, dsDesc);
+			map.put(TymyPref.TWO, "");
+			dsList.add(map);
+		}
+		return dsList;
+	}
+	
+
+	public String getDsSequence() {
+		boolean isFirst = true;
+		StringBuilder seq = new StringBuilder();
+		for (HashMap<String, String> dsDesc : dsList) {
+			if (isFirst) {
+				seq.append(dsDesc.get(ONE));
+				isFirst = false;
+			} else {
+			seq.append("|" + dsDesc.get(ONE));
+			}
+		}
+		return seq.toString();
+	}
 	
 	public String dsListToString() {
 		StringBuilder out = new StringBuilder();
@@ -98,18 +130,5 @@ public class TymyPref implements Serializable {
 		}
 		return out.toString();
 	}
-
-	public String getDsSequence() {
-		boolean isFirst = true;
-		StringBuilder seq = new StringBuilder();
-		for (HashMap<String, String> dsDesc : dsList) {
-			if (isFirst) {
-				seq.append(dsDesc.get(ONE));
-				isFirst = false;
-			} else {
-			seq.append("|" + dsDesc.get(ONE));
-			}
-		}
-		return seq.toString();
-	}
 }
+

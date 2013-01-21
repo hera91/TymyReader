@@ -32,20 +32,30 @@ public class TymyListActivity extends ListActivity {
 	private SimpleAdapter adapter;
 	private TymyListUtil tlu = new TymyListUtil();
 	ListView lv;
+	private LoginAndUpdateTymy loginAndUpdateTymy;
+	private UpdateNewItemsTymy updateNewItemsTymy;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tymy_list);
 
-		lv = (ListView) findViewById(android.R.id.list);
-		TymyReader app = (TymyReader) getApplication();
-		app.loadTymyCfg();
-		tymyPrefList = app.getTymyPrefList();
-
-		refreshTymyPrefList(app);
+		@SuppressWarnings("unchecked")
+		List<HashMap<String, String>> data = (List<HashMap<String, String>>) getLastNonConfigurationInstance();
+		if (data == null) {
+			// activity was started => load configuration
+			TymyReader app = (TymyReader) getApplication();
+			app.loadTymyCfg();
+			tymyPrefList = app.getTymyPrefList();
+			//refresh discussions from web
+			refreshTymyPrefList(app);
+		} else {
+			// Configuration was changed, reload data
+			tymyList = data;
+		}
 		// Set-up adapter for tymyList
 		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
+		lv = getListView();
 		lv.setAdapter(adapter);
 
 		registerForContextMenu(getListView());
@@ -62,9 +72,18 @@ public class TymyListActivity extends ListActivity {
 	@Override
 	protected void onDestroy () {
 		super.onDestroy();
+		//cancel background threads
+		if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
+		if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
+		//save configuration
 		TymyReader app = (TymyReader) getApplication();
-		//		Log.v(TAG, "onDestroy: " + tlu.printTymyPrefList(tymyPrefList));
 		app.saveTymyCfg(tymyPrefList);
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		final List<HashMap<String, String>> data = tymyList;
+		return data;
 	}
 
 	// **************  Activity Option menu  ************** //
@@ -185,7 +204,8 @@ public class TymyListActivity extends ListActivity {
 		}
 		int i = 0;
 		for(TymyPref tP : copy_tymyPrefList) {
-			new LoginAndUpdateTymy().execute(tP);
+			loginAndUpdateTymy = new LoginAndUpdateTymy();
+			loginAndUpdateTymy.execute(tP);
 			tymyPrefList.remove(i);
 			tymyPrefList.add(i, tP);
 			app.setTymyPrefList(tymyPrefList);
@@ -201,7 +221,8 @@ public class TymyListActivity extends ListActivity {
 		}
 		int i = 0;
 		for(TymyPref tP : copy_tymyPrefList) {
-			new UpdateNewItemsTymy().execute(tP);
+			updateNewItemsTymy = new UpdateNewItemsTymy();
+			updateNewItemsTymy.execute(tP);
 			tymyPrefList.remove(i);
 			tymyPrefList.add(i, tP);
 			app.setTymyPrefList(tymyPrefList);
@@ -247,7 +268,7 @@ public class TymyListActivity extends ListActivity {
 			TymyPageLoader page = new TymyPageLoader();
 			TymyParser parser = new TymyParser();
 			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
-
+			
 			String mainPage = page.loadMainPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
 			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
 
