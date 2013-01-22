@@ -13,6 +13,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.ph.tymyreader.model.DiscussionPref;
+import com.ph.tymyreader.model.DsItem;
 
 // TODO Zobecnit nacitaki stranek, aby umely pracovat s vice strankami a nebylo jen na tahani diskuse
 
@@ -137,3 +138,4 @@ public class DiscussionViewActivity extends ListActivity {
 		}
 	}
 }
+
