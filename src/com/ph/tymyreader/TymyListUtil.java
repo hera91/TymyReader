@@ -30,7 +30,6 @@ public class TymyListUtil implements Serializable {
 	public void updateTymyList (ArrayList<TymyPref> tymyPrefList, List<HashMap<String, String>> tymyList) {
 		boolean isFirst = true;
 		for (TymyPref tP : tymyPrefList) {
-//			Log.v(TAG,"Login to tymy " + tP.getUrl());
 			addMapToList(isFirst, tP.getUrl(), tP.dsListToString(), tymyList);
 			isFirst = false;
 		}

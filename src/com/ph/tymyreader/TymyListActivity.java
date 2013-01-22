@@ -158,14 +158,6 @@ public class TymyListActivity extends ListActivity {
 		startActivity(intent);		
 	}
 
-	protected void showTymySettings(int position) {
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("tymPref", tymyPrefList.get(position));
-		Intent intent = new Intent(this, AppSettingsActivity.class);
-		intent.putExtras(bundle);
-		startActivity(intent);				
-	}
-
 	private void showAddTymy(int position) {
 		Bundle bundle = new Bundle();
 		bundle.putInt("position", position);
@@ -174,16 +166,16 @@ public class TymyListActivity extends ListActivity {
 		startActivityForResult(intent, EDIT_TYMY_ACTIVITY);
 	}
 
-	 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		 switch (requestCode) {
-		 case EDIT_TYMY_ACTIVITY:
-			 if (resultCode == RESULT_OK) {
-				 TymyReader app = (TymyReader) getApplication();
-				 refreshTymyPrefList(app);
-			 }
-		 }
-	 }
-	 
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case EDIT_TYMY_ACTIVITY:
+			if (resultCode == RESULT_OK) {
+				TymyReader app = (TymyReader) getApplication();
+				refreshTymyPrefList(app);
+			}
+		}
+	}
+
 	private void showAddTymy() {
 		showAddTymy(-1);
 	}
@@ -229,7 +221,7 @@ public class TymyListActivity extends ListActivity {
 			i = i + 1;
 		}
 	}
-	
+
 	private void refreshListView() {
 		TymyReader app = (TymyReader) getApplication();
 		tymyPrefList = app.getTymyPrefList();
@@ -268,7 +260,7 @@ public class TymyListActivity extends ListActivity {
 			TymyPageLoader page = new TymyPageLoader();
 			TymyParser parser = new TymyParser();
 			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
-			
+
 			String mainPage = page.loadMainPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
 			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
 
@@ -286,7 +278,7 @@ public class TymyListActivity extends ListActivity {
 			return dsDesc.split(":")[0];
 		}
 	}
-	
+
 	private class UpdateNewItemsTymy extends AsyncTask<TymyPref, Integer, TymyPref> {
 
 		@Override
@@ -309,7 +301,7 @@ public class TymyListActivity extends ListActivity {
 		private TymyPref updateNewItems(TymyPref... tymyPref) {
 
 			if (tymyPref[0].getCookies().length() == 0) return tymyPref[0];
-			
+
 			TymyPageLoader page = new TymyPageLoader();
 			TymyParser parser = new TymyParser();
 			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
@@ -317,7 +309,7 @@ public class TymyListActivity extends ListActivity {
 
 			dsNews = parser.getNewItems(ajax);
 			boolean isFirst = true; // clear map in first cycle
-			
+
 			ArrayList<HashMap<String, String>> copy_DsList = new ArrayList<HashMap<String,String>>();
 			for (HashMap<String, String> dsDesc : tymyPref[0].getDsList()) {
 				copy_DsList.add(dsDesc);

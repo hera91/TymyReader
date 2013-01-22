@@ -37,13 +37,13 @@ public class GlobalSettingsActivity extends PreferenceActivity
         // Loads the XML preferences file.
         addPreferencesFromResource(R.xml.global_preference);
         
-        mEditTextPreference = (EditTextPreference) getPreferenceScreen().findPreference(getString(R.string.greetings));
+        mEditTextPreference = (EditTextPreference) getPreferenceScreen().findPreference(getString(R.string.no_new_items));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mEditTextPreference.setSummary("Current value is " + mEditTextPreference.getText()); 
+        mEditTextPreference.setSummary(String.format("%s %s", getString(R.string.current_value_is), mEditTextPreference.getText())); 
         // Registers a callback to be invoked whenever a user changes a preference.
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
@@ -62,6 +62,6 @@ public class GlobalSettingsActivity extends PreferenceActivity
     // Fires when the user changes a preference.
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        mEditTextPreference.setSummary("Current value is " + sharedPreferences.getString(key, ""));
+        mEditTextPreference.setSummary(String.format("%s %s", getString(R.string.current_value_is), sharedPreferences.getString(key, "")));
     }
 }

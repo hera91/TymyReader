@@ -2,10 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <EditTextPreference
-        android:dialogMessage="@string/greetings_message"
-        android:dialogTitle="@string/greetings"
-        android:key="@string/greetings"
-        android:title="@string/greetings" />
-    <Preference android:key="@string/foo" android:defaultValue="@string/foo" android:title="@string/foo"/>
+        android:defaultValue="@string/no_new_items_default"
+        android:dialogMessage="@string/no_new_items_message"
+        android:dialogTitle="@string/no_new_items"
+        android:enabled="false"
+        android:key="@string/no_new_items"
+        android:title="@string/no_new_items" />
 
 </PreferenceScreen>
