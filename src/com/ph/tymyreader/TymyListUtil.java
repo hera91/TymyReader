@@ -27,12 +27,20 @@ public class TymyListUtil implements Serializable {
 		if (isNew) tymyPrefList.add(newTP);
 	}
 	
-	public void updateTymyList (ArrayList<TymyPref> tymyPrefList, List<HashMap<String, String>> tymyList) {
+	/**
+	 * Replace NO_NEW_ITEMS string with noNewItems parameter witch could be defined
+	 * by user in shared preferences. 
+	 */
+	public void updateTymyList (ArrayList<TymyPref> tymyPrefList, String noNewItems, List<HashMap<String, String>> tymyList) {
 		boolean isFirst = true;
 		for (TymyPref tP : tymyPrefList) {
-			addMapToList(isFirst, tP.getUrl(), tP.dsListToString(), tymyList);
+			if (tP.dsListToString().equals(TymyPref.NO_NEW_ITEMS)) {
+				addMapToList(isFirst, tP.getUrl(), noNewItems,  tymyList);				
+			} else {
+				addMapToList(isFirst, tP.getUrl(), tP.dsListToString(), tymyList);				
+			}
 			isFirst = false;
-		}
+		}		
 	}
 	
 	public void addMapToList(boolean clear, String one, String two, List<HashMap<String, String>> list) {

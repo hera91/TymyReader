@@ -83,7 +83,9 @@ public class EditTymyActivity extends Activity {
 		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
 		EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
 		EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
-		TymyPref tymyPref = new TymyPref(url.getText().toString(), user.getText().toString(), pass.getText().toString());
+		TymyPref tymyPref = new TymyPref(url.getText().toString().trim(), 
+										user.getText().toString().trim(), 
+										pass.getText().toString().trim());
 		app = (TymyReader) getApplication();
 		ArrayList<TymyPref> tymyPrefList = app.getTymyPrefList();
 		tlu.updateTymyPrefList(tymyPrefList, tymyPref);

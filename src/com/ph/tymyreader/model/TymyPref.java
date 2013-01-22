@@ -29,6 +29,8 @@ public class TymyPref implements Serializable {
 
 	public static final String ONE = "ONE";
 	public static final String TWO = "TWO";
+	public static final String NO_NEW_ITEMS = "__NO_NEW_ITEMS__";
+
 
 	public TymyPref(String url, String user, String pass) {
 		this.url = url;
@@ -99,7 +101,7 @@ public class TymyPref implements Serializable {
 		}
 		return dsList;
 	}
-	
+
 
 	public String getDsSequence() {
 		boolean isFirst = true;
@@ -109,25 +111,41 @@ public class TymyPref implements Serializable {
 				seq.append(dsDesc.get(ONE));
 				isFirst = false;
 			} else {
-			seq.append("|" + dsDesc.get(ONE));
+				seq.append("|" + dsDesc.get(ONE));
 			}
 		}
 		return seq.toString();
 	}
-	
+
+	/**
+	 * Fills item TWO with preview of new items or with message NO_NEW_ITEMS or
+	 * leave it empty (it means there was no web update yet)
+	 */
 	public String dsListToString() {
 		StringBuilder out = new StringBuilder();
 		boolean isFirst = true;
+		boolean wasUpdated = false; //false => there was no update
+		int countNew = 0; // 0 => no new items, 0< => new items
 		for (HashMap<String, String> ds : dsList) {
-			if (ds.get(TWO).equals("0") || ds.get(TWO).equals("")) continue;
-			if (isFirst) {
-				out.append(ds.get(ONE).split(":")[1]);
-				isFirst = false;
+			if (ds.get(TWO).equals("")) { 
+				continue;
 			} else {
-			out.append(", " + ds.get(ONE).split(":")[1]);
+				wasUpdated = true; //was updated from web
+				countNew = countNew + Integer.parseInt(ds.get(TWO));
+				if (ds.get(TWO).equals("0")) {
+					continue;
+				} else {
+					if (isFirst) {
+						out.append(ds.get(ONE).split(":")[1]);
+						isFirst = false;
+					} else {
+						out.append(", " + ds.get(ONE).split(":")[1]);
+					}
+					out.append("[" + ds.get(TWO) + "]");
+				}
 			}
-			out.append("[" + ds.get(TWO) + "]");
 		}
+		if (wasUpdated && countNew == 0) out = new StringBuilder(NO_NEW_ITEMS);
 		return out.toString();
 	}
 }

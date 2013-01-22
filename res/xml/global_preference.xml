@@ -5,8 +5,8 @@
         android:defaultValue="@string/no_new_items_default"
         android:dialogMessage="@string/no_new_items_message"
         android:dialogTitle="@string/no_new_items"
-        android:enabled="false"
-        android:key="@string/no_new_items"
+        android:enabled="true"
+        android:key="@string/no_new_items_key"
         android:title="@string/no_new_items" />
 
 </PreferenceScreen>

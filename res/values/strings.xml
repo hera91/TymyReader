@@ -21,7 +21,7 @@
 
     <!-- Global Setting -->
     <string name="no_new_items">\"No new items\" message</string>
-    <string name="no_new_items_key">no_new_items</string>
+    <string name="no_new_items_key">no_new_items_key</string>
     <string name="no_new_items_message">Choose your own \"No new items\" message</string>
     <string name="no_new_items_default">boring..</string>
 

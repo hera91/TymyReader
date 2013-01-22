@@ -5,8 +5,10 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -223,12 +225,14 @@ public class TymyListActivity extends ListActivity {
 	}
 
 	private void refreshListView() {
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		String noNewItems = pref.getString(getString(R.string.no_new_items_key), getString(R.string.no_new_items_default));
 		TymyReader app = (TymyReader) getApplication();
 		tymyPrefList = app.getTymyPrefList();
 		if (tymyPrefList.isEmpty()) {
 			tlu.addMapToList(true, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
 		} else {
-			tlu.updateTymyList(tymyPrefList, tymyList);
+			tlu.updateTymyList(tymyPrefList, noNewItems, tymyList);
 			adapter.notifyDataSetChanged();
 		}
 	}

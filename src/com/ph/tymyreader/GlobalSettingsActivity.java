@@ -37,7 +37,7 @@ public class GlobalSettingsActivity extends PreferenceActivity
         // Loads the XML preferences file.
         addPreferencesFromResource(R.xml.global_preference);
         
-        mEditTextPreference = (EditTextPreference) getPreferenceScreen().findPreference(getString(R.string.no_new_items));
+        mEditTextPreference = (EditTextPreference) getPreferenceScreen().findPreference(getString(R.string.no_new_items_key));
     }
 
     @Override
