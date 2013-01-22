@@ -86,6 +86,7 @@
             android:id="@+id/show_pass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/add_tymy_pass_edit"
             android:checked="false"
             android:contentDescription="@string/show_pass"
