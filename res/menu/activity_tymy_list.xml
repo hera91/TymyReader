@@ -11,5 +11,10 @@
         android:icon="@drawable/ic_menu_add"
         android:title="@string/menu_add_tymy">
     </item>
+    <item
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/ic_menu_refresh"
+        android:title="@string/menu_refresh">
+    </item>
 
 </menu>

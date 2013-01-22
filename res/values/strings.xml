@@ -31,6 +31,7 @@
     <string name="menu_post">New post</string>
     <string name="menu_context_edit">Edit</string>
     <string name="menu_context_delete">Delete</string>
+    <string name="menu_refresh">Refresh</string>
 
     <!-- Edit Tymy Activity -->
     <string name="button_cancel">Cancel</string>

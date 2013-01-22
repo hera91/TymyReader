@@ -22,8 +22,6 @@ import android.widget.Toast;
 
 import com.ph.tymyreader.model.TymyPref;
 
-// TODO predelat TymyPref na TymyManager, ktery bude poskytovat vsechny funkce kolem Tymu
-
 public class TymyListActivity extends ListActivity {
 	//	private static final String TAG = TymyReader.TAG;
 	private static final int EDIT_TYMY_ACTIVITY = 1;
@@ -105,6 +103,9 @@ public class TymyListActivity extends ListActivity {
 			return true;
 		case R.id.menu_add_tymy:
 			showAddTymy();
+			return true;
+		case R.id.menu_refresh:
+			refreshTymyPrefList((TymyReader) getApplication());
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
