@@ -203,6 +203,9 @@ public class TymyListActivity extends ListActivity {
 			tymyPrefList.remove(i);
 			tymyPrefList.add(i, tP);
 			app.setTymyPrefList(tymyPrefList);
+			//This maybe could cause problems when due to lost connectivity the download data will be corrupted,
+			//but next update should fix it (or refresh UI functionality)
+			app.saveTymyCfg(tymyPrefList);
 			i = i + 1;
 		}
 	}

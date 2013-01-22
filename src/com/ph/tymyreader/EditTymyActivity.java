@@ -90,6 +90,7 @@ public class EditTymyActivity extends Activity {
 		ArrayList<TymyPref> tymyPrefList = app.getTymyPrefList();
 		tlu.updateTymyPrefList(tymyPrefList, tymyPref);
 		app.setTymyPrefList(tymyPrefList);
+		app.saveTymyCfg(tymyPrefList);
 		setResult(RESULT_OK);
 		finish();
 	}
