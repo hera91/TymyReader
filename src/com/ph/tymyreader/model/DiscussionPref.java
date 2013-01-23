@@ -16,6 +16,7 @@ public class DiscussionPref implements Serializable {
 	private String id;
 	private String name;
 	private List<HashMap<String, String>> dsItems;
+	private int newItems;
 
 	public DiscussionPref(String tym, String user, String pass, StringBuilder cookies, String id) {
 		this.url = tym;
@@ -77,7 +78,12 @@ public class DiscussionPref implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-
+	public int getNewItems() {
+		return newItems;
+	}
+	public void setNewItems(int newItems) {
+		this.newItems = newItems;
+	}
 }
 
 

@@ -36,12 +36,12 @@ public class DiscussionViewActivity extends ListActivity {
 		setContentView(R.layout.custom_list_activity_view);
 
 		dsPref = (DiscussionPref) getIntent().getSerializableExtra("dsPref");
-
+		
 		final DiscussionPref data = (DiscussionPref) getLastNonConfigurationInstance();
 		if (data == null) {
 			// activity was started
 			addItemsList(true, getString(R.string.loading), dsPref.getName() + " (" + dsPref.getUrl() + ")");
-
+			
 			dsPref.setDsItems(itemsList);
 			adapter = new SimpleAdapter(this, itemsList, R.layout.two_line_list_item, from, to);
 			setListAdapter(adapter);
@@ -126,9 +126,15 @@ public class DiscussionViewActivity extends ListActivity {
 			DsItem dsItem = new DsItem();
 			TymyParser tParser = new TymyParser(input);
 			itemsList.clear();
+			int countNew = dsPref.getNewItems();
 			while ((dsItem = tParser.getDsItem()) != null) {
 				//Log.v(TAG, name + " " + post);
-				addItemsList(false, dsItem.getDsCaption(), dsItem.getDsItemText());
+				if (countNew > 0) {
+					addItemsList(false, "" + getString(R.string.new_item) + dsItem.getDsCaption(), dsItem.getDsItemText());
+					countNew = countNew - 1;
+				} else {
+					addItemsList(false, dsItem.getDsCaption(), dsItem.getDsItemText());	
+				}
 			}
 			adapter.notifyDataSetChanged();
 

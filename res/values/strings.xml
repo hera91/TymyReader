@@ -17,6 +17,7 @@
     <string name="no_tymy_hint">press menu button to add new tymy</string>
     <string name="no_discussion">No discussion found..</string>
     <string name="items_new">new:</string>
+    <string name="new_item">** NEW **</string>
     <string name="current_value_is">Current value is:</string>
 
     <!-- Global Setting -->
