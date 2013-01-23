@@ -161,6 +161,10 @@ public class TymyListActivity extends ListActivity {
 		startActivity(intent);		
 	}
 
+	private void showAddTymy() {
+		showAddTymy(-1);
+	}
+
 	private void showAddTymy(int position) {
 		Bundle bundle = new Bundle();
 		bundle.putInt("position", position);
@@ -179,11 +183,10 @@ public class TymyListActivity extends ListActivity {
 		}
 	}
 
-	private void showAddTymy() {
-		showAddTymy(-1);
-	}
-
 	private void deleteTymy(int position) {
+		//cancel background threads
+		if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
+		if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
 		TymyReader app = (TymyReader) getApplication();
 		app.deleteTymyCfg(tymyPrefList.get(position).getUrl());
 		tlu.removeTymyPref(tymyPrefList, position);

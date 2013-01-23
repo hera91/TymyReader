@@ -42,6 +42,11 @@ public class DiscussionListActivity extends ListActivity {
 		for ( HashMap<String, String> dP : tymyPref.getDsList()) {
 			DiscussionPref dsPref = new DiscussionPref(tymyPref.getUrl(), tymyPref.getUser(), 
 					tymyPref.getPass(), tymyPref.getCookies(), getDsId(dP.get(TymyPref.ONE)), getDsName(dP.get(TymyPref.ONE)));
+			if (dP.get(TymyPref.TWO).equals("")) {
+				dsPref.setNewItems(0);
+			} else {
+				dsPref.setNewItems(Integer.parseInt(dP.get(TymyPref.TWO)));	
+			}
 			dsPrefList.add(dsPref);
 			String items_new = (dP.get(TymyPref.TWO).equals("0") || dP.get(TymyPref.TWO).equals("")) ? "" : getString(R.string.items_new) + " " + dP.get(TymyPref.TWO);
 			addDsList(false, getDsName(dP.get(TymyPref.ONE)), items_new);			

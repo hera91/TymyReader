@@ -10,23 +10,26 @@ import com.ph.tymyreader.model.TymyPref;
 
 public class TymyListUtil implements Serializable {
 
-//	private static final String TAG = TymyReader.TAG;
+	//	private static final String TAG = TymyReader.TAG;
 	private static final long serialVersionUID = 1L;
 
 	public void updateTymyPrefList(ArrayList<TymyPref> tymyPrefList, final TymyPref newTP) {
 		boolean isNew = true;
+		int index = -1;
 		for (TymyPref tP : tymyPrefList) {
 			if (tP.getUrl().equals(newTP.getUrl())) {
-				int index = 0;
 				index = tymyPrefList.indexOf(tP);
-				tymyPrefList.remove(index);
-				tymyPrefList.add(index, newTP);
 				isNew = false;
 			}
 		}
-		if (isNew) tymyPrefList.add(newTP);
+		if (isNew) {
+			tymyPrefList.add(newTP);
+		} else if ( index != -1) {
+			tymyPrefList.remove(index);
+			tymyPrefList.add(index, newTP);
+		}
 	}
-	
+
 	/**
 	 * Replace NO_NEW_ITEMS string with noNewItems parameter witch could be defined
 	 * by user in shared preferences. 
@@ -42,7 +45,7 @@ public class TymyListUtil implements Serializable {
 			isFirst = false;
 		}		
 	}
-	
+
 	public void addMapToList(boolean clear, String one, String two, List<HashMap<String, String>> list) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put(TymyPref.ONE, one);
