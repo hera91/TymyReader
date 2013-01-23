@@ -25,7 +25,7 @@ import android.preference.PreferenceActivity;
  * the ACTION_MANAGE_NETWORK_USAGE action. This activity provides a settings UI
  * for users to specify network settings to control data usage.
  */
-public class GlobalSettingsActivity extends PreferenceActivity
+public class GeneralSettingsActivity extends PreferenceActivity
         implements
             OnSharedPreferenceChangeListener {
 

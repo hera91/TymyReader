@@ -35,12 +35,8 @@
             android:label="@string/title_activity_discussion_list" >
         </activity>
         <activity
-            android:name="com.ph.tymyreader.GlobalSettingsActivity"
-            android:label="@string/title_global_settings_activity" >
-        </activity>
-        <activity
-            android:name="com.ph.tymyreader.AppSettingsActivity"
-            android:label="@string/title_tym_settings_activity" >
+            android:name="com.ph.tymyreader.GeneralSettingsActivity"
+            android:label="@string/title_general_settings_activity" >
         </activity>
         <activity
             android:name="com.ph.tymyreader.EditTymyActivity"

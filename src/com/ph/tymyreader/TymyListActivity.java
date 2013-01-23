@@ -157,7 +157,7 @@ public class TymyListActivity extends ListActivity {
 
 	// *****************  Setting  ******************** //
 	private void showSettings() {
-		Intent intent = new Intent(this, GlobalSettingsActivity.class);
+		Intent intent = new Intent(this, GeneralSettingsActivity.class);
 		startActivity(intent);		
 	}
 
