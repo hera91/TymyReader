@@ -68,12 +68,12 @@ public class DiscussionListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		clearNewItems(position);
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("dsPref", dsPrefList.get(position));
 		Intent intent = new Intent(this, DiscussionViewActivity.class);
 		intent.putExtras(bundle);
 		startActivity(intent);		
+		clearNewItems(position);
 	}
 
 	private void clearNewItems(int position) {

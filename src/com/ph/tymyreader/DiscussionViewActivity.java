@@ -130,7 +130,7 @@ public class DiscussionViewActivity extends ListActivity {
 			while ((dsItem = tParser.getDsItem()) != null) {
 				//Log.v(TAG, name + " " + post);
 				if (countNew > 0) {
-					addItemsList(false, "" + getString(R.string.new_item) + dsItem.getDsCaption(), dsItem.getDsItemText());
+					addItemsList(false, "" + getString(R.string.new_item) + " " +dsItem.getDsCaption(), dsItem.getDsItemText());
 					countNew = countNew - 1;
 				} else {
 					addItemsList(false, dsItem.getDsCaption(), dsItem.getDsItemText());	
