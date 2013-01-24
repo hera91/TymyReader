@@ -19,7 +19,8 @@
     <string name="items_new">new:</string>
     <string name="new_item">** NEW **</string>
     <string name="current_value_is">Current value is:</string>
-
+	<string name="empty_discussion">Network problem or discussion is empty!</string>
+	
     <!-- Global Setting -->
     <string name="no_new_items">\"No new items\" message</string>
     <string name="no_new_items_key">no_new_items_key</string>
@@ -45,5 +46,15 @@
     <string name="new_user_text">User</string>
     <string name="new_pass_text">Password</string>
     <string name="show_pass">show password</string>
+
+    <!-- CrashReports -->
+    <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
+    <string name="crash_dialog_title">CrashTest has crashed</string>
+    <string name="crash_dialog_text">An unexpected error occurred forcing the
+    application to stop. Please help us fix this by sending us error data,
+    all you have to do is click OK.</string>
+    <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
+    <string name="crash_dialog_ok_toast">Thank you !</string>
+    <string name="menu_send_report">Send report</string>
 
 </resources>

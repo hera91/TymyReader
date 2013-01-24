@@ -27,11 +27,14 @@ public class DiscussionListActivity extends ListActivity {
 	private ArrayList<DiscussionPref> dsPrefList = new ArrayList<DiscussionPref>();
 	private TymyPref tymyPref;
 	SimpleAdapter adapter;
+	private TymyReader app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.discussions_list);
+		
+		app = (TymyReader) getApplication();
 
 		int position = (int) getIntent().getIntExtra("position", -1);
 		if (position == -1) finish();
@@ -41,7 +44,7 @@ public class DiscussionListActivity extends ListActivity {
 
 		for ( HashMap<String, String> dP : tymyPref.getDsList()) {
 			DiscussionPref dsPref = new DiscussionPref(tymyPref.getUrl(), tymyPref.getUser(), 
-					tymyPref.getPass(), tymyPref.getCookies(), getDsId(dP.get(TymyPref.ONE)), getDsName(dP.get(TymyPref.ONE)));
+					tymyPref.getPass(), tymyPref.getHttpContext(), getDsId(dP.get(TymyPref.ONE)), getDsName(dP.get(TymyPref.ONE)));
 			if (dP.get(TymyPref.TWO).equals("")) {
 				dsPref.setNewItems(0);
 			} else {
@@ -68,10 +71,8 @@ public class DiscussionListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("dsPref", dsPrefList.get(position));
+		app.setDsPref(dsPrefList.get(position));
 		Intent intent = new Intent(this, DiscussionViewActivity.class);
-		intent.putExtras(bundle);
 		startActivity(intent);		
 		clearNewItems(position);
 	}

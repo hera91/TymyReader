@@ -29,19 +29,22 @@ public class DiscussionViewActivity extends ListActivity {
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	List<HashMap<String, String>> itemsList = new ArrayList<HashMap<String,String>>();
 	private SimpleAdapter adapter;
-	
+	private TymyReader app;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.custom_list_activity_view);
+		app = (TymyReader) getApplication();
+		dsPref = app.getDsPref();
 
-		dsPref = (DiscussionPref) getIntent().getSerializableExtra("dsPref");
-		
+		//dsPref = (DiscussionPref) getIntent().getSerializableExtra("dsPref");
+
 		final DiscussionPref data = (DiscussionPref) getLastNonConfigurationInstance();
 		if (data == null) {
 			// activity was started
-			addItemsList(true, getString(R.string.loading), dsPref.getName() + " (" + dsPref.getUrl() + ")");
-			
+			addItemsList(true, getString(R.string.loading), "");
+
 			dsPref.setDsItems(itemsList);
 			adapter = new SimpleAdapter(this, itemsList, R.layout.two_line_list_item, from, to);
 			setListAdapter(adapter);
@@ -80,7 +83,7 @@ public class DiscussionViewActivity extends ListActivity {
 		getMenuInflater().inflate(R.menu.activity_discussion_view, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
@@ -105,7 +108,7 @@ public class DiscussionViewActivity extends ListActivity {
 		@Override
 		protected String doInBackground(DiscussionPref... dsPref) {
 			TymyPageLoader page = new TymyPageLoader();
-			return page.loadDsPage(dsPref[0].getUrl(), dsPref[0].getUser(), dsPref[0].getPass(), dsPref[0].getCookies(), dsPref[0].getId());
+			return page.loadDsPage(dsPref[0].getUrl(), dsPref[0].getId(), dsPref[0].getUser(), dsPref[0].getPass(), dsPref[0].getHttpContext());
 		}
 
 		protected void onProgressUpdate(Integer... progress) {
@@ -119,21 +122,22 @@ public class DiscussionViewActivity extends ListActivity {
 		}
 
 		private void showList(String input) {
-			if ( input.length() == 0 ) {
-				input = "No information found\n";
-				return;
-			}
-			DsItem dsItem = new DsItem();
-			TymyParser tParser = new TymyParser(input);
-			itemsList.clear();
-			int countNew = dsPref.getNewItems();
-			while ((dsItem = tParser.getDsItem()) != null) {
-				//Log.v(TAG, name + " " + post);
-				if (countNew > 0) {
-					addItemsList(false, "" + getString(R.string.new_item) + " " +dsItem.getDsCaption(), dsItem.getDsItemText());
-					countNew = countNew - 1;
-				} else {
-					addItemsList(false, dsItem.getDsCaption(), dsItem.getDsItemText());	
+			if ((input == null) || (input.length()) == 0 ) {
+				input = getString(R.string.empty_discussion);
+				addItemsList(true, input, "");	
+			} else {
+				DsItem dsItem = new DsItem();
+				TymyParser tParser = new TymyParser(input);
+				itemsList.clear();
+				int countNew = dsPref.getNewItems();
+				while ((dsItem = tParser.getDsItem()) != null) {
+					//Log.v(TAG, name + " " + post);
+					if (countNew > 0) {
+						addItemsList(false, "" + getString(R.string.new_item) + " " +dsItem.getDsCaption(), dsItem.getDsItemText());
+						countNew = countNew - 1;
+					} else {
+						addItemsList(false, dsItem.getDsCaption(), dsItem.getDsItemText());	
+					}
 				}
 			}
 			adapter.notifyDataSetChanged();

@@ -27,6 +27,7 @@ public class EditTymyActivity extends Activity {
 		int position = (int) getIntent().getIntExtra("position", -1);
 		
 		setContentView(R.layout.activity_add_tymy);
+		// -1 => Add new Tymy
 		if (position != -1) fillFields(position);
 		showPass(); // if checkbox is checked
 	}

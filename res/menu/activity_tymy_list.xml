@@ -16,5 +16,9 @@
         android:icon="@drawable/ic_menu_refresh"
         android:title="@string/menu_refresh">
     </item>
-
+    <item
+        android:id="@+id/menu_send_report"
+        android:title="@string/menu_send_report">
+    </item>
+    
 </menu>

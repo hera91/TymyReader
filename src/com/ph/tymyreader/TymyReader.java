@@ -7,18 +7,58 @@ import java.util.Map;
 import android.app.Application;
 import android.content.SharedPreferences;
 
+import com.ph.tymyreader.model.DiscussionPref;
 import com.ph.tymyreader.model.TymyPref;
+import org.acra.*;
+import org.acra.annotation.*;
 
-
+@ReportsCrashes(formKey = "",
+//@ReportsCrashes(formKey = "dE5QTVBSNS1KMkY3UVFMTEZaaFRrVnc6MQ",
+						mode = ReportingInteractionMode.DIALOG,
+						resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
+						resDialogText = R.string.crash_dialog_text,
+						resDialogIcon = android.R.drawable.ic_dialog_info, //optional. default is a warning sign
+						resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
+						resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
+						resDialogOkToast = R.string.crash_dialog_ok_toast, // optional. displays a Toast message when the user accepts to send a report.
+						additionalSharedPreferences={"tymyUrlList", "pd.tymy.cz", "ls.tymy.cz", "dg.tymy.cz", "masters.tymy.cz", "p7.tymy.cz"},
+						excludeMatchingSharedPreferencesKeys={"pass"})
 public class TymyReader extends Application {
 	//Application-wide class
 	public static final String TAG = "TymyReader";
 	private ArrayList<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
+	private DiscussionPref dsPref = null; 
+
+	/**
+	 * store object in application class.
+	 * @return the data
+	 */
+	public DiscussionPref getDsPref() {
+		return dsPref;
+	}
+
+	/**
+	 * get object from application class
+	 * @param data the data to set
+	 */
+	public void setDsPref(DiscussionPref dsPref) {
+		this.dsPref = dsPref;
+	}
+	
+	public void clearDsPref () {
+		dsPref = null;
+	}
+
 
 	@Override
 	public void onCreate() {
+		super.onCreate();
+		
+		// The following line triggers the initialization of ACRA
+//		ACRA.init(this);
 		loadTymyPrefList();
 	}
+	
 	
 	public ArrayList<TymyPref> getTymyPrefList() {
 		return tymyPrefList;
