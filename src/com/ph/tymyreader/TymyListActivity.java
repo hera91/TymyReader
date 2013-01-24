@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.acra.ACRA;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -108,7 +110,10 @@ public class TymyListActivity extends ListActivity {
 			showAddTymy();
 			return true;
 		case R.id.menu_refresh:
-			refreshTymyNewItems();
+			refreshTymyPrefList();
+			return true;
+		case R.id.menu_send_report:
+			ACRA.getErrorReporter().handleSilentException(new Exception("Manual report"));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

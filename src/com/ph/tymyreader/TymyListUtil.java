@@ -13,8 +13,6 @@ public class TymyListUtil implements Serializable {
 	//	private static final String TAG = TymyReader.TAG;
 	private static final long serialVersionUID = 1L;
 
-	// TODO add constructor with application class
-	
 	public void updateTymyPrefList(ArrayList<TymyPref> tymyPrefList, final TymyPref newTP) {
 		boolean isNew = true;
 		int index = -1;
