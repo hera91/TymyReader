@@ -3,7 +3,6 @@ package com.ph.tymyreader;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
@@ -92,10 +91,7 @@ public class EditTymyActivity extends Activity {
 		tlu.updateTymyPrefList(tymyPrefList, tymyPref);
 		app.setTymyPrefList(tymyPrefList);
 		app.saveTymyCfg(tymyPrefList);
-		
-		Intent data = new Intent();
-		data.putExtra("index", tymyPrefList.indexOf(tymyPref));
-		setResult(RESULT_OK, data);
+		setResult(RESULT_OK);
 		finish();
 	}
 }

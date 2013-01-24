@@ -3,13 +3,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.acra.ACRA;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -33,32 +34,29 @@ public class TymyListActivity extends ListActivity {
 	private SimpleAdapter adapter;
 	private TymyListUtil tlu = new TymyListUtil();
 	ListView lv;
-	private TymyReader app; 
-	private List<LoginAndUpdateTymy> loginAndUpdateTymy = new ArrayList<TymyListActivity.LoginAndUpdateTymy>();
-	private List<UpdateNewItemsTymy> updateNewItemsTymy = new ArrayList<TymyListActivity.UpdateNewItemsTymy>();
+	private LoginAndUpdateTymy loginAndUpdateTymy;
+	private UpdateNewItemsTymy updateNewItemsTymy;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tymy_list);
-		app = (TymyReader) getApplication();
-		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
-				
+
 		@SuppressWarnings("unchecked")
 		List<HashMap<String, String>> data = (List<HashMap<String, String>>) getLastNonConfigurationInstance();
 		if (data == null) {
 			// activity was started => load configuration
+			TymyReader app = (TymyReader) getApplication();
 			app.loadTymyCfg();
 			tymyPrefList = app.getTymyPrefList();
 			//refresh discussions from web
-			refreshTymyPrefList();
-			//refreshTymyNewItems();
+			refreshTymyPrefList(app);
 		} else {
 			// Configuration was changed, reload data
 			tymyList = data;
-			adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
 		}
 		// Set-up adapter for tymyList
+		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
 		lv = getListView();
 		lv.setAdapter(adapter);
 
@@ -68,8 +66,8 @@ public class TymyListActivity extends ListActivity {
 	@Override
 	protected void onResume () {
 		super.onResume();
-		Log.v(TymyReader.TAG, "onResume");
-		refreshTymyNewItems();
+		TymyReader app = (TymyReader) getApplication();		
+		refreshTymyNewItems(app);
 		refreshListView();
 	}
 
@@ -77,9 +75,10 @@ public class TymyListActivity extends ListActivity {
 	protected void onDestroy () {
 		super.onDestroy();
 		//cancel background threads
-		//if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
-		//if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
+		if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
+		if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
 		//save configuration
+		TymyReader app = (TymyReader) getApplication();
 		app.saveTymyCfg(tymyPrefList);
 	}
 
@@ -108,7 +107,10 @@ public class TymyListActivity extends ListActivity {
 			showAddTymy();
 			return true;
 		case R.id.menu_refresh:
-			refreshTymyNewItems();
+			refreshTymyPrefList((TymyReader) getApplication());
+			return true;
+		case R.id.menu_send_report:
+			ACRA.getErrorReporter().handleSilentException(new Exception("Manual report"));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -180,31 +182,24 @@ public class TymyListActivity extends ListActivity {
 		switch (requestCode) {
 		case EDIT_TYMY_ACTIVITY:
 			if (resultCode == RESULT_OK) {
-				int index = data.getIntExtra("index", -1);
-				refreshTymyPrefList(index);
+				TymyReader app = (TymyReader) getApplication();
+				refreshTymyPrefList(app);
 			}
 		}
 	}
 
 	private void deleteTymy(int position) {
 		//cancel background threads
-//		if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
-//		if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
+		if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
+		if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
+		TymyReader app = (TymyReader) getApplication();
 		app.deleteTymyCfg(tymyPrefList.get(position).getUrl());
 		tlu.removeTymyPref(tymyPrefList, position);
 		app.setTymyPrefList(tymyPrefList);
 		refreshListView();
 	}
 
-	private void refreshTymyPrefList(int index) {
-		if (index == -1) refreshTymyPrefList();
-		new LoginAndUpdateTymy().execute(tymyPrefList.get(index));
-		app.setTymyPrefList(tymyPrefList);
-		app.saveTymyCfg(tymyPrefList);
-	}
-	
-
-	private void refreshTymyPrefList() {
+	private void refreshTymyPrefList(TymyReader app) {
 		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
 		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
 		for (TymyPref tP : tymyPrefList) {
@@ -212,8 +207,8 @@ public class TymyListActivity extends ListActivity {
 		}
 		int i = 0;
 		for(TymyPref tP : copy_tymyPrefList) {
-			loginAndUpdateTymy.add(i, (LoginAndUpdateTymy) new LoginAndUpdateTymy());
-			loginAndUpdateTymy.get(i).execute(tP);
+			loginAndUpdateTymy = new LoginAndUpdateTymy();
+			loginAndUpdateTymy.execute(tP);
 			tymyPrefList.remove(i);
 			tymyPrefList.add(i, tP);
 			app.setTymyPrefList(tymyPrefList);
@@ -224,7 +219,7 @@ public class TymyListActivity extends ListActivity {
 		}
 	}
 
-	private void refreshTymyNewItems() {
+	private void refreshTymyNewItems(TymyReader app) {
 		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
 		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
 		for (TymyPref tP : tymyPrefList) {
@@ -232,8 +227,8 @@ public class TymyListActivity extends ListActivity {
 		}
 		int i = 0;
 		for(TymyPref tP : copy_tymyPrefList) {
-			updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
-			updateNewItemsTymy.get(i).execute(tP);
+			updateNewItemsTymy = new UpdateNewItemsTymy();
+			updateNewItemsTymy.execute(tP);
 			tymyPrefList.remove(i);
 			tymyPrefList.add(i, tP);
 			app.setTymyPrefList(tymyPrefList);
@@ -244,6 +239,7 @@ public class TymyListActivity extends ListActivity {
 	private void refreshListView() {
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		String noNewItems = pref.getString(getString(R.string.no_new_items_key), getString(R.string.no_new_items_default));
+		TymyReader app = (TymyReader) getApplication();
 		tymyPrefList = app.getTymyPrefList();
 		if (tymyPrefList.isEmpty()) {
 			tlu.addMapToList(true, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
@@ -258,8 +254,8 @@ public class TymyListActivity extends ListActivity {
 	private class LoginAndUpdateTymy extends AsyncTask<TymyPref, Integer, TymyPref> {
 
 		@Override
-		protected TymyPref doInBackground(TymyPref... tymyPref) {			
-			return updateTymDs(tymyPref);
+		protected TymyPref doInBackground(TymyPref... tymPref) {			
+			return updateTymDs(tymPref);
 		}
 
 		@Override
@@ -270,7 +266,7 @@ public class TymyListActivity extends ListActivity {
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
 		protected void onPostExecute(TymyPref tymyPref) {
-//			Toast.makeText(getApplicationContext(), "discussions list " + tymyPref.getUrl() + " updated" , Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "discussions list " + tymyPref.getUrl() + " updated" , Toast.LENGTH_SHORT).show();
 			refreshListView();
 		}
 
