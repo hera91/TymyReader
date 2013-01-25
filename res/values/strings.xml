@@ -19,7 +19,8 @@
     <string name="items_new">new:</string>
     <string name="new_item">** NEW **</string>
     <string name="current_value_is">Current value is:</string>
-
+	<string name="empty_discussion">Network problem or discussion is empty!</string>
+	
     <!-- Global Setting -->
     <string name="no_new_items">\"No new items\" message</string>
     <string name="no_new_items_key">no_new_items_key</string>

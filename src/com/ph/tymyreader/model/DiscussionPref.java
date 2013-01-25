@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+
 public class DiscussionPref implements Serializable {
 	/**
 	 * 
@@ -12,26 +15,26 @@ public class DiscussionPref implements Serializable {
 	private String url;
 	private String user;			
 	private String pass;
-	private StringBuilder cookies = new StringBuilder();
+	private HttpContext httpContext = new BasicHttpContext();
 	private String id;
 	private String name;
 	private List<HashMap<String, String>> dsItems;
 	private int newItems;
 
-	public DiscussionPref(String tym, String user, String pass, StringBuilder cookies, String id) {
+	public DiscussionPref(String tym, String user, String pass, HttpContext httpContext, String id) {
 		this.url = tym;
 		this.pass = pass;
 		this.user = user;
-		this.cookies = cookies;
+		this.httpContext = httpContext;
 		this.id = id;
 		this.name = id;
 	}
 
-	public DiscussionPref(String tym, String user, String pass, StringBuilder cookies, String id, String name) {
+	public DiscussionPref(String tym, String user, String pass, HttpContext httpContext, String id, String name) {
 		this.url = tym;
 		this.user = user;
 		this.pass = pass;
-		this.cookies = cookies;
+		this.httpContext = httpContext;
 		this.id = id;
 		this.name = name;
 	}
@@ -60,11 +63,11 @@ public class DiscussionPref implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public StringBuilder getCookies() {
-		return cookies;
+	public HttpContext getHttpContext() {
+		return httpContext;
 	}
-	public void setCookies(StringBuilder myCookie) {
-		this.cookies = myCookie;
+	public void setHttpContext(HttpContext httpContext) {
+		this.httpContext = httpContext;
 	}
 	public List<HashMap<String, String>> getDsItems() {
 		return dsItems;

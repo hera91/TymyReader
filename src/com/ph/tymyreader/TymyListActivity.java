@@ -45,7 +45,7 @@ public class TymyListActivity extends ListActivity {
 		setContentView(R.layout.tymy_list);
 		app = (TymyReader) getApplication();
 		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
-				
+
 		@SuppressWarnings("unchecked")
 		List<HashMap<String, String>> data = (List<HashMap<String, String>>) getLastNonConfigurationInstance();
 		if (data == null) {
@@ -193,8 +193,8 @@ public class TymyListActivity extends ListActivity {
 
 	private void deleteTymy(int position) {
 		//cancel background threads
-//		if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
-//		if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
+		//		if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
+		//		if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
 		app.deleteTymyCfg(tymyPrefList.get(position).getUrl());
 		tlu.removeTymyPref(tymyPrefList, position);
 		app.setTymyPrefList(tymyPrefList);
@@ -207,7 +207,7 @@ public class TymyListActivity extends ListActivity {
 		app.setTymyPrefList(tymyPrefList);
 		app.saveTymyCfg(tymyPrefList);
 	}
-	
+
 
 	private void refreshTymyPrefList() {
 		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
@@ -275,7 +275,7 @@ public class TymyListActivity extends ListActivity {
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
 		protected void onPostExecute(TymyPref tymyPref) {
-//			Toast.makeText(getApplicationContext(), "discussions list " + tymyPref.getUrl() + " updated" , Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(getApplicationContext(), "discussions list " + tymyPref.getUrl() + " updated" , Toast.LENGTH_SHORT).show();
 			refreshListView();
 		}
 
@@ -286,13 +286,19 @@ public class TymyListActivity extends ListActivity {
 			TymyParser parser = new TymyParser();
 			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
 
-			String mainPage = page.loadMainPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
-			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
-
-			dsNews = parser.getNewItems(ajax);
+			String mainPage = page.loadMainPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getHttpContext());
+			if (mainPage == null ) return tymyPref[0];
+			
+			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getHttpContext());
+			if (ajax != null) {
+				dsNews = parser.getNewItems(ajax);
+			}
+			
 			boolean isFirst = true; // clear map in first cycle
 			for ( String dsDesc : parser.getDsArray(mainPage)) {
-				tlu.addMapToList(isFirst, dsDesc, "" + dsNews.get(getDsId(dsDesc)), tymyPref[0].getDsList());
+				Integer news = dsNews.get(getDsId(dsDesc));
+				news = news == null ? 0 : news;
+				tlu.addMapToList(isFirst, dsDesc, "" + news, tymyPref[0].getDsList());
 				isFirst = false;
 			}
 
@@ -325,13 +331,16 @@ public class TymyListActivity extends ListActivity {
 		// TODO premistit tuhle funkci do jine tridy
 		private TymyPref updateNewItems(TymyPref... tymyPref) {
 
-			if (tymyPref[0].getCookies().length() == 0) return tymyPref[0];
+			if (tymyPref[0].isLogged()) return tymyPref[0];
 
 			TymyPageLoader page = new TymyPageLoader();
 			TymyParser parser = new TymyParser();
 			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
-			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getCookies());
+			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getHttpContext());
 
+			if (ajax == null) {
+				return tymyPref[0];
+			}
 			dsNews = parser.getNewItems(ajax);
 			boolean isFirst = true; // clear map in first cycle
 

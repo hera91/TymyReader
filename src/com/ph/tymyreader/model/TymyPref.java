@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+
+import com.ph.tymyreader.TymyPageLoader;
+
 public class TymyPref implements Serializable {
 	/**
 	 * 
@@ -13,7 +18,8 @@ public class TymyPref implements Serializable {
 	private String url = null;
 	private String user = null;			
 	private String pass = null;
-	private StringBuilder cookies = new StringBuilder();
+	private HttpContext httpContext = new BasicHttpContext();
+	
 	/**
 	 * dsList List of HashMap<String, String> where map consist of two items
 	 * [ONE, TWO] (ONE and TWO are KEYs); <br/>
@@ -67,11 +73,11 @@ public class TymyPref implements Serializable {
 	public void setUser(String user) {
 		this.user = user;
 	}	
-	public StringBuilder getCookies() {
-		return cookies;
+	public HttpContext getHttpContext() {
+		return httpContext;
 	}
-	public void setCookies(StringBuilder myCookie) {
-		this.cookies = myCookie;
+	public void setCookies(HttpContext httpContext) {
+		this.httpContext = httpContext;
 	}
 	public List<HashMap<String, String>> getDsList() {
 		return dsList;
@@ -147,6 +153,10 @@ public class TymyPref implements Serializable {
 		}
 		if (wasUpdated && countNew == 0) out = new StringBuilder(NO_NEW_ITEMS);
 		return out.toString();
+	}
+
+	public boolean isLogged() {
+		return TymyPageLoader.isLogged(httpContext, user);
 	}
 }
 

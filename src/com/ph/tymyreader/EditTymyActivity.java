@@ -3,6 +3,7 @@ package com.ph.tymyreader;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
@@ -26,6 +27,7 @@ public class EditTymyActivity extends Activity {
 		int position = (int) getIntent().getIntExtra("position", -1);
 		
 		setContentView(R.layout.activity_add_tymy);
+		// -1 => Add new Tymy
 		if (position != -1) fillFields(position);
 		showPass(); // if checkbox is checked
 	}
@@ -91,7 +93,10 @@ public class EditTymyActivity extends Activity {
 		tlu.updateTymyPrefList(tymyPrefList, tymyPref);
 		app.setTymyPrefList(tymyPrefList);
 		app.saveTymyCfg(tymyPrefList);
-		setResult(RESULT_OK);
+		
+		Intent data = new Intent();
+		data.putExtra("index", tymyPrefList.indexOf(tymyPref));
+		setResult(RESULT_OK, data);
 		finish();
 	}
 }
