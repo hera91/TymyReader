@@ -46,8 +46,13 @@
     <string name="new_user_text">User</string>
     <string name="new_pass_text">Password</string>
     <string name="show_pass">show password</string>
-
-    <!-- CrashReports -->
+	<string name="try_login">Test login</string>
+	<string name="login_ok">Login OK</string>
+	<string name="login_failed">Login failed!</string>
+	<string name="invalid_url">Invalid server URL!</string>
+	<string name="conecting">Conecting...</string>
+			
+	<!-- CrashReports -->
     <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
     <string name="crash_dialog_title">CrashTest has crashed</string>
     <string name="crash_dialog_text">An unexpected error occurred forcing the

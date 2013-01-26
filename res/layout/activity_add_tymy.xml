@@ -116,6 +116,17 @@
             android:layout_margin="@dimen/smalltGap"
             android:onClick="onClick"
             android:text="@string/button_save" />
+
+        <Button
+            android:id="@+id/try_login"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="onClick"
+            android:text="@string/try_login" />
+
     </RelativeLayout>
 
 </ScrollView>
