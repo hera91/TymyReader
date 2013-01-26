@@ -113,7 +113,7 @@ public class TymyListActivity extends ListActivity {
 			refreshTymyPrefList();
 			return true;
 		case R.id.menu_send_report:
-			ACRA.getErrorReporter().handleSilentException(new Exception("Manual report"));
+			ACRA.getErrorReporter().handleException(new Exception("Manual report"));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

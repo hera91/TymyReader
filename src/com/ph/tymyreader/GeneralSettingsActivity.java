@@ -62,6 +62,8 @@ public class GeneralSettingsActivity extends PreferenceActivity
     // Fires when the user changes a preference.
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        mEditTextPreference.setSummary(String.format("%s %s", getString(R.string.current_value_is), sharedPreferences.getString(key, "")));
+    	if (key.equals(getString(R.string.no_new_items_key))) {
+	        mEditTextPreference.setSummary(String.format("%s %s", getString(R.string.current_value_is), sharedPreferences.getString(key, "")));			
+    	}
     }
 }

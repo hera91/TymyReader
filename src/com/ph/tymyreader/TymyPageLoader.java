@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.acra.ACRA;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -109,11 +110,11 @@ public class TymyPageLoader {
 			httpPost.abort();
 			if (client != null) client.close();
 			Log.v(TymyReader.TAG, "Error while login to " + url, e);
-			//			ACRA.getErrorReporter().handleSilentException(e);
+			ACRA.getErrorReporter().handleSilentException(e);
 		} catch (IOException e) {
 			if (client != null) client.close();
 			Log.v(TymyReader.TAG, "Error while login to " + url, e);
-			//			ACRA.getErrorReporter().handleSilentException(e);
+			ACRA.getErrorReporter().handleSilentException(e);
 		} finally {
 			if (client != null) client.close();
 		}
@@ -154,6 +155,7 @@ public class TymyPageLoader {
 			// Could provide a more explicit error message for IOException or IllegalStateException
 			getRequest.abort();
 			if (client != null) client.close();
+			ACRA.getErrorReporter().handleSilentException(e);
 			Log.v(TymyReader.TAG, "Error while downloading " + url + page, e);
 		} finally {
 			if (client != null) client.close();
@@ -197,9 +199,11 @@ public class TymyPageLoader {
 		} catch (ClientProtocolException e) {
 			httpPost.abort();
 			if (client != null) client.close();			
+			ACRA.getErrorReporter().handleSilentException(e);
 			Log.v(TymyReader.TAG, "Error while POST " + url, e);
 		} catch (IOException e) {
 			if (client != null) client.close();			
+			ACRA.getErrorReporter().handleSilentException(e);
 			Log.v(TymyReader.TAG, "Error while POST " + url, e);
 		} finally {
 			if (client != null) client.close();			

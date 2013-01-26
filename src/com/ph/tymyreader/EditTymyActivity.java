@@ -69,6 +69,7 @@ public class EditTymyActivity extends Activity {
 		case R.id.button_cancel:
 			setResult(RESULT_CANCELED);
 			finish();
+			break;
 		case R.id.show_pass:
 			showPass();
 			return;

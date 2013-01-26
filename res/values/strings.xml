@@ -50,7 +50,7 @@
 	<string name="login_ok">Login OK</string>
 	<string name="login_failed">Login failed!</string>
 	<string name="invalid_url">Invalid server URL!</string>
-	<string name="conecting">Conecting...</string>
+	<string name="conecting">Conecting..</string>
 			
 	<!-- CrashReports -->
     <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
@@ -61,5 +61,8 @@
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
     <string name="menu_send_report">Send report</string>
-
+    <string name="pref_enable_acra">Crash Reports</string>
+    <string name="pref_acra_enabled">Sending reports enabled</string>
+    <string name="pref_acra_disabled">Sending reports disabled</string>
+    
 </resources>
