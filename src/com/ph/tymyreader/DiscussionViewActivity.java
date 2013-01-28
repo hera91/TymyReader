@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -37,6 +38,7 @@ public class DiscussionViewActivity extends ListActivity {
 		setContentView(R.layout.custom_list_activity_view);
 		app = (TymyReader) getApplication();
 		dsPref = app.getDsPref();
+		app.clearDsPref();
 
 		//dsPref = (DiscussionPref) getIntent().getSerializableExtra("dsPref");
 
@@ -89,7 +91,7 @@ public class DiscussionViewActivity extends ListActivity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.menu_post:
-			Toast.makeText(this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+			showNewPost();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -100,6 +102,12 @@ public class DiscussionViewActivity extends ListActivity {
 	public Object onRetainNonConfigurationInstance() {
 		final DiscussionPref data = dsPref;
 		return data;
+	}
+	
+	private void showNewPost() {
+		app.setDsPref(dsPref);
+		Intent intent = new Intent(this, PostActivity.class);
+		startActivity(intent);
 	}
 
 	protected class DownloadWebpageText extends

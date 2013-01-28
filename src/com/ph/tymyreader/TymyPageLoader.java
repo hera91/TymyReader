@@ -35,6 +35,7 @@ public class TymyPageLoader {
 	private static final String TYMY_MAIN_PAGE="/index.php"; 
 	private static final String TYMY_DS_PAGE_FORMAT="/index.php?page=discussion&id=%s&level=101";
 	private static final String TYMY_AJAX_PAGE = "/ajax.php?page=main";
+	private static final String TYMY_NEW_POST_PAGE = "/index.php";
 	public static final Object TYMY_LOGIN_COOKIE = "uname";
 
 
@@ -55,6 +56,16 @@ public class TymyPageLoader {
 		return httpPost(url, TYMY_AJAX_PAGE, user, pass, httpContext, nameValuePairs);
 	}
 
+	public String newPost (String url, String id, String user, String pass, HttpContext httpContext, String post) {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("page", "discussion"));
+		nameValuePairs.add(new BasicNameValuePair("pg_d", id));
+		nameValuePairs.add(new BasicNameValuePair("frm_action", "Insert"));
+		nameValuePairs.add(new BasicNameValuePair("frm_item", post));
+		String result = httpPost(url, TYMY_NEW_POST_PAGE, user, pass, httpContext, nameValuePairs);
+		return result;
+	}
+	
 	public static boolean isLogged (HttpContext httpContext, String user) {
 		boolean isLogged = false;
 		CookieStore cookieStore = (CookieStore) httpContext.getAttribute(ClientContext.COOKIE_STORE);
@@ -181,7 +192,6 @@ public class TymyPageLoader {
 			// Execute HTTP Post Request
 			final HttpResponse response = client.execute(httpPost, httpContext);
 			final int statusCode = response.getStatusLine().getStatusCode();
-			response.getEntity().consumeContent();
 			if ((statusCode != HttpStatus.SC_OK) && (statusCode != HttpStatus.SC_MOVED_TEMPORARILY)) {
 				Log.v(TymyReader.TAG, "Error " + statusCode + " while POST " + url + page);
 				return null;

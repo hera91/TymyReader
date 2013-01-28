@@ -19,8 +19,8 @@
     <string name="items_new">new:</string>
     <string name="new_item">** NEW **</string>
     <string name="current_value_is">Current value is:</string>
-	<string name="empty_discussion">Network problem or discussion is empty!</string>
-	
+    <string name="empty_discussion">Network problem or discussion is empty!</string>
+
     <!-- Global Setting -->
     <string name="no_new_items">\"No new items\" message</string>
     <string name="no_new_items_key">no_new_items_key</string>
@@ -46,13 +46,13 @@
     <string name="new_user_text">User</string>
     <string name="new_pass_text">Password</string>
     <string name="show_pass">show password</string>
-	<string name="try_login">Test login</string>
-	<string name="login_ok">Login OK</string>
-	<string name="login_failed">Login failed!</string>
-	<string name="invalid_url">Invalid server URL!</string>
-	<string name="conecting">Conecting..</string>
-			
-	<!-- CrashReports -->
+    <string name="try_login">Test login</string>
+    <string name="login_ok">Login OK</string>
+    <string name="login_failed">Login failed!</string>
+    <string name="invalid_url">Invalid server URL!</string>
+    <string name="conecting">Conecting..</string>
+
+    <!-- CrashReports -->
     <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the issue !</string>
     <string name="crash_dialog_title">CrashTest has crashed</string>
     <string name="crash_dialog_text">An unexpected error occurred forcing the
@@ -64,5 +64,12 @@
     <string name="pref_enable_acra">Crash Reports</string>
     <string name="pref_acra_enabled">Sending reports enabled</string>
     <string name="pref_acra_disabled">Sending reports disabled</string>
+
+    <!-- Post -->
+    <string name="title_activity_post">Insert new post</string>
+    <string name="button_post">Insert</string>
+    <string name="send_ok">Insert OK</string>
+    <string name="send_failed">Isert failed!</string>
+    <string name="sending">Conecting..</string>
     
 </resources>

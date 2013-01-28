@@ -28,7 +28,7 @@ public class TymyReader extends Application {
 	public static final String TAG = "TymyReader";
 	private ArrayList<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
 	private DiscussionPref dsPref = null; 
-
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -37,8 +37,7 @@ public class TymyReader extends Application {
 		ACRA.init(this);
 		loadTymyPrefList();
 	}
-	
-	
+		
 	public ArrayList<TymyPref> getTymyPrefList() {
 		return tymyPrefList;
 	}
