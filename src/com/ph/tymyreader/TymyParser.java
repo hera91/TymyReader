@@ -156,7 +156,13 @@ public class TymyParser {
 	public ArrayList<String> getDsArray(String mainPage) {
 		ArrayList<String> ds = new ArrayList<String>();
 		
-		Pattern MY_PATTERN = Pattern.compile("<a .*?page=discussion&amp;id=(.*?)&amp;level=101\">(.*?)</a>");		
+		Pattern MY_PATTERN;
+		if (mainPage.indexOf("menu_item") == -1) {
+			MY_PATTERN = Pattern.compile("<a .*?page=discussion&amp;id=(.*?)&amp;level=101\">(.*?)</a> <span");			
+		} else {
+			//Complete menu version
+			MY_PATTERN = Pattern.compile("<a href=\"/index.php\\?page=discussion&amp;id=(.*?)&amp;level=101\"><img alt=\"(.*?)\".*?</span>");			
+		}
 		Matcher m = MY_PATTERN.matcher(mainPage);
 		while (m.find()) {
 		    ds.add(m.group(1) + ":" + m.group(2));
