@@ -70,6 +70,6 @@
     <string name="button_post">Insert</string>
     <string name="send_ok">Insert OK</string>
     <string name="send_failed">Isert failed!</string>
-    <string name="sending">Conecting..</string>
+    <string name="sending">Sending..</string>
     
 </resources>

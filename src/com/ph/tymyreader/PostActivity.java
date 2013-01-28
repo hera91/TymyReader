@@ -51,7 +51,6 @@ public class PostActivity extends Activity {
 		EditText post = (EditText) findViewById(R.id.post_edit_text);
 		if (post.getText().toString().equals("")) return;
 		new Post(post.getText().toString()).execute(dsPref);
-		finish();
 	}
 
 	private class Post extends AsyncTask<DiscussionPref, Void, String> {
@@ -89,6 +88,7 @@ public class PostActivity extends Activity {
 				Log.v(TymyReader.TAG, "Error sending NewPost " + e);				
 			}
 			Toast.makeText(PostActivity.this, response != null ? R.string.send_ok : R.string.send_failed, Toast.LENGTH_LONG).show();
+			finish();
 		}
 	}
 
