@@ -77,17 +77,18 @@ public class PostActivity extends Activity {
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
 		protected void onPostExecute(String response) {
+			boolean result = false;
 			try
 			{
-				if(dialog.isShowing())
-				{
-					dialog.dismiss();
-				}
-				// do your Display and data setting operation here
+				if(dialog.isShowing()) dialog.dismiss();				
 			} catch(Exception e) {
 				Log.v(TymyReader.TAG, "Error sending NewPost " + e);				
 			}
-			Toast.makeText(PostActivity.this, response != null ? R.string.send_ok : R.string.send_failed, Toast.LENGTH_LONG).show();
+			if (response != null) {
+				result = true;
+			}
+			Toast.makeText(PostActivity.this, result ? R.string.send_ok : R.string.send_failed, Toast.LENGTH_LONG).show();
+			setResult(result ? RESULT_OK : RESULT_CANCELED);
 			finish();
 		}
 	}

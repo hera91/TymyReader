@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import com.ph.tymyreader.model.DiscussionPref;
 import com.ph.tymyreader.model.DsItem;
@@ -23,6 +23,7 @@ import com.ph.tymyreader.model.DsItem;
 
 public class DiscussionViewActivity extends ListActivity {
 
+	private static final int NEW_POST_ACTIVITY = 1;
 	private DiscussionPref dsPref;
 	final String CAP = "caption";
 	final String TEXT = "text";
@@ -31,6 +32,7 @@ public class DiscussionViewActivity extends ListActivity {
 	List<HashMap<String, String>> itemsList = new ArrayList<HashMap<String,String>>();
 	private SimpleAdapter adapter;
 	private TymyReader app;
+	private DownloadWebpageText loader;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +46,13 @@ public class DiscussionViewActivity extends ListActivity {
 
 		final DiscussionPref data = (DiscussionPref) getLastNonConfigurationInstance();
 		if (data == null) {
-			// activity was started
-			addItemsList(true, getString(R.string.loading), "");
 
 			dsPref.setDsItems(itemsList);
 			adapter = new SimpleAdapter(this, itemsList, R.layout.two_line_list_item, from, to);
 			setListAdapter(adapter);
 
-			new DownloadWebpageText().execute(dsPref);
+			loader = new DownloadWebpageText();
+			loader.execute(dsPref);
 		} else {
 			// after configuration change
 			dsPref = data;
@@ -103,16 +104,34 @@ public class DiscussionViewActivity extends ListActivity {
 		final DiscussionPref data = dsPref;
 		return data;
 	}
-	
+
 	private void showNewPost() {
 		app.setDsPref(dsPref);
 		Intent intent = new Intent(this, PostActivity.class);
-		startActivity(intent);
+		startActivityForResult(intent, NEW_POST_ACTIVITY);
+	}
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case NEW_POST_ACTIVITY:
+			if (resultCode == RESULT_OK) {
+				if (loader != null) loader.cancel(true);
+				loader = new DownloadWebpageText(); 
+				loader.execute(dsPref);
+			}
+		}
 	}
 
 	protected class DownloadWebpageText extends
 	AsyncTask<DiscussionPref, Integer, String> {
+		private ProgressDialog dialog = new ProgressDialog(DiscussionViewActivity.this);
 
+		@Override
+		protected void onPreExecute() {
+			dialog.setMessage(getString(R.string.loading));
+			dialog.show();
+		}
+		
 		@Override
 		protected String doInBackground(DiscussionPref... dsPref) {
 			TymyPageLoader page = new TymyPageLoader();
@@ -127,6 +146,10 @@ public class DiscussionViewActivity extends ListActivity {
 		@Override
 		protected void onPostExecute(String input) {
 			showList(input);
+			if(dialog.isShowing())
+			{
+				dialog.dismiss();
+			}
 		}
 
 		private void showList(String input) {
