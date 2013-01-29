@@ -53,8 +53,8 @@ public class TymyListActivity extends ListActivity {
 			app.loadTymyCfg();
 			tymyPrefList = app.getTymyPrefList();
 			//refresh discussions from web
-			refreshTymyPrefList();
-			//refreshTymyNewItems();
+			//refreshTymyPrefList();
+			refreshTymyNewItems();
 		} else {
 			// Configuration was changed, reload data
 			tymyList = data;
@@ -71,16 +71,21 @@ public class TymyListActivity extends ListActivity {
 	protected void onResume () {
 		super.onResume();
 		Log.v(TymyReader.TAG, "onResume");
-		refreshTymyNewItems();
-		refreshListView();
+//		refreshTymyNewItems();
+//		refreshListView();
 	}
 
 	@Override
-	protected void onDestroy () {
-		super.onDestroy();
+	protected void onPause() {
+		super.onPause();
 		//cancel background threads
 		//if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
 		//if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
+	}
+	
+	@Override
+	protected void onDestroy () {
+		super.onDestroy();
 		//save configuration
 		app.saveTymyCfg(tymyPrefList);
 	}
@@ -110,7 +115,8 @@ public class TymyListActivity extends ListActivity {
 			showAddTymy();
 			return true;
 		case R.id.menu_refresh:
-			refreshTymyPrefList();
+//			refreshTymyPrefList();
+			refreshTymyNewItems();
 			return true;
 		case R.id.menu_send_report:
 			ACRA.getErrorReporter().handleException(new Exception("Manual report"));
