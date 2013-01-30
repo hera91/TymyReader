@@ -53,6 +53,8 @@ public class TymyListActivity extends ListActivity {
 			// activity was started => load configuration
 			app.loadTymyCfg();
 			tymyPrefList = app.getTymyPrefList();
+			
+			refreshListView();
 			//refresh discussions from web
 			refreshTymyPrefList();
 			//refreshTymyNewItems();
