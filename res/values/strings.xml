@@ -9,9 +9,6 @@
     <string name="title_activity_tymy_list">TymyReader</string>
     <string name="title_general_settings_activity">TymyReader General Settings</string>
     <string name="title_tym_settings_activity">TymyReader Server Settings</string>
-    <string name="server">Server</string>
-    <string name="server_message"></string>
-    <string name="unknown">unknown</string>
     <string name="coming_soon">Coming soon..</string>
     <string name="no_tymy">No Tymy defined</string>
     <string name="no_tymy_hint">press menu button to add new Tymy</string>
@@ -60,7 +57,7 @@
     all you have to do is click OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
-    <string name="menu_send_report">Send report</string>
+    <string name="menu_send_report">Send crash report now</string>
     <string name="pref_enable_acra">Crash Reports</string>
     <string name="pref_acra_enabled">Sending reports enabled</string>
     <string name="pref_acra_disabled">Sending reports disabled</string>
@@ -69,7 +66,7 @@
     <string name="title_activity_post">Insert new post</string>
     <string name="button_post">Insert</string>
     <string name="send_ok">Insert OK</string>
-    <string name="send_failed">Isert failed!</string>
+    <string name="send_failed">Insert failed!</string>
     <string name="sending">Sending..</string>
     
 </resources>

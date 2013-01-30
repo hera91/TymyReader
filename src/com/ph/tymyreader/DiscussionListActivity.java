@@ -28,7 +28,8 @@ public class DiscussionListActivity extends ListActivity {
 	private TymyPref tymyPref;
 	SimpleAdapter adapter;
 	private TymyReader app;
-
+	private int index;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,10 +37,13 @@ public class DiscussionListActivity extends ListActivity {
 		
 		app = (TymyReader) getApplication();
 
-		int position = (int) getIntent().getIntExtra("position", -1);
-		if (position == -1) finish();
+		index = (int) getIntent().getIntExtra("index", -1);
+		if (index == -1) {
+			setResult(RESULT_CANCELED);
+			finish();
+		}
 		TymyReader app = (TymyReader) getApplication();
-		tymyPref = app.getTymyPrefList().get(position);
+		tymyPref = app.getTymyPrefList().get(index);
 		if (tymyPref == null) finish();
 
 		for ( HashMap<String, String> dP : tymyPref.getDsList()) {
@@ -59,6 +63,14 @@ public class DiscussionListActivity extends ListActivity {
 		setListAdapter(adapter);
 
 		setTitle(tymyPref.getUrl());
+	}
+	
+	@Override
+	public void onBackPressed() {
+		Intent data = new Intent();
+		data.putExtra("index", index);
+		setResult(RESULT_OK, data);
+	    super.onBackPressed();
 	}
 	
 	@Override

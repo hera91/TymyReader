@@ -28,6 +28,7 @@ import com.ph.tymyreader.model.TymyPref;
 public class TymyListActivity extends ListActivity {
 	//	private static final String TAG = TymyReader.TAG;
 	private static final int EDIT_TYMY_ACTIVITY = 1;
+	private static final int DS_LIST_ACTIVITY = 2;
 	private String[] from = new String[] {TymyPref.ONE, TymyPref.TWO};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	private List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
@@ -53,8 +54,8 @@ public class TymyListActivity extends ListActivity {
 			app.loadTymyCfg();
 			tymyPrefList = app.getTymyPrefList();
 			//refresh discussions from web
-			//refreshTymyPrefList();
-			refreshTymyNewItems();
+			refreshTymyPrefList();
+			//refreshTymyNewItems();
 		} else {
 			// Configuration was changed, reload data
 			tymyList = data;
@@ -68,19 +69,23 @@ public class TymyListActivity extends ListActivity {
 	}
 
 	@Override
-	protected void onResume () {
-		super.onResume();
-		Log.v(TymyReader.TAG, "onResume");
-//		refreshTymyNewItems();
-//		refreshListView();
-	}
-
-	@Override
 	protected void onPause() {
 		super.onPause();
 		//cancel background threads
-		//if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
-		//if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
+		Log.v(TymyReader.TAG, "onPause: cancel loaders");
+		for (LoginAndUpdateTymy loader : loginAndUpdateTymy) {
+			Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
+			if (loader != null) {
+				Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
+				loader.cancel(true);
+			}
+		}
+		for (UpdateNewItemsTymy loader : updateNewItemsTymy) {
+			if (loader != null) {
+				Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
+				loader.cancel(true);
+			}
+		}
 	}
 	
 	@Override
@@ -135,10 +140,10 @@ public class TymyListActivity extends ListActivity {
 			return;
 		}
 		Bundle bundle = new Bundle();
-		bundle.putInt("position", index);
+		bundle.putInt("index", index);
 		Intent intent = new Intent(this, DiscussionListActivity.class);
 		intent.putExtras(bundle);
-		startActivity(intent);				
+		startActivityForResult(intent, DS_LIST_ACTIVITY);				
 	}
 
 	// **************  Context menu  ************** //
@@ -193,23 +198,32 @@ public class TymyListActivity extends ListActivity {
 			if (resultCode == RESULT_OK) {
 				int index = data.getIntExtra("index", -1);
 				refreshTymyPrefList(index);
+				refreshListView();
 			}
+			break;
+		case DS_LIST_ACTIVITY:
+			if (resultCode == RESULT_OK) {
+				int index = data.getIntExtra("index", -1);
+				refreshTymyNewItems(index);
+			}
+			break;	
 		}
 	}
 
 	private void deleteTymy(int position) {
-		//cancel background threads
-		//		if (loginAndUpdateTymy != null) loginAndUpdateTymy.cancel(true);
-		//		if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
 		app.deleteTymyCfg(tymyPrefList.get(position).getUrl());
 		tlu.removeTymyPref(tymyPrefList, position);
 		app.setTymyPrefList(tymyPrefList);
 		refreshListView();
 	}
 
+	// TODO tyhle methody by meli byt v samostatny tride
 	private void refreshTymyPrefList(int index) {
 		if (index == -1) refreshTymyPrefList();
-		new LoginAndUpdateTymy().execute(tymyPrefList.get(index));
+		int i = 0;
+		i = loginAndUpdateTymy.size();
+		loginAndUpdateTymy.add(i, (LoginAndUpdateTymy) new LoginAndUpdateTymy());
+		loginAndUpdateTymy.get(i).execute(tymyPrefList.get(index));
 		app.setTymyPrefList(tymyPrefList);
 		app.saveTymyCfg(tymyPrefList);
 	}
@@ -223,18 +237,30 @@ public class TymyListActivity extends ListActivity {
 		}
 		int i = 0;
 		for(TymyPref tP : copy_tymyPrefList) {
+			i = loginAndUpdateTymy.size();
+			int index = copy_tymyPrefList.indexOf(tP);
 			loginAndUpdateTymy.add(i, (LoginAndUpdateTymy) new LoginAndUpdateTymy());
 			loginAndUpdateTymy.get(i).execute(tP);
-			tymyPrefList.remove(i);
-			tymyPrefList.add(i, tP);
+			tymyPrefList.remove(index);
+			tymyPrefList.add(index, tP);
 			app.setTymyPrefList(tymyPrefList);
 			//This maybe could cause problems when due to lost connectivity the download data will be corrupted,
 			//but next update should fix it (or refresh UI functionality)
 			app.saveTymyCfg(tymyPrefList);
-			i = i + 1;
 		}
 	}
 
+	private void refreshTymyNewItems(int index) {
+		if (index == -1) refreshTymyNewItems();
+		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
+		int i = 0;
+		i = updateNewItemsTymy.size();
+		updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
+		updateNewItemsTymy.get(i).execute(tymyPrefList.get(index));
+		app.setTymyPrefList(tymyPrefList);
+		refreshListView();
+	}
+	
 	private void refreshTymyNewItems() {
 		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
 		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
@@ -243,13 +269,15 @@ public class TymyListActivity extends ListActivity {
 		}
 		int i = 0;
 		for(TymyPref tP : copy_tymyPrefList) {
+			i = updateNewItemsTymy.size();
+			int index = copy_tymyPrefList.indexOf(tP);
 			updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
 			updateNewItemsTymy.get(i).execute(tP);
-			tymyPrefList.remove(i);
-			tymyPrefList.add(i, tP);
+			tymyPrefList.remove(index);
+			tymyPrefList.add(index, tP);
 			app.setTymyPrefList(tymyPrefList);
-			i = i + 1;
 		}
+		refreshListView();
 	}
 
 	private void refreshListView() {
@@ -336,8 +364,6 @@ public class TymyListActivity extends ListActivity {
 
 		// TODO premistit tuhle funkci do jine tridy
 		private TymyPref updateNewItems(TymyPref... tymyPref) {
-
-			if (tymyPref[0].isLogged()) return tymyPref[0];
 
 			TymyPageLoader page = new TymyPageLoader();
 			TymyParser parser = new TymyParser();
