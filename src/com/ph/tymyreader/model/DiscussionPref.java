@@ -87,6 +87,11 @@ public class DiscussionPref implements Serializable {
 	public void setNewItems(int newItems) {
 		this.newItems = newItems;
 	}
+
+	public void clearNewItems() {
+		// TODO Auto-generated method stub
+		this.newItems = 0;
+	}
 }
 
 

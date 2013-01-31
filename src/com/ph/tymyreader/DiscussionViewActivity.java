@@ -170,6 +170,7 @@ public class DiscussionViewActivity extends ListActivity {
 						addItemsList(false, dsItem.getDsCaption(), dsItem.getDsItemText());	
 					}
 				}
+				dsPref.clearNewItems();
 			}
 			adapter.notifyDataSetChanged();
 

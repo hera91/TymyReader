@@ -8,7 +8,6 @@
     <string name="discussion_list">Discussions List</string>
     <string name="title_activity_tymy_list">TymyReader</string>
     <string name="title_general_settings_activity">TymyReader General Settings</string>
-    <string name="title_tym_settings_activity">TymyReader Server Settings</string>
     <string name="coming_soon">Coming soon..</string>
     <string name="no_tymy">No Tymy defined</string>
     <string name="no_tymy_hint">press menu button to add new Tymy</string>

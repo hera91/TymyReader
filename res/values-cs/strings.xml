@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TymyReader</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="loading">Stahuju..</string>
+    <string name="title_activity_discussion_list">Seznam diskusí</string>
+    <string name="discussion_list">Seznam diskusí</string>
+    <string name="title_activity_tymy_list">TymyReader</string>
+    <string name="title_general_settings_activity">TymyReader hlavní nastavení</string>
+    <string name="coming_soon">Coming soon..</string>
+    <string name="no_tymy">Zádné Tymy nejsou nastaveny</string>
+    <string name="no_tymy_hint">zmáčkněte manu pro přidání Tymy záznamu</string>
+    <string name="no_discussion">Nenalezeny žádné diskuse</string>
+    <string name="items_new">nové:</string>
+    <string name="new_item">** NOVÝ **</string>
+    <string name="current_value_is">Nastaveno:</string>
+    <string name="empty_discussion">Problém s připojením nebo je diskuse prázdná!</string>
+
+    <!-- Global Setting -->
+    <string name="no_new_items">Hláška pro \"žádné nové příspěvky\" message</string>
+    <string name="no_new_items_key">no_new_items_key</string>
+    <string name="no_new_items_message">Zvol si svojí hlášku \"žádné nové příspěvky\"</string>
+    <string name="no_new_items_default">nůůďo..</string>
+
+    <!-- Menus -->
+    <string name="menu_add_tymy">Přidat Tymy</string>
+    <string name="menu_settings">Nastavení</string>
+    <string name="menu_post">Nový příspěvek</string>
+    <string name="menu_context_edit">Upravit</string>
+    <string name="menu_context_delete">Smazat</string>
+    <string name="menu_refresh">Obnovit</string>
+
+    <!-- Edit Tymy Activity -->
+    <string name="button_cancel">Pryč</string>
+    <string name="button_save">Uložit</string>
+    <string name="title_activity_add_tymy">Přidat Tymy</string>
+    <string name="add_tymy_heading">Přidat nové Tymy</string>
+    <string name="title_activity_edit_tymy">Upravit Tymy</string>
+    <string name="edit_tymy_heading">Upravit Tymy</string>
+    <string name="new_url_text">server (např. mujtym.tymy.cz)</string>
+    <string name="new_user_text">Uživatel</string>
+    <string name="new_pass_text">Heslo</string>
+    <string name="show_pass">ukaž heslo</string>
+    <string name="try_login">Test přihlášení</string>
+    <string name="login_ok">Přihlášení OK</string>
+    <string name="login_failed">Přihlášení selhalo!</string>
+    <string name="invalid_url">Neplatné URL serveru!</string>
+    <string name="conecting">Připojování..</string>
+
+    <!-- CrashReports -->
+    <string name="crash_toast_text">Jejda! Spadl jsem, ale můžu odeslat zprávu svému vývojáři, která mu pomůže mě optavit !</string>
+    <string name="crash_dialog_title">CrashTest has crashed</string>
+    <string name="crash_dialog_text">Nastala neočekávaná chyba, která mě donutila skončit.
+        Prosím, pomozte mě opravit tím, že odešlete zprávu se zázanamy o chybě, vše co musíte udělat je zmačknout OK</string>
+    <string name="crash_dialog_comment_prompt">Můžete přidat kometář k chybě:</string>
+    <string name="crash_dialog_ok_toast">Díky !</string>
+    <string name="menu_send_report">Poslat chybovou zprávu</string>
+    <string name="pref_enable_acra">Chybové zprávy</string>
+    <string name="pref_acra_enabled">Posílání chybových zpráv povoleno</string>
+    <string name="pref_acra_disabled">Posílání chybových zpráv zakázáno</string>
+
+    <!-- Post -->
+    <string name="title_activity_post">Vložit nový příspěvek</string>
+    <string name="button_post">Vložit</string>
+    <string name="send_ok">Vloženo</string>
+    <string name="send_failed">Vložení selhalo!</string>
+    <string name="sending">Posílám..</string>
+    
+</resources>
