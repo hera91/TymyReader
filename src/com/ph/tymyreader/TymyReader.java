@@ -13,7 +13,8 @@ import org.acra.*;
 import org.acra.annotation.*;
 
 //@ReportsCrashes(formKey = "",
-@ReportsCrashes(formKey = "dE5QTVBSNS1KMkY3UVFMTEZaaFRrVnc6MQ",
+@ReportsCrashes(formUri = "http://www.bugsense.com/api/acra?api_key=34f778f4", formKey="",
+//@ReportsCrashes(formKey = "dE5QTVBSNS1KMkY3UVFMTEZaaFRrVnc6MQ",
 						mode = ReportingInteractionMode.DIALOG,
 						resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
 						resDialogText = R.string.crash_dialog_text,
