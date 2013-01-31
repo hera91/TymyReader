@@ -36,7 +36,8 @@ public class TymyPageLoader {
 	private static final String TYMY_DS_PAGE_FORMAT="/index.php?page=discussion&id=%s&level=101";
 	private static final String TYMY_AJAX_PAGE = "/ajax.php?page=main";
 	private static final String TYMY_NEW_POST_PAGE = "/index.php";
-	public static final Object TYMY_LOGIN_COOKIE = "uname";
+	public static final Object TYMY_UNAME_COOKIE = "uname";
+	public static final Object TYMY_SESSION_COOKIE = "PHPSESSID";
 
 
 
@@ -72,7 +73,7 @@ public class TymyPageLoader {
 		if (cookieStore != null) {
 			cookieStore.clearExpired(new Date());
 			for (Cookie cookie : cookieStore.getCookies()) {
-				if (cookie.getName().equals(TymyPageLoader.TYMY_LOGIN_COOKIE)) {
+				if (cookie.getName().equals(TymyPageLoader.TYMY_UNAME_COOKIE)) {
 					isLogged = cookie.getValue().equals(user);
 				}
 			}
@@ -87,6 +88,23 @@ public class TymyPageLoader {
 		return login(url, user, pass, httpContext);
 	}
 
+	public static String getURLLoginAttr (HttpContext httpContext) {
+		StringBuilder attr = new StringBuilder(TYMY_MAIN_PAGE + "?");
+		CookieStore cookieStore = (CookieStore) httpContext.getAttribute(ClientContext.COOKIE_STORE);
+		if (cookieStore != null) {
+			cookieStore.clearExpired(new Date());
+			for (Cookie cookie : cookieStore.getCookies()) {
+				if (cookie.getName().equals(TYMY_UNAME_COOKIE)) {
+					attr.append(cookie.getName() + "=" + cookie.getValue() + "&");
+				}
+				if (cookie.getName().equals(TYMY_SESSION_COOKIE)) {
+					attr.append(cookie.getName() + "=" + cookie.getValue() + "&");
+				}
+			}
+		}
+		return attr.toString();
+	}
+	
 	private boolean login(String url, String user, String pass, HttpContext httpContext) {
 		boolean isLogged = false;
 		// Create a new HttpClient and Post Header

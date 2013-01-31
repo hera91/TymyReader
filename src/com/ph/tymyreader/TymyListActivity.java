@@ -8,6 +8,7 @@ import org.acra.ACRA;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -171,9 +172,22 @@ public class TymyListActivity extends ListActivity {
 		case R.id.menu_context_delete:
 			deleteTymy(index);
 			return true;
+		case R.id.menu_context_web:
+			goToWeb(index);
+			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}
+	}
+
+	private void goToWeb(int index) {
+		String attr = new String();
+		if (tymyPrefList.get(index).getHttpContext() == null) {
+			// TODO Doresit spravnou skladbu parametru v URL aby nebylo nutne prihlasovani
+			attr = TymyPageLoader.getURLLoginAttr(tymyPrefList.get(index).getHttpContext());
+		}
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + tymyPrefList.get(index).getUrl() + attr));
+		startActivity(browserIntent);
 	}
 
 	// *****************  Setting  ******************** //

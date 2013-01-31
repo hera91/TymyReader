@@ -9,8 +9,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.SimpleAdapter;
 
 import com.ph.tymyreader.model.DiscussionPref;
@@ -61,7 +66,7 @@ public class DiscussionViewActivity extends ListActivity {
 			setListAdapter(adapter);
 		}
 		setTitle( dsPref.getUrl() + " / " + dsPref.getName());
-
+		registerForContextMenu(getListView());
 	}
 
 	/**
@@ -103,6 +108,36 @@ public class DiscussionViewActivity extends ListActivity {
 	public Object onRetainNonConfigurationInstance() {
 		final DiscussionPref data = dsPref;
 		return data;
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+//		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+		MenuInflater inflater = getMenuInflater();
+		//menu.setHeaderTitle("pozice " + itemsList.get(info.position).get(CAP));
+		inflater.inflate(R.menu.discussion_view_context_menu, menu);
+	}	
+	
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		switch(item.getItemId()) {
+		case R.id.menu_context_share:
+			shareItem(info.position);
+			return true;
+		default:
+			return super.onContextItemSelected(item);
+		}
+	}
+	
+	private void shareItem(int itemId) {
+		Intent sendIntent = new Intent();
+		String mText = new String();
+		mText = itemsList.get(itemId).get(CAP) + "\n" + itemsList.get(itemId).get(TEXT);
+		sendIntent.setAction(Intent.ACTION_SEND);
+		sendIntent.putExtra(Intent.EXTRA_TEXT, mText);
+		sendIntent.setType("text/plain");
+		startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.hello_world)));		
 	}
 
 	private void showNewPost() {

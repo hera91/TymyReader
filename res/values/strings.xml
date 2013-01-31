@@ -16,7 +16,8 @@
     <string name="new_item">** NEW **</string>
     <string name="current_value_is">Current value is:</string>
     <string name="empty_discussion">Network problem or discussion is empty!</string>
-
+    <string name="send_to">Share via</string>
+    
     <!-- Global Setting -->
     <string name="no_new_items">\"No new items\" message</string>
     <string name="no_new_items_key">no_new_items_key</string>
@@ -28,7 +29,9 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_post">New post</string>
     <string name="menu_context_edit">Edit</string>
+    <string name="menu_context_share">Share</string>
     <string name="menu_context_delete">Delete</string>
+    <string name="menu_web">Open web</string>
     <string name="menu_refresh">Refresh</string>
 
     <!-- Edit Tymy Activity -->
@@ -67,5 +70,5 @@
     <string name="send_ok">Insert OK</string>
     <string name="send_failed">Insert failed!</string>
     <string name="sending">Sending..</string>
-    
+
 </resources>

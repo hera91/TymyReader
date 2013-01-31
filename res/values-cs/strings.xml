@@ -16,6 +16,7 @@
     <string name="new_item">** NOVÝ **</string>
     <string name="current_value_is">Nastaveno:</string>
     <string name="empty_discussion">Problém s připojením nebo je diskuse prázdná!</string>
+    <string name="send_to">Sdílet přes</string>
 
     <!-- Global Setting -->
     <string name="no_new_items">Hláška pro \"žádné nové příspěvky\" message</string>
@@ -28,7 +29,9 @@
     <string name="menu_settings">Nastavení</string>
     <string name="menu_post">Nový příspěvek</string>
     <string name="menu_context_edit">Upravit</string>
+    <string name="menu_context_share">Sdílet</string>
     <string name="menu_context_delete">Smazat</string>
+    <string name="menu_web">Jít na web</string>
     <string name="menu_refresh">Obnovit</string>
 
     <!-- Edit Tymy Activity -->
