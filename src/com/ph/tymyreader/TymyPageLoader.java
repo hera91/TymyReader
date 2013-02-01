@@ -38,9 +38,7 @@ public class TymyPageLoader {
 	private static final String TYMY_NEW_POST_PAGE = "/index.php";
 	public static final Object TYMY_UNAME_COOKIE = "uname";
 	public static final Object TYMY_SESSION_COOKIE = "PHPSESSID";
-
-
-
+	
 	//********* HttpClient ************//
 	public String loadMainPage (String url, String user, String pass, HttpContext httpContext) {
 		return httpGet(url, TYMY_MAIN_PAGE, user, pass, httpContext);

@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.ph.tymyreader.model.DiscussionPref;
 import com.ph.tymyreader.model.TymyPref;
@@ -91,6 +94,13 @@ public class TymyReader extends Application {
 	
 	public void clearDsPref () {
 		dsPref = null;
+	}
+	
+	public boolean isOnline() {
+	    ConnectivityManager connMgr = (ConnectivityManager) 
+	            getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+	    return (networkInfo != null && networkInfo.isConnected());
 	}
 	
 	// ******************  Private methods  ********************* //

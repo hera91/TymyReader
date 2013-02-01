@@ -113,12 +113,12 @@ public class DiscussionViewActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-//		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+		//		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		MenuInflater inflater = getMenuInflater();
 		//menu.setHeaderTitle("pozice " + itemsList.get(info.position).get(CAP));
 		inflater.inflate(R.menu.discussion_view_context_menu, menu);
 	}	
-	
+
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
@@ -129,7 +129,7 @@ public class DiscussionViewActivity extends ListActivity {
 			return super.onContextItemSelected(item);
 		}
 	}
-	
+
 	private void shareItem(int itemId) {
 		Intent sendIntent = new Intent();
 		String mText = new String();
@@ -166,7 +166,7 @@ public class DiscussionViewActivity extends ListActivity {
 			dialog.setMessage(getString(R.string.loading));
 			dialog.show();
 		}
-		
+
 		@Override
 		protected String doInBackground(DiscussionPref... dsPref) {
 			TymyPageLoader page = new TymyPageLoader();

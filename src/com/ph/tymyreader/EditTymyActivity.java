@@ -28,6 +28,7 @@ public class EditTymyActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		app = (TymyReader) getApplication();
 
 		int position = (int) getIntent().getIntExtra("position", -1);
 
@@ -38,8 +39,6 @@ public class EditTymyActivity extends Activity {
 	}
 
 	private void fillFields(int position) {
-		// TODO Auto-generated method stub
-		app = (TymyReader) getApplication();
 		ArrayList<TymyPref> tymyPrefList = app.getTymyPrefList();
 		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
 		url.setText(tymyPrefList.get(position).getUrl());
@@ -80,11 +79,15 @@ public class EditTymyActivity extends Activity {
 	}
 
 	private void tryLogin() {
-		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
-		if (isValidURL(url)) { 
-			EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
-			EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
-			testLogin(url.getText().toString(), user.getText().toString(), pass.getText().toString());
+		if (app.isOnline()) {
+			EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
+			if (isValidURL(url)) { 
+				EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
+				EditText pass = (EditText) findViewById(R.id.add_tymy_pass_edit);
+				testLogin(url.getText().toString(), user.getText().toString(), pass.getText().toString());
+			}
+		} else {
+			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -111,7 +114,6 @@ public class EditTymyActivity extends Activity {
 	}
 
 	private void saveTymy() {
-		// TODO Auto-generated method stub
 		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
 		if (!isValidURL(url)) return;
 		EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
@@ -119,7 +121,6 @@ public class EditTymyActivity extends Activity {
 		TymyPref tymyPref = new TymyPref(url.getText().toString().trim(), 
 				user.getText().toString().trim(), 
 				pass.getText().toString().trim());
-		app = (TymyReader) getApplication();
 		ArrayList<TymyPref> tymyPrefList = app.getTymyPrefList();
 		tlu.updateTymyPrefList(tymyPrefList, tymyPref);
 		app.setTymyPrefList(tymyPrefList);

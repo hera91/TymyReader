@@ -17,7 +17,8 @@
     <string name="current_value_is">Nastaveno:</string>
     <string name="empty_discussion">Problém s připojením nebo je diskuse prázdná!</string>
     <string name="send_to">Sdílet přes</string>
-
+  	<string name="no_connection">Není připojení k Internetu!</string>
+    
     <!-- Global Setting -->
     <string name="no_new_items">Hláška pro \"žádné nové příspěvky\" message</string>
     <string name="no_new_items_key">no_new_items_key</string>

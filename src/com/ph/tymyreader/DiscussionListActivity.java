@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ph.tymyreader.model.DiscussionPref;
 import com.ph.tymyreader.model.TymyPref;
@@ -83,10 +84,14 @@ public class DiscussionListActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		app.setDsPref(dsPrefList.get(position));
-		Intent intent = new Intent(this, DiscussionViewActivity.class);
-		startActivity(intent);		
-		clearNewItems(position);
+		if (app.isOnline()) {
+			app.setDsPref(dsPrefList.get(position));
+			Intent intent = new Intent(this, DiscussionViewActivity.class);
+			startActivity(intent);		
+			clearNewItems(position);
+		} else {
+			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_LONG).show();
+		}
 	}
 
 	private void clearNewItems(int position) {

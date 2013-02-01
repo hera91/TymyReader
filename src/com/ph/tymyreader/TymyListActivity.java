@@ -47,7 +47,7 @@ public class TymyListActivity extends ListActivity {
 		setContentView(R.layout.tymy_list);
 		app = (TymyReader) getApplication();
 		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
-
+		
 		@SuppressWarnings("unchecked")
 		List<HashMap<String, String>> data = (List<HashMap<String, String>>) getLastNonConfigurationInstance();
 		if (data == null) {
@@ -57,7 +57,7 @@ public class TymyListActivity extends ListActivity {
 			
 			refreshListView();
 			//refresh discussions from web
-			refreshTymyPrefList();
+			reloadTymyDsList();
 			//refreshTymyNewItems();
 		} else {
 			// Configuration was changed, reload data
@@ -69,6 +69,9 @@ public class TymyListActivity extends ListActivity {
 		lv.setAdapter(adapter);
 
 		registerForContextMenu(getListView());
+		if (!app.isOnline()) {
+			Toast.makeText(this, R.string.no_connection, Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override
@@ -124,7 +127,7 @@ public class TymyListActivity extends ListActivity {
 			return true;
 		case R.id.menu_refresh:
 //			refreshTymyPrefList();
-			refreshTymyNewItems();
+			reloadTymyNewItems();
 			return true;
 		case R.id.menu_send_report:
 			ACRA.getErrorReporter().handleException(new Exception("Manual report"));
@@ -213,14 +216,14 @@ public class TymyListActivity extends ListActivity {
 		case EDIT_TYMY_ACTIVITY:
 			if (resultCode == RESULT_OK) {
 				int index = data.getIntExtra("index", -1);
-				refreshTymyPrefList(index);
+				reloadTymyDsList(index);
 				refreshListView();
 			}
 			break;
 		case DS_LIST_ACTIVITY:
 			if (resultCode == RESULT_OK) {
 				int index = data.getIntExtra("index", -1);
-				refreshTymyNewItems(index);
+				reloadTymyNewItems(index);
 			}
 			break;	
 		}
@@ -234,8 +237,11 @@ public class TymyListActivity extends ListActivity {
 	}
 
 	// TODO tyhle methody by meli byt v samostatny tride
-	private void refreshTymyPrefList(int index) {
-		if (index == -1) refreshTymyPrefList();
+	private void reloadTymyDsList(int index) {
+		if (!app.isOnline()) {
+			return;
+		}
+		if (index == -1) reloadTymyDsList();
 		int i = 0;
 		i = loginAndUpdateTymy.size();
 		loginAndUpdateTymy.add(i, (LoginAndUpdateTymy) new LoginAndUpdateTymy());
@@ -245,7 +251,10 @@ public class TymyListActivity extends ListActivity {
 	}
 
 
-	private void refreshTymyPrefList() {
+	private void reloadTymyDsList() {
+		if (!app.isOnline()) {
+			return;
+		}
 		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
 		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
 		for (TymyPref tP : tymyPrefList) {
@@ -266,8 +275,11 @@ public class TymyListActivity extends ListActivity {
 		}
 	}
 
-	private void refreshTymyNewItems(int index) {
-		if (index == -1) refreshTymyNewItems();
+	private void reloadTymyNewItems(int index) {
+		if (!app.isOnline()) {
+			return;
+		}
+		if (index == -1) reloadTymyNewItems();
 		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
 		int i = 0;
 		i = updateNewItemsTymy.size();
@@ -277,7 +289,10 @@ public class TymyListActivity extends ListActivity {
 		refreshListView();
 	}
 	
-	private void refreshTymyNewItems() {
+	private void reloadTymyNewItems() {
+		if (app.isOnline()) {
+			return;
+		}
 		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
 		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
 		for (TymyPref tP : tymyPrefList) {
