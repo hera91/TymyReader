@@ -148,7 +148,7 @@ public class EditTymyActivity extends Activity {
 
 		@Override
 		protected Boolean doInBackground(TymyPref... tymyPref) {
-			TymyPageLoader loader = new TymyPageLoader();
+			TymyLoader loader = new TymyLoader();
 			return loader.testLogin(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getHttpContext());
 		}
 

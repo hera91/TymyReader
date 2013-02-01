@@ -70,7 +70,7 @@ public class PostActivity extends Activity {
 
 		@Override
 		protected String doInBackground(DiscussionPref... dsPref) {
-			TymyPageLoader loader = new TymyPageLoader();
+			TymyLoader loader = new TymyLoader();
 			return loader.newPost(dsPref[0].getUrl(), dsPref[0].getId(), dsPref[0].getUser(), dsPref[0].getPass(), dsPref[0].getHttpContext(), post);
 		}
 

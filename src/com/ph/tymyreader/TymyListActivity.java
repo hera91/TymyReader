@@ -187,7 +187,7 @@ public class TymyListActivity extends ListActivity {
 		String attr = new String();
 		if (tymyPrefList.get(index).getHttpContext() == null) {
 			// TODO Doresit spravnou skladbu parametru v URL aby nebylo nutne prihlasovani
-			attr = TymyPageLoader.getURLLoginAttr(tymyPrefList.get(index).getHttpContext());
+			attr = TymyLoader.getURLLoginAttr(tymyPrefList.get(index).getHttpContext());
 		}
 		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + tymyPrefList.get(index).getUrl() + attr));
 		startActivity(browserIntent);
@@ -347,7 +347,7 @@ public class TymyListActivity extends ListActivity {
 		// TODO premistit tuhle funkci do jine tridy
 		private TymyPref updateTymDs(TymyPref... tymyPref) {
 
-			TymyPageLoader page = new TymyPageLoader();
+			TymyLoader page = new TymyLoader();
 			TymyParser parser = new TymyParser();
 			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
 
@@ -396,7 +396,7 @@ public class TymyListActivity extends ListActivity {
 		// TODO premistit tuhle funkci do jine tridy
 		private TymyPref updateNewItems(TymyPref... tymyPref) {
 
-			TymyPageLoader page = new TymyPageLoader();
+			TymyLoader page = new TymyLoader();
 			TymyParser parser = new TymyParser();
 			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
 			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getHttpContext());

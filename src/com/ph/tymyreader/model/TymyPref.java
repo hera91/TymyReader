@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
-import com.ph.tymyreader.TymyPageLoader;
+import com.ph.tymyreader.TymyLoader;
 
 public class TymyPref implements Serializable {
 	/**
@@ -156,7 +156,7 @@ public class TymyPref implements Serializable {
 	}
 
 	public boolean isLogged() {
-		return TymyPageLoader.isLogged(httpContext, user);
+		return TymyLoader.isLogged(httpContext, user);
 	}
 }
 

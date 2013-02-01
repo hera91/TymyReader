@@ -29,7 +29,7 @@ import android.util.Log;
 
 //import android.util.Log;
 
-public class TymyPageLoader {
+public class TymyLoader {
 
 	//	private static final String TAG = "TymyReader";
 	private static final String TYMY_MAIN_PAGE="/index.php"; 
@@ -71,7 +71,7 @@ public class TymyPageLoader {
 		if (cookieStore != null) {
 			cookieStore.clearExpired(new Date());
 			for (Cookie cookie : cookieStore.getCookies()) {
-				if (cookie.getName().equals(TymyPageLoader.TYMY_UNAME_COOKIE)) {
+				if (cookie.getName().equals(TymyLoader.TYMY_UNAME_COOKIE)) {
 					isLogged = cookie.getValue().equals(user);
 				}
 			}

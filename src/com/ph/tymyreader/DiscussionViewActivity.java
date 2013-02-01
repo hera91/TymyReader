@@ -169,7 +169,7 @@ public class DiscussionViewActivity extends ListActivity {
 
 		@Override
 		protected String doInBackground(DiscussionPref... dsPref) {
-			TymyPageLoader page = new TymyPageLoader();
+			TymyLoader page = new TymyLoader();
 			return page.loadDsPage(dsPref[0].getUrl(), dsPref[0].getId(), dsPref[0].getUser(), dsPref[0].getPass(), dsPref[0].getHttpContext());
 		}
 
