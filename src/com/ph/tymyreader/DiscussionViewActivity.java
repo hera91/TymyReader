@@ -192,17 +192,17 @@ public class DiscussionViewActivity extends ListActivity {
 				input = getString(R.string.empty_discussion);
 				addItemsList(true, input, "");	
 			} else {
-				DsItem dsItem = new DsItem();
-				TymyParser tParser = new TymyParser(input);
 				itemsList.clear();
+				TymyParser tParser = new TymyParser();
+				List<DsItem> items = tParser.getDsItem(input);
 				int countNew = dsPref.getNewItems();
-				while ((dsItem = tParser.getDsItem()) != null) {
+				for (DsItem item : items) {
 					//Log.v(TAG, name + " " + post);
 					if (countNew > 0) {
-						addItemsList(false, "" + getString(R.string.new_item) + " " +dsItem.getDsCaption(), dsItem.getDsItemText());
+						addItemsList(false, "" + getString(R.string.new_item) + " " + item.getDsCaption(), item.getDsItemText());
 						countNew = countNew - 1;
 					} else {
-						addItemsList(false, dsItem.getDsCaption(), dsItem.getDsItemText());	
+						addItemsList(false, item.getDsCaption(), item.getDsItemText());	
 					}
 				}
 				dsPref.clearNewItems();

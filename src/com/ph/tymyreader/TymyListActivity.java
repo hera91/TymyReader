@@ -57,8 +57,8 @@ public class TymyListActivity extends ListActivity {
 			
 			refreshListView();
 			//refresh discussions from web
-			reloadTymyDsList();
-			//refreshTymyNewItems();
+//			reloadTymyDsList(); // reload i seznamu diskusi, muze byt pomaljesi
+			reloadTymyNewItems(); // reload pouze poctu novych prispevku
 		} else {
 			// Configuration was changed, reload data
 			tymyList = data;
@@ -238,77 +238,73 @@ public class TymyListActivity extends ListActivity {
 
 	// TODO tyhle methody by meli byt v samostatny tride
 	private void reloadTymyDsList(int index) {
-		if (!app.isOnline()) {
-			return;
-		}
-		if (index == -1) reloadTymyDsList();
-		int i = 0;
-		i = loginAndUpdateTymy.size();
-		loginAndUpdateTymy.add(i, (LoginAndUpdateTymy) new LoginAndUpdateTymy());
-		loginAndUpdateTymy.get(i).execute(tymyPrefList.get(index));
-		app.setTymyPrefList(tymyPrefList);
-		app.saveTymyCfg(tymyPrefList);
-	}
-
-
-	private void reloadTymyDsList() {
-		if (!app.isOnline()) {
-			return;
-		}
-		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
-		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
-		for (TymyPref tP : tymyPrefList) {
-			copy_tymyPrefList.add(tP);
-		}
-		int i = 0;
-		for(TymyPref tP : copy_tymyPrefList) {
+		if (app.isOnline()) {
+			if (index == -1) reloadTymyDsList();
+			int i = 0;
 			i = loginAndUpdateTymy.size();
-			int index = copy_tymyPrefList.indexOf(tP);
 			loginAndUpdateTymy.add(i, (LoginAndUpdateTymy) new LoginAndUpdateTymy());
-			loginAndUpdateTymy.get(i).execute(tP);
-			tymyPrefList.remove(index);
-			tymyPrefList.add(index, tP);
+			loginAndUpdateTymy.get(i).execute(tymyPrefList.get(index));
 			app.setTymyPrefList(tymyPrefList);
-			//This maybe could cause problems when due to lost connectivity the download data will be corrupted,
-			//but next update should fix it (or refresh UI functionality)
 			app.saveTymyCfg(tymyPrefList);
 		}
 	}
 
-	private void reloadTymyNewItems(int index) {
-		if (!app.isOnline()) {
-			return;
+
+	private void reloadTymyDsList() {
+		if (app.isOnline()) {
+			// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
+			ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
+			for (TymyPref tP : tymyPrefList) {
+				copy_tymyPrefList.add(tP);
+			}
+			int i = 0;
+			for(TymyPref tP : copy_tymyPrefList) {
+				i = loginAndUpdateTymy.size();
+				int index = copy_tymyPrefList.indexOf(tP);
+				loginAndUpdateTymy.add(i, (LoginAndUpdateTymy) new LoginAndUpdateTymy());
+				loginAndUpdateTymy.get(i).execute(tP);
+				tymyPrefList.remove(index);
+				tymyPrefList.add(index, tP);
+				app.setTymyPrefList(tymyPrefList);
+				//This maybe could cause problems when due to lost connectivity the download data will be corrupted,
+				//but next update should fix it (or refresh UI functionality)
+				app.saveTymyCfg(tymyPrefList);
+			}
 		}
-		if (index == -1) reloadTymyNewItems();
-		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
-		int i = 0;
-		i = updateNewItemsTymy.size();
-		updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
-		updateNewItemsTymy.get(i).execute(tymyPrefList.get(index));
-		app.setTymyPrefList(tymyPrefList);
-		refreshListView();
 	}
-	
+
+	private void reloadTymyNewItems(int index) {
+		if (app.isOnline()) {
+			if (index == -1) reloadTymyNewItems();
+			// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
+			int i = 0;
+			i = updateNewItemsTymy.size();
+			updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
+			updateNewItemsTymy.get(i).execute(tymyPrefList.get(index));
+			app.setTymyPrefList(tymyPrefList);
+			refreshListView();
+		}
+	}
+
 	private void reloadTymyNewItems() {
 		if (app.isOnline()) {
-			return;
+			// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
+			ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
+			for (TymyPref tP : tymyPrefList) {
+				copy_tymyPrefList.add(tP);
+			}
+			int i = 0;
+			for(TymyPref tP : copy_tymyPrefList) {
+				i = updateNewItemsTymy.size();
+				int index = copy_tymyPrefList.indexOf(tP);
+				updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
+				updateNewItemsTymy.get(i).execute(tP);
+				tymyPrefList.remove(index);
+				tymyPrefList.add(index, tP);
+				app.setTymyPrefList(tymyPrefList);
+			}
+			refreshListView();
 		}
-		// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
-		ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
-		for (TymyPref tP : tymyPrefList) {
-			copy_tymyPrefList.add(tP);
-		}
-		int i = 0;
-		for(TymyPref tP : copy_tymyPrefList) {
-			i = updateNewItemsTymy.size();
-			int index = copy_tymyPrefList.indexOf(tP);
-			updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
-			updateNewItemsTymy.get(i).execute(tP);
-			tymyPrefList.remove(index);
-			tymyPrefList.add(index, tP);
-			app.setTymyPrefList(tymyPrefList);
-		}
-		refreshListView();
 	}
 
 	private void refreshListView() {
