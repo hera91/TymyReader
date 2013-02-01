@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ph.tymyreader"
     android:versionCode="2"
-    android:versionName="r0.3" >
+    android:versionName="r0.4" >
 
     <uses-sdk
         android:minSdkVersion="8"
