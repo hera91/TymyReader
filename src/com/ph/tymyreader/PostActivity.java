@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -82,7 +81,7 @@ public class PostActivity extends Activity {
 			{
 				if(dialog.isShowing()) dialog.dismiss();				
 			} catch(Exception e) {
-				Log.v(TymyReader.TAG, "Error sending NewPost " + e);				
+				//Log.v(TymyReader.TAG, "Error sending NewPost " + e);				
 			}
 			if (response != null) {
 				result = true;

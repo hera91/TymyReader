@@ -1,8 +1,13 @@
 package com.ph.tymyreader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
 import android.content.Context;
@@ -12,8 +17,6 @@ import android.net.NetworkInfo;
 
 import com.ph.tymyreader.model.DiscussionPref;
 import com.ph.tymyreader.model.TymyPref;
-import org.acra.*;
-import org.acra.annotation.*;
 
 //@ReportsCrashes(formKey = "",
 @ReportsCrashes(formUri = "http://www.bugsense.com/api/acra?api_key=34f778f4", formKey="",
@@ -105,10 +108,16 @@ public class TymyReader extends Application {
 	
 	// ******************  Private methods  ********************* //
 	private void loadTymyPrefList() {
+		List<String> tymyURLList = new ArrayList<String>();
 		for (String tymyUrl : getTymyUrlList()) {
+			tymyURLList.add(tymyUrl);
+		}
+		// Sort list of tymy aphabetically
+		Collections.sort(tymyURLList);
+		for (String tymyUrl : tymyURLList) {
 			SharedPreferences prefs = getSharedPreferences(tymyUrl, MODE_PRIVATE);
 			TymyConfigManager cfg = new TymyConfigManager(prefs);
-			TymyPref tp = cfg.loadCfg(tymyUrl); 
+			TymyPref tp = cfg.loadCfg(tymyUrl);
 			if (tp != null ) tymyPrefList.add(cfg.loadCfg(tymyUrl));
 		}
 	}

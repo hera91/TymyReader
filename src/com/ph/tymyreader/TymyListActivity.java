@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -78,17 +77,17 @@ public class TymyListActivity extends ListActivity {
 	protected void onPause() {
 		super.onPause();
 		//cancel background threads
-		Log.v(TymyReader.TAG, "onPause: cancel loaders");
+		//Log.v(TymyReader.TAG, "onPause: cancel loaders");
 		for (LoginAndUpdateTymy loader : loginAndUpdateTymy) {
-			Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
+			//Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
 			if (loader != null) {
-				Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
+				//Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
 				loader.cancel(true);
 			}
 		}
 		for (UpdateNewItemsTymy loader : updateNewItemsTymy) {
 			if (loader != null) {
-				Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
+				//Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
 				loader.cancel(true);
 			}
 		}

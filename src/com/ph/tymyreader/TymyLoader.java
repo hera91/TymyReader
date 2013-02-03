@@ -25,7 +25,6 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 
 import android.net.http.AndroidHttpClient;
-import android.util.Log;
 
 //import android.util.Log;
 
@@ -130,17 +129,17 @@ public class TymyLoader {
 			final int statusCode = response.getStatusLine().getStatusCode();
 			response.getEntity().consumeContent();
 			if ((statusCode != HttpStatus.SC_OK) && (statusCode != HttpStatus.SC_MOVED_TEMPORARILY)) {
-				Log.v(TymyReader.TAG, "Error " + response + " while login to " + url);
+				//Log.v(TymyReader.TAG, "Error " + response + " while login to " + url);
 				return isLogged = false;
 			} 
 		} catch (ClientProtocolException e) {
 			httpPost.abort();
 			if (client != null) client.close();
-			Log.v(TymyReader.TAG, "Error while login to " + url, e);
+			//Log.v(TymyReader.TAG, "Error while login to " + url, e);
 			ACRA.getErrorReporter().handleSilentException(e);
 		} catch (IOException e) {
 			if (client != null) client.close();
-			Log.v(TymyReader.TAG, "Error while login to " + url, e);
+			//Log.v(TymyReader.TAG, "Error while login to " + url, e);
 			ACRA.getErrorReporter().handleSilentException(e);
 		} finally {
 			if (client != null) client.close();
@@ -165,7 +164,7 @@ public class TymyLoader {
 			HttpResponse response = client.execute(getRequest, httpContext);
 			final int statusCode = response.getStatusLine().getStatusCode();
 			if ((statusCode != HttpStatus.SC_OK) && (statusCode != HttpStatus.SC_MOVED_TEMPORARILY)) {
-				Log.v(TymyReader.TAG, "Error " + statusCode + " while download  to " + url + page);
+				//Log.v(TymyReader.TAG, "Error " + statusCode + " while download  to " + url + page);
 				return null;
 			} 
 
@@ -183,7 +182,7 @@ public class TymyLoader {
 			getRequest.abort();
 			if (client != null) client.close();
 			ACRA.getErrorReporter().handleSilentException(e);
-			Log.v(TymyReader.TAG, "Error while downloading " + url + page, e);
+			//Log.v(TymyReader.TAG, "Error while downloading " + url + page, e);
 		} finally {
 			if (client != null) client.close();
 		}
@@ -209,7 +208,7 @@ public class TymyLoader {
 			final HttpResponse response = client.execute(httpPost, httpContext);
 			final int statusCode = response.getStatusLine().getStatusCode();
 			if ((statusCode != HttpStatus.SC_OK) && (statusCode != HttpStatus.SC_MOVED_TEMPORARILY)) {
-				Log.v(TymyReader.TAG, "Error " + statusCode + " while POST " + url + page);
+				//Log.v(TymyReader.TAG, "Error " + statusCode + " while POST " + url + page);
 				return null;
 			} 
 
@@ -226,11 +225,11 @@ public class TymyLoader {
 			httpPost.abort();
 			if (client != null) client.close();			
 			ACRA.getErrorReporter().handleSilentException(e);
-			Log.v(TymyReader.TAG, "Error while POST " + url, e);
+			//Log.v(TymyReader.TAG, "Error while POST " + url, e);
 		} catch (IOException e) {
 			if (client != null) client.close();			
 			ACRA.getErrorReporter().handleSilentException(e);
-			Log.v(TymyReader.TAG, "Error while POST " + url, e);
+			//Log.v(TymyReader.TAG, "Error while POST " + url, e);
 		} finally {
 			if (client != null) client.close();			
 		}

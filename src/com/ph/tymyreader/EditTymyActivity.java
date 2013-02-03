@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -163,7 +162,7 @@ public class EditTymyActivity extends Activity {
 				}
 				// do your Display and data setting operation here
 			} catch(Exception e) {
-				Log.v(TymyReader.TAG, "Error while TestLogin " + e);				
+				//Log.v(TymyReader.TAG, "Error while TestLogin " + e);				
 			}
 			Toast.makeText(EditTymyActivity.this, loginOk ? R.string.login_ok : R.string.login_failed, Toast.LENGTH_LONG).show();
 		}
