@@ -17,14 +17,24 @@
     <string name="current_value_is">Nastaveno:</string>
     <string name="empty_discussion">Problém s připojením nebo je diskuse prázdná!</string>
     <string name="send_to">Sdílet přes</string>
-  	<string name="no_connection">Není připojení k Internetu!</string>
-    
+    <string name="no_connection">Není připojení k Internetu!</string>
+    <string name="development">Vývoj</string>
+
     <!-- Global Setting -->
     <string name="no_new_items">Hláška pro \"žádné nové příspěvky\" message</string>
     <string name="no_new_items_key">no_new_items_key</string>
     <string name="no_new_items_message">Zvol si svojí hlášku \"žádné nové příspěvky\"</string>
     <string name="no_new_items_default">nůůďo..</string>
 
+    <string-array name="theme_list_entry">
+        <item>Světlé</item>
+        <item>Tmavé</item>
+    </string-array>
+    <string-array name="theme_list_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    
     <!-- Menus -->
     <string name="menu_add_tymy">Přidat Tymy</string>
     <string name="menu_settings">Nastavení</string>
@@ -54,7 +64,7 @@
 
     <!-- CrashReports -->
     <string name="crash_toast_text">Jejda! Spadl jsem, ale můžu odeslat zprávu svému vývojáři, která mu pomůže mě optavit !</string>
-    <string name="crash_dialog_title">CrashTest has crashed</string>
+    <string name="crash_dialog_title">TymyReader havaroval</string>
     <string name="crash_dialog_text">Nastala neočekávaná chyba, která mě donutila skončit.
         Prosím, pomozte mě opravit tím, že odešlete zprávu se zázanamy o chybě, vše co musíte udělat je zmačknout OK</string>
     <string name="crash_dialog_comment_prompt">Můžete přidat kometář k chybě:</string>
@@ -70,5 +80,5 @@
     <string name="send_ok">Vloženo</string>
     <string name="send_failed">Vložení selhalo!</string>
     <string name="sending">Posílám..</string>
-    
+
 </resources>

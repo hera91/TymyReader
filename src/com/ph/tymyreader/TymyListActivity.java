@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.acra.ACRA;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,7 +44,7 @@ public class TymyListActivity extends ListActivity {
 		setContentView(R.layout.tymy_list);
 		app = (TymyReader) getApplication();
 		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
-		
+
 		@SuppressWarnings("unchecked")
 		List<HashMap<String, String>> data = (List<HashMap<String, String>>) getLastNonConfigurationInstance();
 		if (data == null) {
@@ -128,9 +126,9 @@ public class TymyListActivity extends ListActivity {
 //			refreshTymyPrefList();
 			reloadTymyNewItems();
 			return true;
-		case R.id.menu_send_report:
-			ACRA.getErrorReporter().handleException(new Exception("Manual report"));
-			return true;
+//		case R.id.menu_send_report:
+//			ACRA.getErrorReporter().handleException(new Exception("Manual report"));
+//			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
