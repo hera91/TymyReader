@@ -19,6 +19,7 @@
     <string name="send_to">Share via</string>
     <string name="no_connection">No network connection available.</string>
     <string name="development">Development</string>
+    <string name="share_via">Share via</string>
 
     <!-- Global Setting -->
     <string name="no_new_items">\"No new items\" message</string>

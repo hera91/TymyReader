@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -99,6 +100,9 @@ public class DiscussionViewActivity extends ListActivity {
 		case R.id.menu_post:
 			showNewPost();
 			return true;
+		case R.id.menu_web:
+			goToWeb();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -137,7 +141,14 @@ public class DiscussionViewActivity extends ListActivity {
 		sendIntent.setAction(Intent.ACTION_SEND);
 		sendIntent.putExtra(Intent.EXTRA_TEXT, mText);
 		sendIntent.setType("text/plain");
-		startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.hello_world)));		
+		startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.share_via)));		
+	}
+
+	private void goToWeb() {
+		String attr = new String();
+		attr = TymyLoader.getURLLoginAttr(dsPref.getHttpContext());
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + dsPref.getUrl() + attr));
+		startActivity(browserIntent);
 	}
 
 	private void showNewPost() {

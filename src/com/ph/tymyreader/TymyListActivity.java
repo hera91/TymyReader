@@ -32,7 +32,7 @@ public class TymyListActivity extends ListActivity {
 	private List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
 	private ArrayList<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
 	private SimpleAdapter adapter;
-	private TymyListUtil tlu = new TymyListUtil();
+	private TymyListUtil tlu;
 	ListView lv;
 	private TymyReader app; 
 	private List<LoginAndUpdateTymy> loginAndUpdateTymy = new ArrayList<TymyListActivity.LoginAndUpdateTymy>();
@@ -43,6 +43,7 @@ public class TymyListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tymy_list);
 		app = (TymyReader) getApplication();
+		tlu = new TymyListUtil();
 		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
 
 		@SuppressWarnings("unchecked")
@@ -75,17 +76,13 @@ public class TymyListActivity extends ListActivity {
 	protected void onPause() {
 		super.onPause();
 		//cancel background threads
-		//Log.v(TymyReader.TAG, "onPause: cancel loaders");
 		for (LoginAndUpdateTymy loader : loginAndUpdateTymy) {
-			//Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
 			if (loader != null) {
-				//Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
 				loader.cancel(true);
 			}
 		}
 		for (UpdateNewItemsTymy loader : updateNewItemsTymy) {
 			if (loader != null) {
-				//Log.v(TymyReader.TAG, "onPause: cancel loader " + loader.toString());
 				loader.cancel(true);
 			}
 		}
@@ -322,7 +319,7 @@ public class TymyListActivity extends ListActivity {
 
 		@Override
 		protected TymyPref doInBackground(TymyPref... tymyPref) {			
-			return updateTymDs(tymyPref);
+			return tlu.updateTymDs(tymyPref);
 		}
 
 		@Override
@@ -335,44 +332,17 @@ public class TymyListActivity extends ListActivity {
 		protected void onPostExecute(TymyPref tymyPref) {
 			//			Toast.makeText(getApplicationContext(), "discussions list " + tymyPref.getUrl() + " updated" , Toast.LENGTH_SHORT).show();
 			refreshListView();
+			//save configuration
+			app.saveTymyCfg(tymyPrefList);
 		}
 
-		// TODO premistit tuhle funkci do jine tridy
-		private TymyPref updateTymDs(TymyPref... tymyPref) {
-
-			TymyLoader page = new TymyLoader();
-			TymyParser parser = new TymyParser();
-			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
-
-			String mainPage = page.loadMainPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getHttpContext());
-			if (mainPage == null ) return tymyPref[0];
-			
-			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getHttpContext());
-			if (ajax != null) {
-				dsNews = parser.getNewItems(ajax);
-			}
-			
-			boolean isFirst = true; // clear map in first cycle
-			for ( String dsDesc : parser.getDsArray(mainPage)) {
-				Integer news = dsNews.get(getDsId(dsDesc));
-				news = news == null ? 0 : news;
-				tlu.addMapToList(isFirst, dsDesc, "" + news, tymyPref[0].getDsList());
-				isFirst = false;
-			}
-
-			return tymyPref[0];
-		}
-
-		private String getDsId(String dsDesc) {
-			return dsDesc.split(":")[0];
-		}
 	}
 
 	private class UpdateNewItemsTymy extends AsyncTask<TymyPref, Integer, TymyPref> {
 
 		@Override
 		protected TymyPref doInBackground(TymyPref... tymPref) {			
-			return updateNewItems(tymPref);
+			return tlu.updateNewItems(tymPref);
 		}
 
 		@Override
@@ -384,35 +354,6 @@ public class TymyListActivity extends ListActivity {
 		@Override
 		protected void onPostExecute(TymyPref tymPref) {
 			refreshListView();
-		}
-
-		// TODO premistit tuhle funkci do jine tridy
-		private TymyPref updateNewItems(TymyPref... tymyPref) {
-
-			TymyLoader page = new TymyLoader();
-			TymyParser parser = new TymyParser();
-			HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
-			String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getHttpContext());
-
-			if (ajax == null) {
-				return tymyPref[0];
-			}
-			dsNews = parser.getNewItems(ajax);
-			boolean isFirst = true; // clear map in first cycle
-
-			ArrayList<HashMap<String, String>> copy_DsList = new ArrayList<HashMap<String,String>>();
-			for (HashMap<String, String> dsDesc : tymyPref[0].getDsList()) {
-				copy_DsList.add(dsDesc);
-			}
-			for ( HashMap<String, String> dsDesc : copy_DsList) {
-				tlu.addMapToList(isFirst, dsDesc.get(TymyPref.ONE), "" + dsNews.get(getDsId(dsDesc.get(TymyPref.ONE))), tymyPref[0].getDsList());
-				isFirst = false;
-			}
-			return tymyPref[0];
-		}
-
-		private String getDsId(String dsDesc) {
-			return dsDesc.split(":")[0];
 		}
 	}
 }

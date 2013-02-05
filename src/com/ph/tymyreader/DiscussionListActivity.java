@@ -6,8 +6,11 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -30,12 +33,15 @@ public class DiscussionListActivity extends ListActivity {
 	SimpleAdapter adapter;
 	private TymyReader app;
 	private int index;
+	private TymyListUtil tlu;
+	private UpdateNewItemsTymy updateNewItemsTymy;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.discussions_list);
 		
+		tlu = new TymyListUtil();
 		app = (TymyReader) getApplication();
 
 		index = (int) getIntent().getIntExtra("index", -1);
@@ -46,7 +52,19 @@ public class DiscussionListActivity extends ListActivity {
 		TymyReader app = (TymyReader) getApplication();
 		tymyPref = app.getTymyPrefList().get(index);
 		if (tymyPref == null) finish();
+		setTitle(tymyPref.getUrl());
 
+
+		adapter = new SimpleAdapter(this, dsList, R.layout.two_line_list_discs, from, to);
+		setListAdapter(adapter);
+		refreshDsList(tymyPref);		
+	}
+
+	/**
+	 * 
+	 */
+	private void refreshDsList(TymyPref tymyPref) {
+		boolean isFirst = true;
 		for ( HashMap<String, String> dP : tymyPref.getDsList()) {
 			DiscussionPref dsPref = new DiscussionPref(tymyPref.getUrl(), tymyPref.getUser(), 
 					tymyPref.getPass(), tymyPref.getHttpContext(), getDsId(dP.get(TymyPref.ONE)), getDsName(dP.get(TymyPref.ONE)));
@@ -57,13 +75,10 @@ public class DiscussionListActivity extends ListActivity {
 			}
 			dsPrefList.add(dsPref);
 			String items_new = (dP.get(TymyPref.TWO).equals("0") || dP.get(TymyPref.TWO).equals("")) ? "" : getString(R.string.items_new) + " " + dP.get(TymyPref.TWO);
-			addDsList(false, getDsName(dP.get(TymyPref.ONE)), items_new);			
+			addDsList(isFirst, getDsName(dP.get(TymyPref.ONE)), items_new);
+			isFirst = false;
 		}
-
-		adapter = new SimpleAdapter(this, dsList, R.layout.two_line_list_discs, from, to);
-		setListAdapter(adapter);
-
-		setTitle(tymyPref.getUrl());
+		if (adapter != null) adapter.notifyDataSetChanged();
 	}
 	
 	@Override
@@ -80,6 +95,34 @@ public class DiscussionListActivity extends ListActivity {
 		getMenuInflater().inflate(R.menu.activity_discusion_list, menu);
 		return true;
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.menu_refresh:
+			reloadTymyNewItems();
+			return true;
+		case R.id.menu_web:
+			goToWeb();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void reloadTymyNewItems() {
+		updateNewItemsTymy = new UpdateNewItemsTymy();
+		updateNewItemsTymy.execute(tymyPref);		
+	}
+	
+	private void goToWeb() {
+		String attr = new String();
+		attr = TymyLoader.getURLLoginAttr(tymyPref.getHttpContext());
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + tymyPref.getUrl() + attr));
+		startActivity(browserIntent);
+	}
+
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -94,6 +137,12 @@ public class DiscussionListActivity extends ListActivity {
 		}
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (updateNewItemsTymy != null) updateNewItemsTymy.cancel(true);
+	}
+	
 	private void clearNewItems(int position) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		String dsDesc = dsList.get(position).get(NAME);
@@ -120,6 +169,24 @@ public class DiscussionListActivity extends ListActivity {
 		if (dsDesc.split(":").length > 1) return dsDesc.split(":")[1];
 		return "";
 	}
+	
+	private class UpdateNewItemsTymy extends AsyncTask<TymyPref, Integer, TymyPref> {
 
+		@Override
+		protected TymyPref doInBackground(TymyPref... tymPref) {			
+			return tlu.updateNewItems(tymPref);
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... progress) {
+			setProgress(progress[0]);
+		}
+
+		// onPostExecute displays the results of the AsyncTask.
+		@Override
+		protected void onPostExecute(TymyPref tymPref) {
+			refreshDsList(tymyPref);
+		}
+	}
 }
 

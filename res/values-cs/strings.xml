@@ -18,7 +18,8 @@
     <string name="empty_discussion">Problém s připojením nebo je diskuse prázdná!</string>
     <string name="send_to">Sdílet přes</string>
     <string name="no_connection">Není připojení k Internetu!</string>
-    <string name="development">Vývoj</string>
+	<string name="development">Vývoj</string>
+	<string name="share_via">Sdílet přes</string>
 
     <!-- Global Setting -->
     <string name="no_new_items">Hláška pro \"žádné nové příspěvky\" message</string>
