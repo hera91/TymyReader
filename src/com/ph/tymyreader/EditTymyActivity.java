@@ -1,6 +1,6 @@
 package com.ph.tymyreader;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -38,7 +38,7 @@ public class EditTymyActivity extends Activity {
 	}
 
 	private void fillFields(int position) {
-		ArrayList<TymyPref> tymyPrefList = app.getTymyPrefList();
+		List<TymyPref> tymyPrefList = app.getTymyPrefList();
 		EditText url = (EditText) findViewById(R.id.add_tymy_url_edit);
 		url.setText(tymyPrefList.get(position).getUrl());
 		EditText user = (EditText) findViewById(R.id.add_tymy_user_edit);
@@ -120,7 +120,7 @@ public class EditTymyActivity extends Activity {
 		TymyPref tymyPref = new TymyPref(url.getText().toString().trim(), 
 				user.getText().toString().trim(), 
 				pass.getText().toString().trim());
-		ArrayList<TymyPref> tymyPrefList = app.getTymyPrefList();
+		List<TymyPref> tymyPrefList = app.getTymyPrefList();
 		tlu.updateTymyPrefList(tymyPrefList, tymyPref);
 		app.setTymyPrefList(tymyPrefList);
 		app.saveTymyCfg(tymyPrefList);

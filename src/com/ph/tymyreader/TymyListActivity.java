@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
@@ -30,14 +31,15 @@ public class TymyListActivity extends ListActivity {
 	private String[] from = new String[] {TymyPref.ONE, TymyPref.TWO};
 	private int[] to = new int[] {R.id.text1, R.id.text2};
 	private List<HashMap<String, String>> tymyList = new ArrayList<HashMap<String,String>>();
-	private ArrayList<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
+	private List<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
 	private SimpleAdapter adapter;
 	private TymyListUtil tlu;
 	ListView lv;
 	private TymyReader app; 
 	private List<LoginAndUpdateTymy> loginAndUpdateTymy = new ArrayList<TymyListActivity.LoginAndUpdateTymy>();
-	private List<UpdateNewItemsTymy> updateNewItemsTymy = new ArrayList<TymyListActivity.UpdateNewItemsTymy>();
-
+	private UpdateNewItemsTymy updateNewItemsTymy;
+	private ProgressBar pb;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,7 +47,8 @@ public class TymyListActivity extends ListActivity {
 		app = (TymyReader) getApplication();
 		tlu = new TymyListUtil();
 		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
-
+		pb = (ProgressBar) findViewById(R.id.progress_bar);
+		
 		@SuppressWarnings("unchecked")
 		List<HashMap<String, String>> data = (List<HashMap<String, String>>) getLastNonConfigurationInstance();
 		if (data == null) {
@@ -81,10 +84,8 @@ public class TymyListActivity extends ListActivity {
 				loader.cancel(true);
 			}
 		}
-		for (UpdateNewItemsTymy loader : updateNewItemsTymy) {
-			if (loader != null) {
-				loader.cancel(true);
-			}
+		if (updateNewItemsTymy != null) {
+			updateNewItemsTymy.cancel(true);
 		}
 	}
 	
@@ -271,10 +272,8 @@ public class TymyListActivity extends ListActivity {
 		if (app.isOnline()) {
 			if (index == -1) reloadTymyNewItems();
 			// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
-			int i = 0;
-			i = updateNewItemsTymy.size();
-			updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
-			updateNewItemsTymy.get(i).execute(tymyPrefList.get(index));
+			updateNewItemsTymy = new UpdateNewItemsTymy();
+			updateNewItemsTymy.execute(tymyPrefList.get(index));
 			app.setTymyPrefList(tymyPrefList);
 			refreshListView();
 		}
@@ -287,17 +286,18 @@ public class TymyListActivity extends ListActivity {
 			for (TymyPref tP : tymyPrefList) {
 				copy_tymyPrefList.add(tP);
 			}
-			int i = 0;
-			for(TymyPref tP : copy_tymyPrefList) {
-				i = updateNewItemsTymy.size();
-				int index = copy_tymyPrefList.indexOf(tP);
-				updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
-				updateNewItemsTymy.get(i).execute(tP);
-				tymyPrefList.remove(index);
-				tymyPrefList.add(index, tP);
-				app.setTymyPrefList(tymyPrefList);
-			}
-			refreshListView();
+			updateNewItemsTymy = new UpdateNewItemsTymy();
+			updateNewItemsTymy.execute(copy_tymyPrefList.toArray(new TymyPref[copy_tymyPrefList.size()]));
+//			for(TymyPref tP : copy_tymyPrefList) {
+//				i = updateNewItemsTymy.size();
+//				int index = copy_tymyPrefList.indexOf(tP);
+//				updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
+//				updateNewItemsTymy.get(i).execute(tP);
+//				tymyPrefList.remove(index);
+//				tymyPrefList.add(index, tP);
+//				app.setTymyPrefList(tymyPrefList);
+//			}
+//			refreshListView();
 		}
 	}
 
@@ -338,22 +338,32 @@ public class TymyListActivity extends ListActivity {
 
 	}
 
-	private class UpdateNewItemsTymy extends AsyncTask<TymyPref, Integer, TymyPref> {
+	private class UpdateNewItemsTymy extends AsyncTask<TymyPref, Integer, Void> {
 
 		@Override
-		protected TymyPref doInBackground(TymyPref... tymPref) {			
-			return tlu.updateNewItems(tymPref);
+		protected void onPreExecute() {
+			pb.setVisibility(View.VISIBLE);	
+		}
+		
+		@Override
+		protected Void doInBackground(TymyPref... tymyPref) {			
+			for (TymyPref tp : tymyPref) {
+				tlu.updateNewItems(tp);
+				publishProgress(0);
+			}
+			return null;
 		}
 
 		@Override
 		protected void onProgressUpdate(Integer... progress) {
 			setProgress(progress[0]);
+			refreshListView();
 		}
 
 		// onPostExecute displays the results of the AsyncTask.
 		@Override
-		protected void onPostExecute(TymyPref tymPref) {
-			refreshListView();
+		protected void onPostExecute(Void v) {
+			pb.setVisibility(View.GONE);
 		}
 	}
 }

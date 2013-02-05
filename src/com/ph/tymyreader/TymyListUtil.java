@@ -13,7 +13,7 @@ public class TymyListUtil implements Serializable {
 	//	private static final String TAG = TymyReader.TAG;
 	private static final long serialVersionUID = 1L;
 	
-	public void updateTymyPrefList(ArrayList<TymyPref> tymyPrefList, final TymyPref newTP) {
+	public void updateTymyPrefList(List<TymyPref> tymyPrefList, final TymyPref newTP) {
 		boolean isNew = true;
 		int index = -1;
 		for (TymyPref tP : tymyPrefList) {
@@ -34,7 +34,7 @@ public class TymyListUtil implements Serializable {
 	 * Replace NO_NEW_ITEMS string with noNewItems parameter witch could be defined
 	 * by user in shared preferences. 
 	 */
-	public void updateTymyList (ArrayList<TymyPref> tymyPrefList, String noNewItems, List<HashMap<String, String>> tymyList) {
+	public void updateTymyList (List<TymyPref> tymyPrefList, String noNewItems, List<HashMap<String, String>> tymyList) {
 		boolean isFirst = true;
 		for (TymyPref tP : tymyPrefList) {
 			if (tP.dsListToString().equals(TymyPref.NO_NEW_ITEMS)) {
@@ -74,11 +74,11 @@ public class TymyListUtil implements Serializable {
 		return out.toString();
 	}
 
-	public void removeTymyPref(ArrayList<TymyPref> tymyPrefList, int position) {
+	public void removeTymyPref(List<TymyPref> tymyPrefList, int position) {
 		tymyPrefList.remove(position);
 	}
 
-	public int getIndexFromUrl(ArrayList<TymyPref> tymyPrefList, String url) {
+	public int getIndexFromUrl(List<TymyPref> tymyPrefList, String url) {
 		for (TymyPref tP : tymyPrefList) {
 			if (tP.getUrl().equals(url)) return tymyPrefList.indexOf(tP);
 		}
@@ -110,28 +110,28 @@ public class TymyListUtil implements Serializable {
 		return tymyPref[0];
 	}
 
-	public TymyPref updateNewItems(TymyPref... tymyPref) {
+	public TymyPref updateNewItems(TymyPref tymyPref) {
 
 		TymyLoader page = new TymyLoader();
 		TymyParser parser = new TymyParser();
 		HashMap<String, Integer> dsNews = new HashMap<String, Integer>();
-		String ajax = page.loadAjaxPage(tymyPref[0].getUrl(), tymyPref[0].getUser(), tymyPref[0].getPass(), tymyPref[0].getHttpContext());
+		String ajax = page.loadAjaxPage(tymyPref.getUrl(), tymyPref.getUser(), tymyPref.getPass(), tymyPref.getHttpContext());
 
 		if (ajax == null) {
-			return tymyPref[0];
+			return tymyPref;
 		}
 		dsNews = parser.getNewItems(ajax);
 		boolean isFirst = true; // clear map in first cycle
 
 		ArrayList<HashMap<String, String>> copy_DsList = new ArrayList<HashMap<String,String>>();
-		for (HashMap<String, String> dsDesc : tymyPref[0].getDsList()) {
+		for (HashMap<String, String> dsDesc : tymyPref.getDsList()) {
 			copy_DsList.add(dsDesc);
 		}
 		for ( HashMap<String, String> dsDesc : copy_DsList) {
-			addMapToList(isFirst, dsDesc.get(TymyPref.ONE), "" + dsNews.get(getDsId(dsDesc.get(TymyPref.ONE))), tymyPref[0].getDsList());
+			addMapToList(isFirst, dsDesc.get(TymyPref.ONE), "" + dsNews.get(getDsId(dsDesc.get(TymyPref.ONE))), tymyPref.getDsList());
 			isFirst = false;
 		}
-		return tymyPref[0];
+		return tymyPref;
 	}
 
 	private String getDsId(String dsDesc) {

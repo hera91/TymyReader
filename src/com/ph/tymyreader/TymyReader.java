@@ -33,7 +33,7 @@ excludeMatchingSharedPreferencesKeys={"pass"})
 public class TymyReader extends Application {
 	//Application-wide class
 	public static final String TAG = "TymyReader";
-	private ArrayList<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
+	private List<TymyPref> tymyPrefList = new ArrayList<TymyPref>();
 	private DiscussionPref dsPref = null; 
 
 	@Override
@@ -45,12 +45,12 @@ public class TymyReader extends Application {
 		loadTymyPrefList();
 	}
 
-	public ArrayList<TymyPref> getTymyPrefList() {
+	public List<TymyPref> getTymyPrefList() {
 		return tymyPrefList;
 	}
 
-	public void setTymyPrefList(ArrayList<TymyPref> tymyPrefList) {
-		this.tymyPrefList = tymyPrefList;
+	public void setTymyPrefList(List<TymyPref> tymyPrefList2) {
+		this.tymyPrefList = tymyPrefList2;
 	}
 
 	public void loadTymyCfg() {
@@ -63,15 +63,15 @@ public class TymyReader extends Application {
 		prefs.edit().clear().commit();		
 	}
 
-	public void saveTymyCfg(ArrayList<TymyPref> tymyPrefList) {
+	public void saveTymyCfg(List<TymyPref> tymyPrefList2) {
 		SharedPreferences defaultPrefs = getSharedPreferences("tymyUrlList", MODE_PRIVATE);
 		defaultPrefs.edit().clear().commit();
 		TymyConfigManager cfg;
 		cfg = new TymyConfigManager(defaultPrefs);
-		for (TymyPref tP : tymyPrefList) {
+		for (TymyPref tP : tymyPrefList2) {
 			cfg.addTymyToDefaultPrefs(tP.getUrl());
 		}
-		for (TymyPref tP : tymyPrefList) {
+		for (TymyPref tP : tymyPrefList2) {
 			SharedPreferences prefs = getSharedPreferences(tP.getUrl(), MODE_PRIVATE);
 			prefs.edit().clear().commit();
 			cfg = new TymyConfigManager(prefs);

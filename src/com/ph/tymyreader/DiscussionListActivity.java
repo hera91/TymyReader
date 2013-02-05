@@ -174,7 +174,7 @@ public class DiscussionListActivity extends ListActivity {
 
 		@Override
 		protected TymyPref doInBackground(TymyPref... tymPref) {			
-			return tlu.updateNewItems(tymPref);
+			return tlu.updateNewItems(tymPref[0]);
 		}
 
 		@Override
