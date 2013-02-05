@@ -365,5 +365,9 @@ public class TymyListActivity extends ListActivity {
 		protected void onPostExecute(Void v) {
 			pb.setVisibility(View.GONE);
 		}
+		@Override
+		protected void onCancelled() {
+			pb.setVisibility(View.GONE);			
+		}
 	}
 }
