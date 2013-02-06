@@ -282,12 +282,15 @@ public class TymyListActivity extends ListActivity {
 	private void reloadTymyNewItems() {
 		if (app.isOnline()) {
 			// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
-			ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
-			for (TymyPref tP : tymyPrefList) {
-				copy_tymyPrefList.add(tP);
+//			ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
+//			for (TymyPref tP : tymyPrefList) {
+//				copy_tymyPrefList.add(tP);
+//			}
+			if (updateNewItemsTymy != null) {
+				updateNewItemsTymy.cancel(true);
 			}
 			updateNewItemsTymy = new UpdateNewItemsTymy();
-			updateNewItemsTymy.execute(copy_tymyPrefList.toArray(new TymyPref[copy_tymyPrefList.size()]));
+			updateNewItemsTymy.execute(tymyPrefList.toArray(new TymyPref[tymyPrefList.size()]));
 //			for(TymyPref tP : copy_tymyPrefList) {
 //				i = updateNewItemsTymy.size();
 //				int index = copy_tymyPrefList.indexOf(tP);
@@ -304,7 +307,7 @@ public class TymyListActivity extends ListActivity {
 	private void refreshListView() {
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		String noNewItems = pref.getString(getString(R.string.no_new_items_key), getString(R.string.no_new_items_default));
-		tymyPrefList = app.getTymyPrefList();
+//		tymyPrefList = app.getTymyPrefList();
 		if (tymyPrefList.isEmpty()) {
 			tlu.addMapToList(true, getString(R.string.no_tymy), getString(R.string.no_tymy_hint), tymyList);						
 		} else {
