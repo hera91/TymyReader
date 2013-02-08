@@ -46,13 +46,13 @@ public class TymyListActivity extends ListActivity {
 		setContentView(R.layout.tymy_list);
 		app = (TymyReader) getApplication();
 		tlu = new TymyListUtil();
+		pb = (ProgressBar) findViewById(R.id.progress_bar);
 		
 		TymyListActivity oldState = (TymyListActivity) getLastNonConfigurationInstance();
 		if (oldState == null) {
 			// activity was started => load configuration
 			app.loadTymyCfg();
 			tymyPrefList = app.getTymyPrefList();
-			pb = (ProgressBar) findViewById(R.id.progress_bar);
 			adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
 			
 			refreshListView();
