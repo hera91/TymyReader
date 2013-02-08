@@ -46,15 +46,14 @@ public class TymyListActivity extends ListActivity {
 		setContentView(R.layout.tymy_list);
 		app = (TymyReader) getApplication();
 		tlu = new TymyListUtil();
-		adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
-		pb = (ProgressBar) findViewById(R.id.progress_bar);
 		
-		@SuppressWarnings("unchecked")
-		List<HashMap<String, String>> data = (List<HashMap<String, String>>) getLastNonConfigurationInstance();
-		if (data == null) {
+		TymyListActivity oldState = (TymyListActivity) getLastNonConfigurationInstance();
+		if (oldState == null) {
 			// activity was started => load configuration
 			app.loadTymyCfg();
 			tymyPrefList = app.getTymyPrefList();
+			pb = (ProgressBar) findViewById(R.id.progress_bar);
+			adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
 			
 			refreshListView();
 			//refresh discussions from web
@@ -62,8 +61,13 @@ public class TymyListActivity extends ListActivity {
 			reloadTymyNewItems(); // reload pouze poctu novych prispevku
 		} else {
 			// Configuration was changed, reload data
-			tymyList = data;
-			adapter = new SimpleAdapter(this, tymyList, R.layout.two_line_list_discs, from, to);
+			tymyList = oldState.tymyList;
+			tymyPrefList = oldState.tymyPrefList;
+			updateNewItemsTymy = oldState.updateNewItemsTymy;
+//			pb = oldState.pb;
+//			pb.setVisibility(oldState.pb.getVisibility());
+			adapter = oldState.adapter;
+			refreshListView();
 		}
 		// Set-up adapter for tymyList
 		lv = getListView();
@@ -78,17 +82,11 @@ public class TymyListActivity extends ListActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		//cancel background threads
-		for (LoginAndUpdateTymy loader : loginAndUpdateTymy) {
-			if (loader != null) {
-				loader.cancel(true);
-			}
-		}
-		if (updateNewItemsTymy != null) {
-			updateNewItemsTymy.cancel(true);
+		if (isFinishing()) {
+			cancelBackgroundTasks();
 		}
 	}
-	
+
 	@Override
 	protected void onDestroy () {
 		super.onDestroy();
@@ -98,8 +96,7 @@ public class TymyListActivity extends ListActivity {
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-		final List<HashMap<String, String>> data = tymyList;
-		return data;
+		return this;
 	}
 
 	// **************  Activity Option menu  ************** //
@@ -140,6 +137,7 @@ public class TymyListActivity extends ListActivity {
 			Toast.makeText(this, getString(R.string.no_discussion), Toast.LENGTH_LONG).show();
 			return;
 		}
+		cancelBackgroundTasks();	
 		Bundle bundle = new Bundle();
 		bundle.putInt("index", index);
 		Intent intent = new Intent(this, DiscussionListActivity.class);
@@ -231,6 +229,18 @@ public class TymyListActivity extends ListActivity {
 		refreshListView();
 	}
 
+	private void cancelBackgroundTasks() {
+		//cancel background threads
+		for (LoginAndUpdateTymy loader : loginAndUpdateTymy) {
+			if (loader != null) {
+				loader.cancel(true);
+			}
+		}
+		if (updateNewItemsTymy != null) {
+			updateNewItemsTymy.cancel(true);
+		}
+	}
+
 	// TODO tyhle methody by meli byt v samostatny tride
 	private void reloadTymyDsList(int index) {
 		if (app.isOnline()) {
@@ -281,26 +291,11 @@ public class TymyListActivity extends ListActivity {
 
 	private void reloadTymyNewItems() {
 		if (app.isOnline()) {
-			// Slozitejsi pouziti copy_tymyPrefList aby se zabranilo soucasne modifikaci tymyPrefList
-//			ArrayList<TymyPref> copy_tymyPrefList = new ArrayList<TymyPref>();
-//			for (TymyPref tP : tymyPrefList) {
-//				copy_tymyPrefList.add(tP);
-//			}
 			if (updateNewItemsTymy != null) {
 				updateNewItemsTymy.cancel(true);
 			}
 			updateNewItemsTymy = new UpdateNewItemsTymy();
 			updateNewItemsTymy.execute(tymyPrefList.toArray(new TymyPref[tymyPrefList.size()]));
-//			for(TymyPref tP : copy_tymyPrefList) {
-//				i = updateNewItemsTymy.size();
-//				int index = copy_tymyPrefList.indexOf(tP);
-//				updateNewItemsTymy.add(i, new UpdateNewItemsTymy());
-//				updateNewItemsTymy.get(i).execute(tP);
-//				tymyPrefList.remove(index);
-//				tymyPrefList.add(index, tP);
-//				app.setTymyPrefList(tymyPrefList);
-//			}
-//			refreshListView();
 		}
 	}
 
@@ -353,6 +348,7 @@ public class TymyListActivity extends ListActivity {
 			for (TymyPref tp : tymyPref) {
 				tlu.updateNewItems(tp);
 				publishProgress(0);
+				if (isCancelled()) break;
 			}
 			return null;
 		}
